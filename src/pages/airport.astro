@@ -1,0 +1,324 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>توصيل المطار - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: #F8FAFC; padding-bottom: 100px; }
+    .airport-header { background: linear-gradient(135deg, #92400E 0%, #D97706 60%, #FCD34D 100%); padding: 20px; padding-bottom: 30px; }
+    .header-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .back-btn { color: white; font-size: 20px; text-decoration: none; }
+    .header-title { color: white; font-size: 20px; font-weight: 800; }
+    .flight-tabs { display: flex; gap: 10px; }
+    .flight-tab { flex: 1; padding: 12px; border: 2px solid rgba(255,255,255,0.4); border-radius: 14px; background: rgba(255,255,255,0.15); color: white; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s; text-align: center; backdrop-filter: blur(10px); }
+    .flight-tab.active { background: white; color: #D97706; border-color: white; }
+    .page-content { padding: 20px; }
+    .booking-card { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    .section-header { font-size: 17px; font-weight: 800; color: #1E293B; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .airports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .airport-chip { border: 2px solid #E2E8F0; border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.3s; text-align: center; }
+    .airport-chip.selected, .airport-chip:hover { border-color: #D97706; background: #FFFBEB; }
+    .airport-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+    .airport-name { font-size: 13px; font-weight: 800; color: #1E293B; }
+    .airport-code { font-size: 11px; color: #94A3B8; margin-top: 2px; }
+    .car-types { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .car-type { border: 2px solid #E2E8F0; border-radius: 14px; padding: 16px; cursor: pointer; transition: all 0.3s; }
+    .car-type.selected, .car-type:hover { border-color: #D97706; background: #FFFBEB; }
+    .car-type-icon { font-size: 30px; margin-bottom: 8px; display: block; }
+    .car-type-name { font-size: 14px; font-weight: 800; color: #1E293B; }
+    .car-type-seats { font-size: 11px; color: #94A3B8; margin-top: 3px; }
+    .car-type-price { font-size: 15px; font-weight: 900; color: #D97706; margin-top: 6px; }
+    .passengers-counter { display: flex; align-items: center; justify-content: space-between; background: #FEF3C7; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    .counter-label { font-size: 15px; font-weight: 700; color: #1E293B; }
+    .counter-controls { display: flex; align-items: center; gap: 12px; }
+    .counter-btn { width: 36px; height: 36px; border-radius: 10px; border: none; background: #D97706; color: white; font-size: 18px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .counter-num { font-size: 22px; font-weight: 900; color: #1E293B; min-width: 30px; text-align: center; }
+    .flight-info { display: flex; gap: 10px; }
+    .flight-input { flex: 1; }
+    .price-card { background: linear-gradient(135deg, #92400E, #D97706); border-radius: 16px; padding: 20px; color: white; margin-bottom: 16px; }
+    .price-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .price-row.total { border-top: 1px solid rgba(255,255,255,0.3); padding-top: 12px; margin-top: 4px; }
+    .price-row.total span:last-child { font-size: 22px; font-weight: 900; }
+    .book-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #92400E, #D97706); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(217,119,6,0.35); transition: all 0.3s; }
+    .book-btn:hover { transform: translateY(-2px); }
+    .features-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 20px; }
+    .feature-item { display: flex; gap: 14px; padding: 14px; background: #FFFBEB; border-radius: 14px; margin-bottom: 10px; align-items: flex-start; }
+    .feature-item:last-child { margin-bottom: 0; }
+    .feature-item-icon { font-size: 24px; flex-shrink: 0; }
+    .feature-item-title { font-size: 14px; font-weight: 800; color: #1E293B; }
+    .feature-item-sub { font-size: 12px; color: #64748B; margin-top: 3px; line-height: 1.5; }
+    .airport-info-card { background: linear-gradient(135deg, #1E3A8A, #1D4ED8); border-radius: 20px; padding: 20px; color: white; margin-bottom: 20px; }
+    .airport-info-title { font-size: 17px; font-weight: 800; margin-bottom: 14px; }
+    .airport-info-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; }
+    .airport-info-item span:first-child { font-size: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="airport-header">
+    <div class="header-nav">
+      <a href="/home" class="back-btn">←</a>
+      <div class="header-title">✈️ خدمة توصيل المطار</div>
+    </div>
+
+    <div class="flight-tabs">
+      <button class="flight-tab active" onclick="switchFlight(this, 'departure')">🛫 ذهاب للمطار</button>
+      <button class="flight-tab" onclick="switchFlight(this, 'arrival')">🛬 عودة من المطار</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <!-- Booking Card -->
+    <div class="booking-card">
+      <div class="section-header">✈️ تفاصيل رحلتك</div>
+
+      <!-- Airport Selection -->
+      <div style="font-size:14px;font-weight:700;color:#475569;margin-bottom:12px">اختر المطار</div>
+      <div class="airports-grid">
+        <div class="airport-chip selected" onclick="selectAirport(this, 'القاهرة الدولي', 'CAI')">
+          <span class="airport-icon">🛫</span>
+          <div class="airport-name">مطار القاهرة الدولي</div>
+          <div class="airport-code">CAI</div>
+        </div>
+        <div class="airport-chip" onclick="selectAirport(this, 'برج العرب', 'HBE')">
+          <span class="airport-icon">🌊</span>
+          <div class="airport-name">مطار برج العرب</div>
+          <div class="airport-code">HBE - الإسكندرية</div>
+        </div>
+        <div class="airport-chip" onclick="selectAirport(this, 'شرم الشيخ', 'SSH')">
+          <span class="airport-icon">🏖️</span>
+          <div class="airport-name">مطار شرم الشيخ</div>
+          <div class="airport-code">SSH</div>
+        </div>
+        <div class="airport-chip" onclick="selectAirport(this, 'الغردقة', 'HRG')">
+          <span class="airport-icon">🌊</span>
+          <div class="airport-name">مطار الغردقة</div>
+          <div class="airport-code">HRG</div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="form-group">
+        <label class="form-label" id="addressLabel">📍 عنوان التوصيل (من)</label>
+        <input type="text" class="form-control" placeholder="حدد عنوانك للتوصيل" id="address">
+      </div>
+
+      <!-- Flight Info -->
+      <div class="form-group">
+        <label class="form-label">✈️ رقم الرحلة (اختياري)</label>
+        <div class="flight-info">
+          <input type="text" class="form-control" placeholder="MS123" id="flightNum" style="max-width:120px">
+          <input type="datetime-local" class="form-control" id="flightTime">
+        </div>
+      </div>
+
+      <!-- Passengers -->
+      <div class="passengers-counter">
+        <div class="counter-label">👥 عدد الركاب</div>
+        <div class="counter-controls">
+          <button class="counter-btn" onclick="changePassengers(-1)">-</button>
+          <span class="counter-num" id="passengersCount">1</span>
+          <button class="counter-btn" onclick="changePassengers(1)">+</button>
+        </div>
+      </div>
+
+      <!-- Car Types -->
+      <div style="font-size:14px;font-weight:700;color:#475569;margin-bottom:12px">🚗 اختر نوع السيارة</div>
+      <div class="car-types">
+        <div class="car-type selected" onclick="selectCar(this, 150)">
+          <span class="car-type-icon">🚗</span>
+          <div class="car-type-name">اقتصادي</div>
+          <div class="car-type-seats">4 ركاب - 2 حقيبة</div>
+          <div class="car-type-price">من 150 جنيه</div>
+        </div>
+        <div class="car-type" onclick="selectCar(this, 250)">
+          <span class="car-type-icon">🚙</span>
+          <div class="car-type-name">مريح</div>
+          <div class="car-type-seats">4 ركاب - 4 حقيبة</div>
+          <div class="car-type-price">من 250 جنيه</div>
+        </div>
+        <div class="car-type" onclick="selectCar(this, 400)">
+          <span class="car-type-icon">🚐</span>
+          <div class="car-type-name">ميني باص</div>
+          <div class="car-type-seats">8 ركاب - 8 حقيبة</div>
+          <div class="car-type-price">من 400 جنيه</div>
+        </div>
+        <div class="car-type" onclick="selectCar(this, 600)">
+          <span class="car-type-icon">👑</span>
+          <div class="car-type-name">VIP فاخر</div>
+          <div class="car-type-seats">4 ركاب - مياه</div>
+          <div class="car-type-price">من 600 جنيه</div>
+        </div>
+      </div>
+
+      <!-- Price Breakdown -->
+      <div class="price-card">
+        <div class="price-row">
+          <span>💰 السعر الأساسي</span>
+          <span id="basePrice">150 جنيه</span>
+        </div>
+        <div class="price-row">
+          <span>🛄 رسوم الحقائب</span>
+          <span>مجاناً</span>
+        </div>
+        <div class="price-row">
+          <span>🕐 انتظار في المطار</span>
+          <span>مجاناً (60 دقيقة)</span>
+        </div>
+        <div class="price-row total">
+          <span>💳 الإجمالي</span>
+          <span id="totalPrice">150 جنيه</span>
+        </div>
+      </div>
+
+      <button class="book-btn" onclick="bookAirport()">✈️ احجز الآن</button>
+    </div>
+
+    <!-- Airport Info -->
+    <div class="airport-info-card">
+      <div class="airport-info-title">✈️ مطار القاهرة الدولي</div>
+      <div class="airport-info-item"><span>📍</span><span>طريق النزهة، القاهرة</span></div>
+      <div class="airport-info-item"><span>🕐</span><span>يعمل 24/7</span></div>
+      <div class="airport-info-item"><span>📞</span><span>19999 (مصر للطيران)</span></div>
+      <div class="airport-info-item"><span>🚗</span><span>~30 دقيقة من مدينة نصر</span></div>
+      <div class="airport-info-item"><span>🏢</span><span>3 مبانٍ: T1، T2، T3</span></div>
+    </div>
+
+    <!-- Features -->
+    <div class="features-card">
+      <div class="section-title">⭐ <span>مميزات خدمة المطار</span></div>
+
+      <div class="feature-item">
+        <span class="feature-item-icon">⏰</span>
+        <div>
+          <div class="feature-item-title">التزام صارم بالمواعيد</div>
+          <div class="feature-item-sub">السائق يصل قبل موعدك بـ 15 دقيقة على الأقل</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">🛄</span>
+        <div>
+          <div class="feature-item-title">مساعدة في الحقائب</div>
+          <div class="feature-item-sub">السائق يساعدك في حمل وترتيب الحقائب</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">📲</span>
+        <div>
+          <div class="feature-item-title">تتبع رحلتك</div>
+          <div class="feature-item-sub">نتابع موعد رحلتك ونرسل السائق في الوقت المناسب</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">🕐</span>
+        <div>
+          <div class="feature-item-title">انتظار مجاني 60 دقيقة</div>
+          <div class="feature-item-sub">في حالة تأخر رحلتك، السائق ينتظر بدون رسوم إضافية</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">💰</span>
+        <div>
+          <div class="feature-item-title">سعر ثابت ومحدد مسبقاً</div>
+          <div class="feature-item-sub">لا توجد أي رسوم مخفية أو مفاجآت في السعر</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">👔</span>
+        <div>
+          <div class="feature-item-title">سائقون محترفون</div>
+          <div class="feature-item-sub">سائقون ذوو خبرة وملبس لائق للاستقبال في المطار</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">🎫</span>
+        <div>
+          <div class="feature-item-title">لافتة استقبال</div>
+          <div class="feature-item-title">لافتة استقبال باسمك</div>
+          <div class="feature-item-sub">السائق يحمل لافتة باسمك عند وصولك (VIP)</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-item-icon">🌍</span>
+        <div>
+          <div class="feature-item-title">جميع المطارات</div>
+          <div class="feature-item-sub">القاهرة، الإسكندرية، شرم الشيخ، الغردقة، أسوان، الأقصر</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="/home" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item">
+      <span class="nav-icon">📋</span>
+      <span>طلباتي</span>
+    </a>
+    <a href="/airport" class="nav-center-btn">✈️</a>
+    <a href="/wallet" class="nav-item">
+      <span class="nav-icon">👛</span>
+      <span>المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
+
+  <script>
+    let basePrice = 150;
+    let flightType = 'departure';
+    let passengers = 1;
+
+    function switchFlight(btn, type) {
+      document.querySelectorAll('.flight-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      flightType = type;
+      const label = document.getElementById('addressLabel');
+      label.textContent = type === 'departure' ? '📍 عنوان التوصيل (من)' : '📍 عنوان الوصول (إلى)';
+    }
+
+    function selectAirport(el, name, code) {
+      document.querySelectorAll('.airport-chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function selectCar(el, price) {
+      document.querySelectorAll('.car-type').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      basePrice = price;
+      updatePrice();
+    }
+
+    function changePassengers(delta) {
+      passengers = Math.max(1, Math.min(8, passengers + delta));
+      document.getElementById('passengersCount').textContent = passengers;
+    }
+
+    function updatePrice() {
+      document.getElementById('basePrice').textContent = basePrice + ' جنيه';
+      document.getElementById('totalPrice').textContent = basePrice + ' جنيه';
+    }
+
+    function bookAirport() {
+      const addr = document.getElementById('address').value;
+      if (!addr) { alert('⚠️ يرجى إدخال عنوان التوصيل'); return; }
+      const type = flightType === 'departure' ? 'ذهاب للمطار' : 'عودة من المطار';
+      if (confirm('✅ تأكيد الحجز؟\nالخدمة: ' + type + '\nعدد الركاب: ' + passengers + '\nالسعر: ' + basePrice + ' جنيه')) {
+        alert('🎉 تم تأكيد حجزك!\n✈️ ' + type + '\n🚗 سيصل السائق في الوقت المحدد\nرقم الحجز: #AIR' + Math.floor(Math.random() * 9000 + 1000));
+        window.location.href = '/orders';
+      }
+    }
+  </script>
+</body>
+</html>

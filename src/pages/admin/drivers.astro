@@ -1,0 +1,341 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة السائقين - وصله Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: #F8FAFC; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: linear-gradient(180deg, #0F172A, #1E293B); position: fixed; top: 0; right: 0; bottom: 0; overflow-y: auto; z-index: 50; }
+    .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 22px; font-weight: 900; color: white; }
+    .sidebar-nav { padding: 16px 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s; }
+    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); }
+    .nav-item.active { border-right: 3px solid #3B82F6; }
+    .main-content { margin-right: 220px; flex: 1; }
+    .topbar { background: white; padding: 16px 24px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-title { font-size: 18px; font-weight: 800; color: #1E293B; }
+    .page-content { padding: 24px; }
+    .stats-mini { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .mini-stat { background: white; border-radius: 14px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; border-top: 3px solid #1D4ED8; transition: all 0.3s; cursor: pointer; }
+    .mini-stat:hover { transform: translateY(-2px); }
+    .mini-num { font-size: 24px; font-weight: 900; color: #1E293B; }
+    .mini-label { font-size: 10px; color: #94A3B8; font-weight: 600; margin-top: 4px; }
+    .filters-bar { background: white; border-radius: 14px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .search-input { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #E2E8F0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; direction: rtl; }
+    .filter-select { padding: 10px 16px; border: 2px solid #E2E8F0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; cursor: pointer; }
+    .btn-sm { padding: 10px 20px; border-radius: 10px; border: none; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-blue { background: #1D4ED8; color: white; }
+    .driver-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .driver-card { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.3s; border: 2px solid transparent; }
+    .driver-card:hover { border-color: #3B82F6; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .driver-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .driver-av { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: white; font-weight: 900; flex-shrink: 0; }
+    .driver-name { font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 4px; }
+    .driver-id { font-size: 11px; color: #94A3B8; }
+    .driver-status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-online { background: #10B981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+    .dot-offline { background: #94A3B8; }
+    .dot-busy { background: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+    .driver-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .info-item { background: #F8FAFC; border-radius: 10px; padding: 10px; }
+    .info-label { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .info-value { font-size: 15px; font-weight: 800; color: #1E293B; }
+    .driver-vehicle { display: flex; align-items: center; gap: 8px; background: #F8FAFC; border-radius: 10px; padding: 10px; margin-bottom: 14px; font-size: 13px; font-weight: 600; color: #475569; }
+    .driver-actions { display: flex; gap: 8px; }
+    .drv-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+    .drv-btn:hover { transform: scale(1.02); }
+    .drv-btn-blue { background: #EFF6FF; color: #1D4ED8; }
+    .drv-btn-green { background: #F0FDF4; color: #10B981; }
+    .drv-btn-red { background: #FFF5F5; color: #EF4444; }
+    .drv-btn-amber { background: #FFFBEB; color: #D97706; }
+    .status-badge { padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+    .badge-online { background: #F0FDF4; color: #10B981; }
+    .badge-offline { background: #F8FAFC; color: #94A3B8; }
+    .badge-busy { background: #FFFBEB; color: #D97706; }
+    .badge-pending { background: #FFF5F5; color: #EF4444; }
+    .pending-section { background: white; border-radius: 18px; padding: 22px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; border-top: 4px solid #F59E0B; }
+    .pending-title { font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .pending-driver-row { display: flex; align-items: center; gap: 14px; padding: 14px; background: #FFFBEB; border-radius: 12px; margin-bottom: 10px; }
+    .pending-av { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #D97706, #FCD34D); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; font-weight: 800; flex-shrink: 0; }
+    .pending-info { flex: 1; }
+    .pending-name { font-size: 14px; font-weight: 800; color: #1E293B; }
+    .pending-sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+    .pending-actions { display: flex; gap: 8px; }
+    .approve-btn { padding: 8px 16px; background: #10B981; color: white; border: none; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+    .approve-btn:hover { background: #059669; }
+    .reject-btn { padding: 8px 16px; background: white; color: #EF4444; border: 2px solid #FEE2E2; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    @media (max-width: 1024px) { .driver-cards { grid-template-columns: 1fr 1fr; } .stats-mini { grid-template-columns: 1fr 1fr 1fr; } }
+    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-right: 0; } .driver-cards { grid-template-columns: 1fr; } .stats-mini { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">🚀 وصله</div>
+      <div class="sidebar-nav">
+        <a href="/admin" class="nav-item">📊 لوحة التحكم</a>
+        <a href="/admin/orders" class="nav-item">📋 الطلبات</a>
+        <a href="/admin/users" class="nav-item">👥 المستخدمون</a>
+        <a href="/admin/drivers" class="nav-item active">🚗 السائقون</a>
+        <a href="/login" class="nav-item">🚪 خروج</a>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title">🚗 إدارة السائقين</div>
+        <div style="display:flex;gap:12px">
+          <a href="/admin" style="color:#64748B;font-size:13px;font-weight:700;text-decoration:none">← لوحة التحكم</a>
+          <button class="btn-sm" style="background:#10B981;color:white" onclick="exportDrivers()">📥 تصدير</button>
+          <button class="btn-sm btn-blue" onclick="addDriver()">➕ سائق جديد</button>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- Stats -->
+        <div class="stats-mini">
+          <div class="mini-stat">
+            <div class="mini-num">342</div>
+            <div class="mini-label">🚗 إجمالي السائقين</div>
+          </div>
+          <div class="mini-stat" style="border-color:#10B981">
+            <div class="mini-num" style="color:#10B981">185</div>
+            <div class="mini-label">🟢 متاحون الآن</div>
+          </div>
+          <div class="mini-stat" style="border-color:#F59E0B">
+            <div class="mini-num" style="color:#F59E0B">45</div>
+            <div class="mini-label">🔴 في رحلة</div>
+          </div>
+          <div class="mini-stat" style="border-color:#94A3B8">
+            <div class="mini-num" style="color:#94A3B8">107</div>
+            <div class="mini-label">⚫ غير متصل</div>
+          </div>
+          <div class="mini-stat" style="border-color:#EF4444">
+            <div class="mini-num" style="color:#EF4444">5</div>
+            <div class="mini-label">⏳ بانتظار موافقة</div>
+          </div>
+        </div>
+
+        <!-- Pending Approval -->
+        <div class="pending-section">
+          <div class="pending-title">⏳ سائقون بانتظار الموافقة <span style="background:#FFF5F5;color:#EF4444;padding:4px 12px;border-radius:10px;font-size:12px">5 طلبات</span></div>
+
+          <div class="pending-driver-row">
+            <div class="pending-av">خ</div>
+            <div class="pending-info">
+              <div class="pending-name">خالد إبراهيم محمد</div>
+              <div class="pending-sub">🚗 تويوتا كامري • القاهرة • قدّم منذ 2 ساعة</div>
+            </div>
+            <div class="pending-actions">
+              <button class="approve-btn" onclick="approveDriver('خالد إبراهيم')">✅ قبول</button>
+              <button class="reject-btn" onclick="rejectDriver('خالد إبراهيم')">❌ رفض</button>
+              <button style="padding:8px 14px;background:#EFF6FF;color:#1D4ED8;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer" onclick="viewDocs('خالد إبراهيم')">📄 مستندات</button>
+            </div>
+          </div>
+
+          <div class="pending-driver-row">
+            <div class="pending-av" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">ر</div>
+            <div class="pending-info">
+              <div class="pending-name">رامي سعد إبراهيم</div>
+              <div class="pending-sub">🏍️ دراجة توصيل • الإسكندرية • قدّم منذ 5 ساعات</div>
+            </div>
+            <div class="pending-actions">
+              <button class="approve-btn" onclick="approveDriver('رامي سعد')">✅ قبول</button>
+              <button class="reject-btn" onclick="rejectDriver('رامي سعد')">❌ رفض</button>
+              <button style="padding:8px 14px;background:#EFF6FF;color:#1D4ED8;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer" onclick="viewDocs('رامي سعد')">📄 مستندات</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <input type="text" class="search-input" placeholder="🔍 بحث باسم السائق أو رقم السيارة...">
+          <select class="filter-select">
+            <option>جميع الحالات</option>
+            <option>🟢 متاح</option>
+            <option>🔴 في رحلة</option>
+            <option>⚫ غير متصل</option>
+          </select>
+          <select class="filter-select">
+            <option>جميع المحافظات</option>
+            <option>القاهرة</option>
+            <option>الإسكندرية</option>
+          </select>
+          <select class="filter-select">
+            <option>جميع أنواع المركبات</option>
+            <option>🚗 سيارة</option>
+            <option>🚐 ميكروباص</option>
+            <option>🏍️ دراجة</option>
+          </select>
+          <button class="btn-sm btn-blue">🔍 بحث</button>
+        </div>
+
+        <!-- Driver Cards -->
+        <div class="driver-cards">
+          <!-- Driver 1 - Online -->
+          <div class="driver-card">
+            <div class="driver-card-top">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="driver-av" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6)">م</div>
+                <div>
+                  <div class="driver-name">محمد أحمد علي</div>
+                  <div class="driver-id">ID: DRV-001</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <div class="driver-status-dot dot-online"></div>
+                <span class="status-badge badge-online">🟢 متاح</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle">
+              <span>🚗</span>
+              <span>تويوتا كامري 2022 - أبيض</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0">أ ب ج 1234</span>
+            </div>
+
+            <div class="driver-info-grid">
+              <div class="info-item">
+                <div class="info-label">إجمالي الرحلات</div>
+                <div class="info-value">✅ 342</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">التقييم</div>
+                <div class="info-value">⭐ 4.9</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">الأرباح الشهرية</div>
+                <div class="info-value" style="color:#10B981">8,400 ج</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">المحافظة</div>
+                <div class="info-value">القاهرة</div>
+              </div>
+            </div>
+
+            <div class="driver-actions">
+              <button class="drv-btn drv-btn-blue" onclick="viewDriver('محمد أحمد')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber" onclick="callDriver('محمد أحمد')">📞 اتصال</button>
+              <button class="drv-btn drv-btn-red" onclick="suspendDriver('محمد أحمد')">⏸️ إيقاف</button>
+            </div>
+          </div>
+
+          <!-- Driver 2 - Busy -->
+          <div class="driver-card">
+            <div class="driver-card-top">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="driver-av" style="background:linear-gradient(135deg,#059669,#34D399)">أ</div>
+                <div>
+                  <div class="driver-name">أحمد مصطفى</div>
+                  <div class="driver-id">ID: DRV-002</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <div class="driver-status-dot dot-busy"></div>
+                <span class="status-badge badge-busy">🔴 في رحلة</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle">
+              <span>🚙</span>
+              <span>هيونداي إيلنترا 2021 - فضي</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0">د ه و 5678</span>
+            </div>
+
+            <div class="driver-info-grid">
+              <div class="info-item">
+                <div class="info-label">إجمالي الرحلات</div>
+                <div class="info-value">✅ 198</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">التقييم</div>
+                <div class="info-value">⭐ 4.8</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">الأرباح الشهرية</div>
+                <div class="info-value" style="color:#10B981">6,200 ج</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">المحافظة</div>
+                <div class="info-value">الإسكندرية</div>
+              </div>
+            </div>
+
+            <div class="driver-actions">
+              <button class="drv-btn drv-btn-blue" onclick="viewDriver('أحمد مصطفى')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber" onclick="trackDriver('أحمد مصطفى')">📍 تتبع</button>
+              <button class="drv-btn drv-btn-green" onclick="callDriver('أحمد مصطفى')">📞 اتصال</button>
+            </div>
+          </div>
+
+          <!-- Driver 3 - Offline -->
+          <div class="driver-card">
+            <div class="driver-card-top">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div class="driver-av" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">س</div>
+                <div>
+                  <div class="driver-name">سامي عبدالله</div>
+                  <div class="driver-id">ID: DRV-003</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <div class="driver-status-dot dot-offline"></div>
+                <span class="status-badge badge-offline">⚫ غير متصل</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle">
+              <span>🚐</span>
+              <span>تويوتا هايس 2019 - أبيض</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0">ز ح ط 9012</span>
+            </div>
+
+            <div class="driver-info-grid">
+              <div class="info-item">
+                <div class="info-label">إجمالي الرحلات</div>
+                <div class="info-value">✅ 87</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">التقييم</div>
+                <div class="info-value">⭐ 4.7</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">الأرباح الشهرية</div>
+                <div class="info-value" style="color:#10B981">4,800 ج</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">المحافظة</div>
+                <div class="info-value">الجيزة</div>
+              </div>
+            </div>
+
+            <div class="driver-actions">
+              <button class="drv-btn drv-btn-blue" onclick="viewDriver('سامي عبدالله')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber" onclick="callDriver('سامي عبدالله')">📞 اتصال</button>
+              <button class="drv-btn drv-btn-red" onclick="suspendDriver('سامي عبدالله')">🚫 حظر</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function viewDriver(name) { alert('👁️ ملف السائق: ' + name + '\n\n🚗 الرحلات: 342\n💰 الأرباح الشهرية: 8,400 جنيه\n⭐ التقييم: 4.9/5\n📄 المستندات: سارية\n📅 تاريخ الانضمام: يناير 2024'); }
+    function callDriver(name) { alert('📞 الاتصال بالسائق: ' + name + '\n\nرقم الهاتف: 01XXXXXXXXX'); }
+    function trackDriver(name) { alert('📍 تتبع السائق: ' + name + '\n\n🚗 الموقع: شارع الهرم، الجيزة\nالرحلة: مشوار وسط البلد\nوقت الوصول: 12 دقيقة'); }
+    function suspendDriver(name) { if (confirm('هل تريد إيقاف السائق ' + name + '؟')) alert('✅ تم إيقاف السائق ' + name); }
+    function approveDriver(name) { if (confirm('✅ قبول طلب السائق ' + name + '؟')) { alert('🎉 تم قبول السائق ' + name + '!\nسيتم إرسال إشعار له'); } }
+    function rejectDriver(name) { const reason = prompt('❌ سبب الرفض:'); if (reason) alert('تم رفض طلب ' + name + ' بسبب: ' + reason); }
+    function viewDocs(name) { alert('📄 مستندات السائق: ' + name + '\n\n✅ بطاقة الهوية: تم التحقق\n✅ رخصة القيادة: سارية\n⏳ استمارة السيارة: قيد المراجعة\n✅ صورة شخصية: مقبولة'); }
+    function addDriver() { window.location.href = '/driver-register'; }
+    function exportDrivers() { alert('📥 جاري تصدير بيانات السائقين...'); }
+  </script>
+</body>
+</html>

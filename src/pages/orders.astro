@@ -1,0 +1,313 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلباتي - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: #F8FAFC; padding-bottom: 100px; }
+    .orders-header { background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); padding: 20px; }
+    .header-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .back-btn { color: white; font-size: 20px; text-decoration: none; }
+    .header-title { color: white; font-size: 20px; font-weight: 800; }
+    .status-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .status-tabs::-webkit-scrollbar { display: none; }
+    .status-tab { padding: 8px 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.1); color: white; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.3s; flex-shrink: 0; }
+    .status-tab.active { background: white; color: #1D4ED8; border-color: white; }
+    .page-content { padding: 20px; }
+    .order-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 16px; border-right: 5px solid #1D4ED8; cursor: pointer; transition: all 0.3s; }
+    .order-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .order-card.delivered { border-color: #10B981; }
+    .order-card.cancelled { border-color: #EF4444; }
+    .order-card.pending { border-color: #F59E0B; }
+    .order-card.in-progress { border-color: #3B82F6; }
+    .order-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .order-id-badge { background: #EFF6FF; color: #1D4ED8; padding: 4px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; }
+    .order-time { font-size: 12px; color: #94A3B8; font-weight: 600; }
+    .order-type-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .order-type-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; background: #EFF6FF; }
+    .order-type-name { font-size: 15px; font-weight: 800; color: #1E293B; }
+    .order-type-sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+    .order-route { display: flex; flex-direction: column; gap: 4px; background: #F8FAFC; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+    .route-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; }
+    .route-dot-from { width: 8px; height: 8px; border-radius: 50%; background: #1D4ED8; flex-shrink: 0; }
+    .route-dot-to { width: 8px; height: 8px; border-radius: 50%; background: #10B981; flex-shrink: 0; }
+    .route-line-connector { width: 2px; height: 14px; background: #CBD5E1; margin: 2px 3px; }
+    .order-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid #F1F5F9; }
+    .order-price { font-size: 20px; font-weight: 900; color: #1D4ED8; }
+    .order-actions { display: flex; gap: 8px; }
+    .action-btn { padding: 8px 14px; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: all 0.3s; }
+    .action-btn-track { background: #EFF6FF; color: #1D4ED8; }
+    .action-btn-cancel { background: #FFF5F5; color: #EF4444; }
+    .action-btn-rate { background: #FFFBEB; color: #D97706; }
+    .action-btn-reorder { background: #F0FDF4; color: #10B981; }
+    .action-btn:hover { transform: scale(1.05); }
+    .progress-steps { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; position: relative; }
+    .progress-steps::before { content: ''; position: absolute; top: 14px; right: 14px; left: 14px; height: 2px; background: #E2E8F0; z-index: 0; }
+    .progress-fill { position: absolute; top: 14px; right: 14px; height: 2px; background: linear-gradient(90deg, #1D4ED8, #60A5FA); z-index: 0; transition: width 0.5s ease; }
+    .prog-step { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; z-index: 1; }
+    .prog-dot { width: 28px; height: 28px; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.3s; }
+    .prog-dot.done { background: #1D4ED8; color: white; }
+    .prog-dot.current { background: #3B82F6; color: white; box-shadow: 0 0 0 4px rgba(59,130,246,0.2); }
+    .prog-label { font-size: 10px; color: #94A3B8; font-weight: 700; text-align: center; }
+    .prog-label.active { color: #1D4ED8; }
+    .search-orders { position: relative; margin-bottom: 16px; }
+    .search-orders input { width: 100%; padding: 14px 20px 14px 50px; border: 2px solid #E2E8F0; border-radius: 16px; font-family: 'Cairo', sans-serif; font-size: 15px; outline: none; background: white; }
+    .search-orders input:focus { border-color: #3B82F6; }
+    .search-orders-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 20px; color: #94A3B8; }
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 70px; margin-bottom: 16px; opacity: 0.5; }
+    .empty-title { font-size: 20px; font-weight: 800; color: #1E293B; margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: #94A3B8; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="orders-header">
+    <div class="header-nav">
+      <a href="/home" class="back-btn">←</a>
+      <div class="header-title">📋 طلباتي</div>
+    </div>
+
+    <div class="status-tabs">
+      <button class="status-tab active" onclick="filterOrders('all', this)">🔄 الكل (7)</button>
+      <button class="status-tab" onclick="filterOrders('active', this)">⏳ نشطة (1)</button>
+      <button class="status-tab" onclick="filterOrders('delivered', this)">✅ مكتملة (5)</button>
+      <button class="status-tab" onclick="filterOrders('cancelled', this)">❌ ملغاة (1)</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <!-- Search -->
+    <div class="search-orders">
+      <input type="text" placeholder="🔍 ابحث في طلباتك..." id="searchInput" oninput="searchOrders(this.value)">
+      <span class="search-orders-icon">🔍</span>
+    </div>
+
+    <!-- Active Order (In Progress) -->
+    <div class="order-card in-progress" id="order-active" onclick="trackOrder('#ORD-4523')">
+      <div class="order-header">
+        <div class="order-id-badge">#ORD-4523 🔴 LIVE</div>
+        <div class="order-time">الآن</div>
+      </div>
+
+      <div class="order-type-row">
+        <div class="order-type-icon" style="background:#EFF6FF">✈️</div>
+        <div>
+          <div class="order-type-name">توصيل مطار القاهرة</div>
+          <div class="order-type-sub">السائق: محمد أحمد • 🚗 تويوتا أبيض</div>
+        </div>
+      </div>
+
+      <div class="order-route">
+        <div class="route-row"><span class="route-dot-from"></span> مدينة نصر، شارع التسعين</div>
+        <div style="padding-right:3px"><div class="route-line-connector"></div></div>
+        <div class="route-row"><span class="route-dot-to"></span> مطار القاهرة الدولي - T3</div>
+      </div>
+
+      <!-- Progress Steps -->
+      <div style="position:relative;padding:0 10px">
+        <div class="progress-steps">
+          <div class="prog-fill" style="width: 50%"></div>
+          <div class="prog-step">
+            <div class="prog-dot done">✓</div>
+            <div class="prog-label active">تأكيد</div>
+          </div>
+          <div class="prog-step">
+            <div class="prog-dot current">🚗</div>
+            <div class="prog-label active">في الطريق</div>
+          </div>
+          <div class="prog-step">
+            <div class="prog-dot">📍</div>
+            <div class="prog-label">وصل</div>
+          </div>
+          <div class="prog-step">
+            <div class="prog-dot">✅</div>
+            <div class="prog-label">مكتمل</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <div class="order-price">150 جنيه</div>
+        <div class="order-actions">
+          <button class="action-btn action-btn-track" onclick="event.stopPropagation(); trackOrder('#ORD-4523')">📍 تتبع</button>
+          <button class="action-btn action-btn-cancel" onclick="event.stopPropagation(); cancelOrder('#ORD-4523')">❌ إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivered Orders -->
+    <div class="order-card delivered" id="order-1" onclick="showOrderDetails('#ORD-4521')">
+      <div class="order-header">
+        <div class="order-id-badge" style="background:#F0FDF4;color:#10B981">#ORD-4521 ✅</div>
+        <div class="order-time">منذ ساعتين</div>
+      </div>
+      <div class="order-type-row">
+        <div class="order-type-icon" style="background:#F0FDF4">🏪</div>
+        <div>
+          <div class="order-type-name">توصيل من كارفور</div>
+          <div class="order-type-sub">سوبر ماركت • 5 منتجات</div>
+        </div>
+      </div>
+      <div class="order-route">
+        <div class="route-row"><span class="route-dot-from"></span> كارفور مدينة نصر</div>
+        <div style="padding-right:3px"><div class="route-line-connector"></div></div>
+        <div class="route-row"><span class="route-dot-to"></span> مدينة نصر، شارع 90</div>
+      </div>
+      <div class="order-footer">
+        <div class="order-price">45 جنيه</div>
+        <div class="order-actions">
+          <button class="action-btn action-btn-rate" onclick="event.stopPropagation(); rateOrder('#ORD-4521')">⭐ تقييم</button>
+          <button class="action-btn action-btn-reorder" onclick="event.stopPropagation(); reorder()">🔄 إعادة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-card delivered" id="order-2" onclick="showOrderDetails('#ORD-4518')">
+      <div class="order-header">
+        <div class="order-id-badge" style="background:#F0FDF4;color:#10B981">#ORD-4518 ✅</div>
+        <div class="order-time">أمس، 3:15 م</div>
+      </div>
+      <div class="order-type-row">
+        <div class="order-type-icon" style="background:#ECFDF5">🚗</div>
+        <div>
+          <div class="order-type-name">مشوار - المعادي</div>
+          <div class="order-type-sub">محمد علي • 12 كم</div>
+        </div>
+      </div>
+      <div class="order-route">
+        <div class="route-row"><span class="route-dot-from"></span> المهندسين، شارع جامعة الدول</div>
+        <div style="padding-right:3px"><div class="route-line-connector"></div></div>
+        <div class="route-row"><span class="route-dot-to"></span> المعادي، شارع 9</div>
+      </div>
+      <div class="order-footer">
+        <div class="order-price">80 جنيه</div>
+        <div class="order-actions">
+          <button class="action-btn action-btn-rate" onclick="event.stopPropagation(); rateOrder('#ORD-4518')">⭐ تقييم</button>
+          <button class="action-btn action-btn-reorder" onclick="event.stopPropagation(); reorder()">🔄 إعادة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-card delivered" id="order-3">
+      <div class="order-header">
+        <div class="order-id-badge" style="background:#F0FDF4;color:#10B981">#ORD-4510 ✅</div>
+        <div class="order-time">25 مارس</div>
+      </div>
+      <div class="order-type-row">
+        <div class="order-type-icon" style="background:#F0FDF4">💊</div>
+        <div>
+          <div class="order-type-name">توصيل صيدلية</div>
+          <div class="order-type-sub">3 أدوية • دفع كاش</div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-price">35 جنيه</div>
+        <div class="order-actions">
+          <button class="action-btn action-btn-rate" onclick="event.stopPropagation(); rateOrder('#ORD-4510')">⭐ تقييم</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancelled Order -->
+    <div class="order-card cancelled" id="order-4">
+      <div class="order-header">
+        <div class="order-id-badge" style="background:#FFF5F5;color:#EF4444">#ORD-4505 ❌</div>
+        <div class="order-time">22 مارس</div>
+      </div>
+      <div class="order-type-row">
+        <div class="order-type-icon" style="background:#FFF5F5">🚗</div>
+        <div>
+          <div class="order-type-name">مشوار - هليوبوليس</div>
+          <div class="order-type-sub">تم الإلغاء • سبب: لا يوجد سائق</div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-price" style="color:#EF4444">0 جنيه</div>
+        <div class="order-actions">
+          <button class="action-btn action-btn-reorder" onclick="reorder()">🔄 إعادة الطلب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="/home" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item active">
+      <span class="nav-icon">📋</span>
+      <span>طلباتي</span>
+    </a>
+    <a href="/delivery" class="nav-center-btn">+</a>
+    <a href="/wallet" class="nav-item">
+      <span class="nav-icon">👛</span>
+      <span>المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
+
+  <script>
+    function filterOrders(status, btn) {
+      document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      const allOrders = document.querySelectorAll('.order-card');
+      allOrders.forEach(card => {
+        if (status === 'all') {
+          card.style.display = 'block';
+        } else if (status === 'active') {
+          card.style.display = card.classList.contains('in-progress') ? 'block' : 'none';
+        } else if (status === 'delivered') {
+          card.style.display = card.classList.contains('delivered') ? 'block' : 'none';
+        } else if (status === 'cancelled') {
+          card.style.display = card.classList.contains('cancelled') ? 'block' : 'none';
+        }
+      });
+    }
+
+    function trackOrder(orderId) {
+      alert('📍 تتبع الطلب ' + orderId + '\n\n🚗 السائق محمد أحمد\n📍 الموقع: شارع مصر والسودان\n⏱️ وقت الوصول المتوقع: 8 دقائق\n\nرقم السائق: 📞 01XXXXXXXXX');
+    }
+
+    function cancelOrder(orderId) {
+      if (confirm('⚠️ هل تريد إلغاء الطلب ' + orderId + '؟\n\nقد تطبق رسوم إلغاء.')) {
+        alert('❌ تم إلغاء الطلب\nسيتم إرجاع المبلغ لمحفظتك خلال دقائق');
+        document.getElementById('order-active').style.display = 'none';
+      }
+    }
+
+    function rateOrder(orderId) {
+      window.location.href = '/ratings?order=' + orderId;
+    }
+
+    function reorder() {
+      alert('🔄 تم إنشاء طلب مماثل!\nيمكنك تعديله قبل التأكيد.');
+      window.location.href = '/delivery';
+    }
+
+    function showOrderDetails(orderId) {
+      alert('📋 تفاصيل الطلب ' + orderId + '\n\n✅ تم التوصيل بنجاح\n⭐ تقييمك: 5 نجوم\n💰 المبلغ المدفوع: 45 جنيه\n💳 طريقة الدفع: محفظة وصله');
+    }
+
+    function searchOrders(query) {
+      const cards = document.querySelectorAll('.order-card');
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query.toLowerCase()) ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
