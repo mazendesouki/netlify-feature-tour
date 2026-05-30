@@ -1,0 +1,363 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الطلبات - وصله Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: #F8FAFC; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: linear-gradient(180deg, #0F172A, #1E293B); position: fixed; top: 0; right: 0; bottom: 0; overflow-y: auto; z-index: 50; }
+    .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 22px; font-weight: 900; color: white; }
+    .sidebar-nav { padding: 16px 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s; }
+    .nav-item:hover, .nav-item.active { color: white; background: rgba(255,255,255,0.08); }
+    .nav-item.active { border-right: 3px solid #3B82F6; }
+    .main-content { margin-right: 220px; flex: 1; }
+    .topbar { background: white; padding: 16px 24px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-title { font-size: 18px; font-weight: 800; color: #1E293B; }
+    .page-content { padding: 24px; }
+    .filters-bar { background: white; border-radius: 16px; padding: 16px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .filter-select { padding: 10px 16px; border: 2px solid #E2E8F0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 600; color: #475569; outline: none; background: white; cursor: pointer; transition: all 0.3s; }
+    .filter-select:focus { border-color: #3B82F6; }
+    .search-filter { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #E2E8F0; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; direction: rtl; transition: all 0.3s; }
+    .search-filter:focus { border-color: #3B82F6; }
+    .filter-btn { padding: 10px 20px; border-radius: 10px; border: none; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+    .btn-primary-sm { background: #1D4ED8; color: white; }
+    .btn-export { background: #F0FDF4; color: #10B981; border: 1px solid #6EE7B7; }
+    .stats-mini { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .mini-stat { background: white; border-radius: 14px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; cursor: pointer; transition: all 0.3s; border-top: 3px solid; }
+    .mini-stat:hover { transform: translateY(-2px); }
+    .mini-stat-all { border-color: #1D4ED8; }
+    .mini-stat-active { border-color: #F59E0B; }
+    .mini-stat-done { border-color: #10B981; }
+    .mini-stat-cancelled { border-color: #EF4444; }
+    .mini-stat-pending { border-color: #7C3AED; }
+    .mini-num { font-size: 24px; font-weight: 900; color: #1E293B; }
+    .mini-label { font-size: 11px; color: #94A3B8; font-weight: 600; margin-top: 4px; }
+    .orders-table { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .table-header-row { padding: 18px 22px; border-bottom: 1px solid #F1F5F9; display: flex; align-items: center; justify-content: space-between; }
+    .table-h-title { font-size: 15px; font-weight: 800; color: #1E293B; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { background: #F8FAFC; padding: 12px 16px; text-align: right; font-size: 12px; font-weight: 700; color: #94A3B8; border-bottom: 2px solid #F1F5F9; white-space: nowrap; }
+    .data-table td { padding: 16px; border-bottom: 1px solid #F8FAFC; font-size: 13px; color: #1E293B; vertical-align: middle; }
+    .data-table tr:hover td { background: #F8FAFC; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .pill-blue { background: #EFF6FF; color: #1D4ED8; }
+    .pill-green { background: #F0FDF4; color: #10B981; }
+    .pill-amber { background: #FFFBEB; color: #D97706; }
+    .pill-red { background: #FFF5F5; color: #EF4444; }
+    .pill-purple { background: #F5F3FF; color: #7C3AED; }
+    .action-btns { display: flex; gap: 6px; }
+    .act-btn { width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+    .act-btn:hover { transform: scale(1.1); }
+    .act-view { background: #EFF6FF; color: #1D4ED8; }
+    .act-edit { background: #FFFBEB; color: #D97706; }
+    .act-delete { background: #FFF5F5; color: #EF4444; }
+    .act-approve { background: #F0FDF4; color: #10B981; }
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-top: 1px solid #F1F5F9; }
+    .pagination-info { font-size: 13px; color: #94A3B8; font-weight: 600; }
+    .pagination-btns { display: flex; gap: 6px; }
+    .page-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #E2E8F0; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; font-weight: 700; color: #475569; transition: all 0.3s; }
+    .page-btn:hover, .page-btn.active { background: #1D4ED8; color: white; border-color: #1D4ED8; }
+    .service-icon { font-size: 20px; margin-left: 6px; }
+    .order-amount { font-weight: 900; color: #1D4ED8; }
+    .user-cell { display: flex; align-items: center; gap: 8px; }
+    .user-mini-av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #1D4ED8, #3B82F6); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-right: 0; } .stats-mini { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">🚀 وصله</div>
+      <div class="sidebar-nav">
+        <a href="/admin" class="nav-item">📊 لوحة التحكم</a>
+        <a href="/admin/orders" class="nav-item active">📋 الطلبات</a>
+        <a href="/admin/users" class="nav-item">👥 المستخدمون</a>
+        <a href="/admin/drivers" class="nav-item">🚗 السائقون</a>
+        <a href="/login" class="nav-item">🚪 خروج</a>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div class="topbar-title">📋 إدارة الطلبات</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <a href="/admin" style="color:#64748B;font-size:13px;font-weight:700;text-decoration:none">← لوحة التحكم</a>
+          <button class="filter-btn btn-export" onclick="exportOrders()">📥 تصدير Excel</button>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- Mini Stats -->
+        <div class="stats-mini">
+          <div class="mini-stat mini-stat-all" onclick="filterByStatus('all')">
+            <div class="mini-num">1,284</div>
+            <div class="mini-label">🔄 جميع الطلبات</div>
+          </div>
+          <div class="mini-stat mini-stat-active" onclick="filterByStatus('active')">
+            <div class="mini-num">12</div>
+            <div class="mini-label">⏳ نشطة الآن</div>
+          </div>
+          <div class="mini-stat mini-stat-done" onclick="filterByStatus('done')">
+            <div class="mini-num">1,198</div>
+            <div class="mini-label">✅ مكتملة</div>
+          </div>
+          <div class="mini-stat mini-stat-pending" onclick="filterByStatus('pending')">
+            <div class="mini-num">42</div>
+            <div class="mini-label">🟡 معلقة</div>
+          </div>
+          <div class="mini-stat mini-stat-cancelled" onclick="filterByStatus('cancelled')">
+            <div class="mini-num">74</div>
+            <div class="mini-label">❌ ملغاة</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <input type="text" class="search-filter" placeholder="🔍 بحث برقم الطلب أو اسم العميل...">
+          <select class="filter-select">
+            <option>جميع الخدمات</option>
+            <option>🏪 توصيل طلبات</option>
+            <option>🚗 مشاوير</option>
+            <option>✈️ مطار</option>
+          </select>
+          <select class="filter-select">
+            <option>جميع المحافظات</option>
+            <option>القاهرة</option>
+            <option>الإسكندرية</option>
+            <option>الجيزة</option>
+          </select>
+          <select class="filter-select">
+            <option>جميع الحالات</option>
+            <option>قيد التنفيذ</option>
+            <option>مكتمل</option>
+            <option>ملغي</option>
+            <option>معلق</option>
+          </select>
+          <select class="filter-select">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <button class="filter-btn btn-primary-sm" onclick="applyFilters()">🔍 بحث</button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="orders-table">
+          <div class="table-header-row">
+            <div class="table-h-title">📋 قائمة الطلبات (1,284)</div>
+            <div style="display:flex;gap:8px">
+              <button class="filter-btn" style="background:#F8FAFC;color:#64748B;border:1px solid #E2E8F0" onclick="refreshOrders()">🔄 تحديث</button>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>☑️</th>
+                <th>رقم الطلب</th>
+                <th>العميل</th>
+                <th>الخدمة</th>
+                <th>المحافظة</th>
+                <th>المبلغ</th>
+                <th>السائق</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4523</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av">أ</div>
+                    أحمد محمود
+                  </div>
+                </td>
+                <td><span class="service-icon">✈️</span>مطار</td>
+                <td>القاهرة</td>
+                <td class="order-amount">150 جنيه</td>
+                <td>محمد أحمد</td>
+                <td><span class="pill pill-blue">قيد التنفيذ ⏳</span></td>
+                <td>اليوم 10:30</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4523')" title="عرض">👁️</button>
+                    <button class="act-btn act-edit" onclick="editOrder('#4523')" title="تعديل">✏️</button>
+                    <button class="act-btn act-delete" onclick="cancelOrder('#4523')" title="إلغاء">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4522</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av" style="background:linear-gradient(135deg,#059669,#34D399)">س</div>
+                    سارة أحمد
+                  </div>
+                </td>
+                <td><span class="service-icon">🏪</span>توصيل</td>
+                <td>الإسكندرية</td>
+                <td class="order-amount">45 جنيه</td>
+                <td>أحمد مصطفى</td>
+                <td><span class="pill pill-green">مكتمل ✅</span></td>
+                <td>اليوم 9:15</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4522')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve" onclick="viewInvoice('#4522')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4521</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">م</div>
+                    محمد علي
+                  </div>
+                </td>
+                <td><span class="service-icon">🚗</span>مشوار</td>
+                <td>الجيزة</td>
+                <td class="order-amount">80 جنيه</td>
+                <td>سامي عبدالله</td>
+                <td><span class="pill pill-green">مكتمل ✅</span></td>
+                <td>أمس 15:30</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4521')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve" onclick="viewInvoice('#4521')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4520</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av" style="background:linear-gradient(135deg,#D97706,#FCD34D)">ن</div>
+                    نور الهدى
+                  </div>
+                </td>
+                <td><span class="service-icon">🏪</span>توصيل</td>
+                <td>القاهرة</td>
+                <td class="order-amount">35 جنيه</td>
+                <td>—</td>
+                <td><span class="pill pill-amber">معلق ⏳</span></td>
+                <td>أمس 12:00</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4520')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve" onclick="assignDriver('#4520')" title="تعيين سائق">🚗</button>
+                    <button class="act-btn act-delete" onclick="cancelOrder('#4520')" title="إلغاء">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4519</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av" style="background:linear-gradient(135deg,#EF4444,#F87171)">ف</div>
+                    فاطمة مصطفى
+                  </div>
+                </td>
+                <td><span class="service-icon">✈️</span>مطار</td>
+                <td>القاهرة</td>
+                <td class="order-amount">250 جنيه</td>
+                <td>محمد أحمد</td>
+                <td><span class="pill pill-green">مكتمل ✅</span></td>
+                <td>25 مارس</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4519')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve" onclick="viewInvoice('#4519')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>#4518</strong></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-mini-av">ع</div>
+                    علي حسن
+                  </div>
+                </td>
+                <td><span class="service-icon">🚗</span>مشوار</td>
+                <td>الإسكندرية</td>
+                <td class="order-amount">0 جنيه</td>
+                <td>—</td>
+                <td><span class="pill pill-red">ملغي ❌</span></td>
+                <td>22 مارس</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="act-btn act-view" onclick="viewOrder('#4518')" title="عرض">👁️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <div class="pagination-info">عرض 1-6 من 1,284 طلب</div>
+            <div class="pagination-btns">
+              <button class="page-btn">‹</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">...</button>
+              <button class="page-btn">214</button>
+              <button class="page-btn">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function viewOrder(id) {
+      alert('👁️ عرض تفاصيل الطلب ' + id + '\n\nالعميل: أحمد محمود\nالخدمة: مطار القاهرة\nالمبلغ: 150 جنيه\nالسائق: محمد أحمد\nالحالة: قيد التنفيذ\nالوقت: اليوم 10:30 ص');
+    }
+    function editOrder(id) {
+      alert('✏️ تعديل الطلب ' + id);
+    }
+    function cancelOrder(id) {
+      if (confirm('هل تريد إلغاء الطلب ' + id + '؟')) {
+        alert('✅ تم إلغاء الطلب ' + id + '\nسيتم إرجاع المبلغ للعميل');
+      }
+    }
+    function viewInvoice(id) {
+      alert('🧾 فاتورة الطلب ' + id + '\n\nالمبلغ الأساسي: 150 جنيه\nرسوم التوصيل: مجاناً\nالخصم: 0\nالإجمالي: 150 جنيه\n\nتم الدفع بـ: محفظة وصله');
+    }
+    function assignDriver(id) {
+      alert('🚗 تعيين سائق للطلب ' + id + '\n\nالسائقون المتاحون:\n1. محمد أحمد - 3 دقائق\n2. أحمد مصطفى - 5 دقائق\n3. سامي عبدالله - 8 دقائق');
+    }
+    function filterByStatus(status) {
+      alert('🔍 تصفية حسب: ' + status);
+    }
+    function applyFilters() {
+      alert('🔍 تطبيق الفلاتر...');
+    }
+    function exportOrders() {
+      alert('📥 جاري تصدير البيانات...\nسيتم تنزيل ملف Excel');
+    }
+    function refreshOrders() {
+      alert('🔄 تم تحديث البيانات');
+    }
+  </script>
+</body>
+</html>

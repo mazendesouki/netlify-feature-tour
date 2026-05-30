@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-KBAKWRXI">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشاوير - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/rides.7d6cf166.css" /><script type="module">
+</script></head>
+<body class="astro-KBAKWRXI">
+
+  <!-- Header -->
+  <div class="rides-header astro-KBAKWRXI">
+    <div class="header-nav astro-KBAKWRXI">
+      <a href="/home" class="back-btn astro-KBAKWRXI">←</a>
+      <div class="header-title astro-KBAKWRXI">🚗 خدمة المشاوير</div>
+    </div>
+
+    <div class="ride-type-tabs astro-KBAKWRXI">
+      <button class="ride-tab active astro-KBAKWRXI" onclick="switchRideType(this, 'local')">🏙️ داخل المحافظة</button>
+      <button class="ride-tab astro-KBAKWRXI" onclick="switchRideType(this, 'inter')">🗺️ بين المحافظات</button>
+      <button class="ride-tab astro-KBAKWRXI" onclick="switchRideType(this, 'charter')">📅 تشارتر</button>
+    </div>
+  </div>
+
+  <div class="page-content astro-KBAKWRXI">
+    <!-- Booking Card -->
+    <div class="booking-card astro-KBAKWRXI">
+      <div class="booking-title astro-KBAKWRXI">📍 أين تريد الذهاب؟</div>
+
+      <div class="route-input astro-KBAKWRXI">
+        <input type="text" class="route-input-field astro-KBAKWRXI" placeholder="📍 من أين؟ موقعك الحالي" id="fromLocation" onclick="setLocation('from')">
+        <span class="route-icon astro-KBAKWRXI">🟢</span>
+      </div>
+
+      <div style="text-align:center;margin:-8px 0" class="astro-KBAKWRXI">
+        <button class="swap-btn astro-KBAKWRXI" onclick="swapLocations()" title="عكس الاتجاه">↕️</button>
+      </div>
+
+      <div class="route-input astro-KBAKWRXI">
+        <input type="text" class="route-input-field astro-KBAKWRXI" placeholder="🏁 إلى أين؟ الوجهة" id="toLocation" onclick="setLocation('to')">
+        <span class="route-icon astro-KBAKWRXI">🔴</span>
+      </div>
+
+      <!-- Inter-governorate selector -->
+      <div id="govSelector" style="display:none;margin-top:12px" class="astro-KBAKWRXI">
+        <label class="form-label astro-KBAKWRXI">📍 المحافظة الوجهة</label>
+        <select class="form-control form-select astro-KBAKWRXI" id="targetGov">
+          <option class="astro-KBAKWRXI">اختر المحافظة</option>
+          <option class="astro-KBAKWRXI">الإسكندرية</option>
+          <option class="astro-KBAKWRXI">الجيزة</option>
+          <option class="astro-KBAKWRXI">الدقهلية</option>
+          <option class="astro-KBAKWRXI">البحر الأحمر</option>
+          <option class="astro-KBAKWRXI">الفيوم</option>
+          <option class="astro-KBAKWRXI">المنوفية</option>
+          <option class="astro-KBAKWRXI">المنيا</option>
+          <option class="astro-KBAKWRXI">الإسماعيلية</option>
+          <option class="astro-KBAKWRXI">السويس</option>
+          <option class="astro-KBAKWRXI">بورسعيد</option>
+          <option class="astro-KBAKWRXI">أسوان</option>
+          <option class="astro-KBAKWRXI">أسيوط</option>
+          <option class="astro-KBAKWRXI">الأقصر</option>
+          <option class="astro-KBAKWRXI">الشرقية</option>
+          <option class="astro-KBAKWRXI">شمال سيناء</option>
+          <option class="astro-KBAKWRXI">جنوب سيناء</option>
+        </select>
+      </div>
+
+      <!-- Ride Options -->
+      <div style="font-size:15px;font-weight:800;color:#1E293B;margin:16px 0 12px" class="astro-KBAKWRXI">🚗 اختر نوع السيارة</div>
+      <div class="ride-options astro-KBAKWRXI">
+        <div class="ride-option selected astro-KBAKWRXI" onclick="selectRide(this, 70)">
+          <span class="ride-option-icon astro-KBAKWRXI">🚗</span>
+          <div class="ride-option-name astro-KBAKWRXI">اقتصادي</div>
+          <div class="ride-option-desc astro-KBAKWRXI">1-4 أشخاص</div>
+          <div class="ride-option-price astro-KBAKWRXI">من 70 جنيه</div>
+        </div>
+        <div class="ride-option astro-KBAKWRXI" onclick="selectRide(this, 120)">
+          <span class="ride-option-icon astro-KBAKWRXI">🚙</span>
+          <div class="ride-option-name astro-KBAKWRXI">مريح</div>
+          <div class="ride-option-desc astro-KBAKWRXI">سيارة كبيرة</div>
+          <div class="ride-option-price astro-KBAKWRXI">من 120 جنيه</div>
+        </div>
+        <div class="ride-option astro-KBAKWRXI" onclick="selectRide(this, 200)">
+          <span class="ride-option-icon astro-KBAKWRXI">🚐</span>
+          <div class="ride-option-name astro-KBAKWRXI">ميكروباص</div>
+          <div class="ride-option-desc astro-KBAKWRXI">1-8 أشخاص</div>
+          <div class="ride-option-price astro-KBAKWRXI">من 200 جنيه</div>
+        </div>
+        <div class="ride-option astro-KBAKWRXI" onclick="selectRide(this, 350)">
+          <span class="ride-option-icon astro-KBAKWRXI">👑</span>
+          <div class="ride-option-name astro-KBAKWRXI">VIP</div>
+          <div class="ride-option-desc astro-KBAKWRXI">فاخر ومريح</div>
+          <div class="ride-option-price astro-KBAKWRXI">من 350 جنيه</div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="schedule-row astro-KBAKWRXI">
+        <button class="schedule-btn active astro-KBAKWRXI" onclick="scheduleNow(this)">⚡ الآن</button>
+        <button class="schedule-btn astro-KBAKWRXI" onclick="scheduleLater(this)">📅 لاحقاً</button>
+      </div>
+
+      <div id="scheduleTime" style="display:none;margin-bottom:16px" class="astro-KBAKWRXI">
+        <input type="datetime-local" class="form-control astro-KBAKWRXI">
+      </div>
+
+      <!-- Price Estimate -->
+      <div class="price-estimate astro-KBAKWRXI">
+        <div class="astro-KBAKWRXI">
+          <div class="estimate-label astro-KBAKWRXI">💰 السعر المقدر</div>
+          <div class="estimate-price astro-KBAKWRXI" id="estimatedPrice">70 - 90 جنيه</div>
+          <div class="estimate-details astro-KBAKWRXI">⏱️ وصول السائق ~5 دقائق</div>
+        </div>
+        <div style="font-size:40px;opacity:0.7" class="astro-KBAKWRXI">🚗</div>
+      </div>
+
+      <button class="book-btn astro-KBAKWRXI" onclick="bookRide()">🚗 احجز الآن</button>
+    </div>
+
+    <!-- Nearby Drivers -->
+    <div class="section-title astro-KBAKWRXI">🚗 <span class="astro-KBAKWRXI">سائقون قريبون</span></div>
+
+    <div class="driver-card astro-KBAKWRXI">
+      <div class="driver-avatar astro-KBAKWRXI">م</div>
+      <div class="driver-info astro-KBAKWRXI">
+        <div class="driver-name astro-KBAKWRXI">محمد أحمد</div>
+        <div class="driver-rating astro-KBAKWRXI">⭐⭐⭐⭐⭐ 4.9 (120 رحلة)</div>
+        <div class="driver-car astro-KBAKWRXI">🚗 تويوتا كامري 2022 - أبيض</div>
+      </div>
+      <div style="text-align:center" class="astro-KBAKWRXI">
+        <div class="driver-eta astro-KBAKWRXI">3 دق</div>
+        <div class="driver-eta-label astro-KBAKWRXI">وقت الوصول</div>
+      </div>
+    </div>
+
+    <div class="driver-card astro-KBAKWRXI">
+      <div class="driver-avatar astro-KBAKWRXI" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">أ</div>
+      <div class="driver-info astro-KBAKWRXI">
+        <div class="driver-name astro-KBAKWRXI">أحمد مصطفى</div>
+        <div class="driver-rating astro-KBAKWRXI">⭐⭐⭐⭐⭐ 4.8 (85 رحلة)</div>
+        <div class="driver-car astro-KBAKWRXI">🚙 هيونداي إيلنترا 2021 - فضي</div>
+      </div>
+      <div style="text-align:center" class="astro-KBAKWRXI">
+        <div class="driver-eta astro-KBAKWRXI" style="color:#7C3AED">5 دق</div>
+        <div class="driver-eta-label astro-KBAKWRXI">وقت الوصول</div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features-card astro-KBAKWRXI">
+      <div class="section-title astro-KBAKWRXI">✨ <span class="astro-KBAKWRXI">مميزات خدمة المشاوير</span></div>
+      <div class="features-list astro-KBAKWRXI">
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">💰</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">سعر محدد مسبقاً</div><div class="feature-row-sub astro-KBAKWRXI">لا توجد مفاجآت في السعر</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">📍</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">تتبع مباشر</div><div class="feature-row-sub astro-KBAKWRXI">تابع السائق على الخريطة لحظة بلحظة</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">🛡️</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">سائقون معتمدون</div><div class="feature-row-sub astro-KBAKWRXI">تم التحقق من هوية وسجل كل سائق</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">🌙</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">خدمة 24/7</div><div class="feature-row-sub astro-KBAKWRXI">متاح في أي وقت من ليل أو نهار</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">🗺️</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">27 محافظة</div><div class="feature-row-sub astro-KBAKWRXI">نصل لجميع أنحاء مصر</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">📅</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">حجز مسبق</div><div class="feature-row-sub astro-KBAKWRXI">خطط رحلتك مسبقاً</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">📞</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">دعم فوري</div><div class="feature-row-sub astro-KBAKWRXI">تواصل مع السائق أو الدعم في أي وقت</div></div>
+        </div>
+        <div class="feature-row astro-KBAKWRXI">
+          <span class="feature-row-icon astro-KBAKWRXI">💳</span>
+          <div class="astro-KBAKWRXI"><div class="feature-row-text astro-KBAKWRXI">دفع متعدد</div><div class="feature-row-sub astro-KBAKWRXI">كاش، بطاقة، أو محفظة وصله</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Governorates -->
+    <div class="governorates-section astro-KBAKWRXI">
+      <div class="section-title astro-KBAKWRXI">📍 <span class="astro-KBAKWRXI">المحافظات المتاحة</span></div>
+      <div class="gov-grid astro-KBAKWRXI">
+        <div class="gov-chip astro-KBAKWRXI">🏙️ القاهرة</div>
+        <div class="gov-chip astro-KBAKWRXI">🏖️ الإسكندرية</div>
+        <div class="gov-chip astro-KBAKWRXI">🌿 الجيزة</div>
+        <div class="gov-chip astro-KBAKWRXI">🌊 البحر الأحمر</div>
+        <div class="gov-chip astro-KBAKWRXI">🏔️ أسوان</div>
+        <div class="gov-chip astro-KBAKWRXI">⛩️ الأقصر</div>
+        <div class="gov-chip astro-KBAKWRXI">🌴 الفيوم</div>
+        <div class="gov-chip astro-KBAKWRXI">🏭 السويس</div>
+        <div class="gov-chip astro-KBAKWRXI">🌊 بورسعيد</div>
+        <div class="gov-chip astro-KBAKWRXI">🌻 المنيا</div>
+        <div class="gov-chip astro-KBAKWRXI">🌾 أسيوط</div>
+        <div class="gov-chip astro-KBAKWRXI">✨ سيناء</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav astro-KBAKWRXI">
+    <a href="/home" class="nav-item astro-KBAKWRXI">
+      <span class="nav-icon astro-KBAKWRXI">🏠</span>
+      <span class="astro-KBAKWRXI">الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item astro-KBAKWRXI">
+      <span class="nav-icon astro-KBAKWRXI">📋</span>
+      <span class="astro-KBAKWRXI">طلباتي</span>
+    </a>
+    <a href="/rides" class="nav-center-btn astro-KBAKWRXI">🚗</a>
+    <a href="/wallet" class="nav-item astro-KBAKWRXI">
+      <span class="nav-icon astro-KBAKWRXI">👛</span>
+      <span class="astro-KBAKWRXI">المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item astro-KBAKWRXI">
+      <span class="nav-icon astro-KBAKWRXI">⚙️</span>
+      <span class="astro-KBAKWRXI">الإعدادات</span>
+    </a>
+  </nav>
+
+  
+</body>
+</html>

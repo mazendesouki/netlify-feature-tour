@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-U2H3DJQL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/index.f700750a.css" /><script type="module">document.getElementById("currentDate").textContent=new Date().toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});const e=JSON.parse(localStorage.getItem("wslha_user")||"{}");e.name&&(document.getElementById("adminName").textContent=e.name);
+</script></head>
+<body class="astro-U2H3DJQL">
+  <div class="admin-layout astro-U2H3DJQL">
+    <!-- Sidebar -->
+    <div class="sidebar astro-U2H3DJQL">
+      <div class="sidebar-logo astro-U2H3DJQL">
+        <div class="logo-app astro-U2H3DJQL">🚀 وصله</div>
+        <div class="logo-sub astro-U2H3DJQL">لوحة التحكم الإدارية</div>
+      </div>
+
+      <div class="sidebar-user astro-U2H3DJQL">
+        <div class="user-av astro-U2H3DJQL">م</div>
+        <div class="astro-U2H3DJQL">
+          <div class="user-av-name astro-U2H3DJQL" id="adminName">المدير</div>
+          <div class="user-av-role astro-U2H3DJQL">مدير النظام</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section astro-U2H3DJQL">
+        <div class="sidebar-section-title astro-U2H3DJQL">الرئيسية</div>
+        <a href="/admin" class="sidebar-nav-item active astro-U2H3DJQL">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">📊</span>
+          لوحة التحكم
+        </a>
+      </div>
+
+      <div class="sidebar-section astro-U2H3DJQL">
+        <div class="sidebar-section-title astro-U2H3DJQL">إدارة</div>
+        <a href="/admin/orders" class="sidebar-nav-item astro-U2H3DJQL">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">📋</span>
+          إدارة الطلبات
+          <span class="nav-badge astro-U2H3DJQL">12</span>
+        </a>
+        <a href="/admin/users" class="sidebar-nav-item astro-U2H3DJQL">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">👥</span>
+          إدارة المستخدمين
+        </a>
+        <a href="/admin/drivers" class="sidebar-nav-item astro-U2H3DJQL">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">🚗</span>
+          إدارة السائقين
+          <span class="nav-badge green astro-U2H3DJQL">5</span>
+        </a>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('المتاجر')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">🏪</span>
+          إدارة المتاجر
+        </a>
+      </div>
+
+      <div class="sidebar-section astro-U2H3DJQL">
+        <div class="sidebar-section-title astro-U2H3DJQL">المالية</div>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('المحافظ')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">💰</span>
+          إدارة المحافظ
+        </a>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('التقارير')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">📈</span>
+          التقارير المالية
+        </a>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('العروض')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">🎁</span>
+          العروض والكوبونات
+        </a>
+      </div>
+
+      <div class="sidebar-section astro-U2H3DJQL">
+        <div class="sidebar-section-title astro-U2H3DJQL">النظام</div>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('الإشعارات')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">🔔</span>
+          الإشعارات
+        </a>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('الدعم')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">💬</span>
+          الدعم الفني
+        </a>
+        <a href="#" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminAlert('الإعدادات')">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">⚙️</span>
+          إعدادات النظام
+        </a>
+        <a href="/login" class="sidebar-nav-item astro-U2H3DJQL" onclick="adminLogout()">
+          <span class="sidebar-nav-icon astro-U2H3DJQL">🚪</span>
+          تسجيل الخروج
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content astro-U2H3DJQL">
+      <!-- Top Bar -->
+      <div class="admin-topbar astro-U2H3DJQL">
+        <div class="topbar-title astro-U2H3DJQL">📊 لوحة التحكم</div>
+        <div class="topbar-right astro-U2H3DJQL">
+          <div style="font-size:13px;color:#64748B;font-weight:600" class="astro-U2H3DJQL">
+            📅 <span id="currentDate" class="astro-U2H3DJQL"></span>
+          </div>
+          <a href="/home" class="topbar-btn astro-U2H3DJQL" title="التطبيق">🚀</a>
+          <div class="topbar-btn astro-U2H3DJQL" style="cursor:pointer" onclick="showAdminNotifs()">
+            🔔
+            <div class="topbar-badge astro-U2H3DJQL"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-main astro-U2H3DJQL">
+        <!-- Quick Actions -->
+        <div class="quick-actions-bar astro-U2H3DJQL">
+          <a href="/admin/orders" class="quick-action-card astro-U2H3DJQL">
+            <span class="qa-icon astro-U2H3DJQL">➕</span>
+            <span class="qa-label astro-U2H3DJQL">إضافة طلب</span>
+          </a>
+          <a href="/admin/drivers" class="quick-action-card astro-U2H3DJQL">
+            <span class="qa-icon astro-U2H3DJQL">🚗</span>
+            <span class="qa-label astro-U2H3DJQL">سائق جديد</span>
+          </a>
+          <div class="quick-action-card astro-U2H3DJQL" onclick="generateReport()">
+            <span class="qa-icon astro-U2H3DJQL">📊</span>
+            <span class="qa-label astro-U2H3DJQL">تقرير اليوم</span>
+          </div>
+          <div class="quick-action-card astro-U2H3DJQL" onclick="sendNotification()">
+            <span class="qa-icon astro-U2H3DJQL">🔔</span>
+            <span class="qa-label astro-U2H3DJQL">إرسال إشعار</span>
+          </div>
+          <div class="quick-action-card astro-U2H3DJQL" onclick="adminAlert('العروض')">
+            <span class="qa-icon astro-U2H3DJQL">🎁</span>
+            <span class="qa-label astro-U2H3DJQL">كوبون خصم</span>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid astro-U2H3DJQL">
+          <div class="stat-card stat-card-blue astro-U2H3DJQL">
+            <div class="stat-icon-box stat-icon-blue astro-U2H3DJQL">📋</div>
+            <div class="stat-value astro-U2H3DJQL">1,284</div>
+            <div class="stat-label astro-U2H3DJQL">إجمالي الطلبات</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">↑ 12.5% هذا الشهر</div>
+          </div>
+          <div class="stat-card stat-card-green astro-U2H3DJQL">
+            <div class="stat-icon-box stat-icon-green astro-U2H3DJQL">👥</div>
+            <div class="stat-value astro-U2H3DJQL">52,340</div>
+            <div class="stat-label astro-U2H3DJQL">إجمالي المستخدمين</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">↑ 8.3% هذا الشهر</div>
+          </div>
+          <div class="stat-card stat-card-amber astro-U2H3DJQL">
+            <div class="stat-icon-box stat-icon-amber astro-U2H3DJQL">🚗</div>
+            <div class="stat-value astro-U2H3DJQL">342</div>
+            <div class="stat-label astro-U2H3DJQL">سائقون نشطون</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">↑ 5.2% هذا الشهر</div>
+          </div>
+          <div class="stat-card stat-card-red astro-U2H3DJQL">
+            <div class="stat-icon-box stat-icon-amber astro-U2H3DJQL">💰</div>
+            <div class="stat-value astro-U2H3DJQL">284K</div>
+            <div class="stat-label astro-U2H3DJQL">إيرادات (جنيه)</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">↑ 15.8% هذا الشهر</div>
+          </div>
+        </div>
+
+        <!-- Secondary Stats -->
+        <div class="stats-grid astro-U2H3DJQL" style="margin-bottom:28px">
+          <div class="stat-card stat-card-blue astro-U2H3DJQL" style="border-color:#7C3AED">
+            <div class="stat-icon-box astro-U2H3DJQL" style="background:#F5F3FF">⏳</div>
+            <div class="stat-value astro-U2H3DJQL" style="color:#7C3AED">12</div>
+            <div class="stat-label astro-U2H3DJQL">طلبات قيد التنفيذ</div>
+            <div class="stat-trend astro-U2H3DJQL" style="color:#7C3AED">🔴 الآن</div>
+          </div>
+          <div class="stat-card stat-card-green astro-U2H3DJQL" style="border-color:#10B981">
+            <div class="stat-icon-box stat-icon-green astro-U2H3DJQL">✅</div>
+            <div class="stat-value astro-U2H3DJQL">1,198</div>
+            <div class="stat-label astro-U2H3DJQL">طلبات مكتملة</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">93.3% نسبة إكمال</div>
+          </div>
+          <div class="stat-card stat-card-amber astro-U2H3DJQL" style="border-color:#0EA5E9">
+            <div class="stat-icon-box astro-U2H3DJQL" style="background:#F0F9FF">⭐</div>
+            <div class="stat-value astro-U2H3DJQL">4.8</div>
+            <div class="stat-label astro-U2H3DJQL">متوسط التقييم</div>
+            <div class="stat-trend trend-up astro-U2H3DJQL">↑ من 4.7</div>
+          </div>
+          <div class="stat-card stat-card-red astro-U2H3DJQL">
+            <div class="stat-icon-box stat-icon-red astro-U2H3DJQL">❌</div>
+            <div class="stat-value astro-U2H3DJQL">74</div>
+            <div class="stat-label astro-U2H3DJQL">طلبات ملغاة</div>
+            <div class="stat-trend trend-down astro-U2H3DJQL">5.7% نسبة الإلغاء</div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row astro-U2H3DJQL">
+          <div class="chart-card astro-U2H3DJQL">
+            <div class="chart-title astro-U2H3DJQL">
+              📈 الطلبات اليومية (آخر 7 أيام)
+              <select style="font-family:'Cairo',sans-serif;font-size:12px;border:1px solid #E2E8F0;border-radius:8px;padding:4px 8px;color:#64748B" class="astro-U2H3DJQL">
+                <option class="astro-U2H3DJQL">7 أيام</option>
+                <option class="astro-U2H3DJQL">30 يوم</option>
+                <option class="astro-U2H3DJQL">3 أشهر</option>
+              </select>
+            </div>
+            <div style="padding-bottom: 24px; position: relative;" class="astro-U2H3DJQL">
+              <div class="chart-placeholder astro-U2H3DJQL">
+                <div class="chart-bar astro-U2H3DJQL" style="background:#1D4ED8;height:60%;"><div class="chart-bar-label astro-U2H3DJQL">السبت</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#3B82F6;height:80%;"><div class="chart-bar-label astro-U2H3DJQL">الأحد</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#1D4ED8;height:55%;"><div class="chart-bar-label astro-U2H3DJQL">الاثنين</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#3B82F6;height:95%;"><div class="chart-bar-label astro-U2H3DJQL">الثلاثاء</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#1D4ED8;height:70%;"><div class="chart-bar-label astro-U2H3DJQL">الأربعاء</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#60A5FA;height:45%;"><div class="chart-bar-label astro-U2H3DJQL">الخميس</div></div>
+                <div class="chart-bar astro-U2H3DJQL" style="background:#1E3A8A;height:85%;"><div class="chart-bar-label astro-U2H3DJQL">الجمعة</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card astro-U2H3DJQL">
+            <div class="chart-title astro-U2H3DJQL">🥧 توزيع الخدمات</div>
+            <div style="text-align:center" class="astro-U2H3DJQL">
+              <div class="donut-placeholder astro-U2H3DJQL">
+                <div class="donut-inner astro-U2H3DJQL">
+                  <div class="donut-num astro-U2H3DJQL">100%</div>
+                  <div class="donut-label astro-U2H3DJQL">الكل</div>
+                </div>
+              </div>
+              <div class="donut-legend astro-U2H3DJQL">
+                <div class="legend-item astro-U2H3DJQL"><div class="legend-dot astro-U2H3DJQL" style="background:#1D4ED8"></div>🏪 توصيل طلبات (60%)</div>
+                <div class="legend-item astro-U2H3DJQL"><div class="legend-dot astro-U2H3DJQL" style="background:#10B981"></div>🚗 مشاوير (25%)</div>
+                <div class="legend-item astro-U2H3DJQL"><div class="legend-dot astro-U2H3DJQL" style="background:#F59E0B"></div>✈️ مطار (8%)</div>
+                <div class="legend-item astro-U2H3DJQL"><div class="legend-dot astro-U2H3DJQL" style="background:#EF4444"></div>📦 أخرى (7%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="tables-row astro-U2H3DJQL">
+          <!-- Recent Orders -->
+          <div class="table-card astro-U2H3DJQL">
+            <div class="table-header astro-U2H3DJQL">
+              <div class="table-title astro-U2H3DJQL">📋 آخر الطلبات</div>
+              <a href="/admin/orders" class="view-all-link astro-U2H3DJQL">عرض الكل →</a>
+            </div>
+            <table class="data-table astro-U2H3DJQL">
+              <thead class="astro-U2H3DJQL">
+                <tr class="astro-U2H3DJQL">
+                  <th class="astro-U2H3DJQL">رقم الطلب</th>
+                  <th class="astro-U2H3DJQL">الخدمة</th>
+                  <th class="astro-U2H3DJQL">المبلغ</th>
+                  <th class="astro-U2H3DJQL">الحالة</th>
+                </tr>
+              </thead>
+              <tbody class="astro-U2H3DJQL">
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">#4523</strong></td>
+                  <td class="astro-U2H3DJQL">✈️ مطار</td>
+                  <td class="astro-U2H3DJQL">150 جنيه</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL">قيد التنفيذ</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">#4522</strong></td>
+                  <td class="astro-U2H3DJQL">🏪 توصيل</td>
+                  <td class="astro-U2H3DJQL">45 جنيه</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL" style="background:#F0FDF4;color:#10B981">مكتمل ✅</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">#4521</strong></td>
+                  <td class="astro-U2H3DJQL">🚗 مشوار</td>
+                  <td class="astro-U2H3DJQL">80 جنيه</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL" style="background:#F0FDF4;color:#10B981">مكتمل ✅</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">#4520</strong></td>
+                  <td class="astro-U2H3DJQL">🏪 توصيل</td>
+                  <td class="astro-U2H3DJQL">35 جنيه</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-pending astro-U2H3DJQL">معلق ⏳</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">#4519</strong></td>
+                  <td class="astro-U2H3DJQL">✈️ مطار</td>
+                  <td class="astro-U2H3DJQL">250 جنيه</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL" style="background:#F0FDF4;color:#10B981">مكتمل ✅</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Recent Users -->
+          <div class="table-card astro-U2H3DJQL">
+            <div class="table-header astro-U2H3DJQL">
+              <div class="table-title astro-U2H3DJQL">👥 آخر المستخدمين</div>
+              <a href="/admin/users" class="view-all-link astro-U2H3DJQL">عرض الكل →</a>
+            </div>
+            <table class="data-table astro-U2H3DJQL">
+              <thead class="astro-U2H3DJQL">
+                <tr class="astro-U2H3DJQL">
+                  <th class="astro-U2H3DJQL">المستخدم</th>
+                  <th class="astro-U2H3DJQL">المحافظة</th>
+                  <th class="astro-U2H3DJQL">الطلبات</th>
+                  <th class="astro-U2H3DJQL">الحالة</th>
+                </tr>
+              </thead>
+              <tbody class="astro-U2H3DJQL">
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">أحمد محمود</strong></td>
+                  <td class="astro-U2H3DJQL">القاهرة</td>
+                  <td class="astro-U2H3DJQL">24</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL">نشط</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">سارة أحمد</strong></td>
+                  <td class="astro-U2H3DJQL">الإسكندرية</td>
+                  <td class="astro-U2H3DJQL">12</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL">نشط</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">محمد علي</strong></td>
+                  <td class="astro-U2H3DJQL">الجيزة</td>
+                  <td class="astro-U2H3DJQL">8</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-active astro-U2H3DJQL">نشط</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">نور الهدى</strong></td>
+                  <td class="astro-U2H3DJQL">المنصورة</td>
+                  <td class="astro-U2H3DJQL">5</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-pending astro-U2H3DJQL">جديد</span></td>
+                </tr>
+                <tr class="astro-U2H3DJQL">
+                  <td class="astro-U2H3DJQL"><strong class="astro-U2H3DJQL">فاطمة مصطفى</strong></td>
+                  <td class="astro-U2H3DJQL">أسيوط</td>
+                  <td class="astro-U2H3DJQL">2</td>
+                  <td class="astro-U2H3DJQL"><span class="status-pill pill-pending astro-U2H3DJQL">جديد</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-card astro-U2H3DJQL">
+          <div class="chart-title astro-U2H3DJQL">📡 النشاط الحي</div>
+          <div class="activity-item astro-U2H3DJQL">
+            <div class="activity-icon astro-U2H3DJQL" style="background:#F0FDF4">✅</div>
+            <div class="activity-content astro-U2H3DJQL">
+              <div class="activity-text astro-U2H3DJQL">تم إكمال طلب توصيل #4522 بنجاح</div>
+              <div class="activity-time astro-U2H3DJQL">منذ 5 دقائق</div>
+            </div>
+            <span class="activity-badge astro-U2H3DJQL" style="background:#F0FDF4;color:#10B981">مكتمل</span>
+          </div>
+          <div class="activity-item astro-U2H3DJQL">
+            <div class="activity-icon astro-U2H3DJQL" style="background:#EFF6FF">👤</div>
+            <div class="activity-content astro-U2H3DJQL">
+              <div class="activity-text astro-U2H3DJQL">مستخدم جديد انضم: فاطمة مصطفى - أسيوط</div>
+              <div class="activity-time astro-U2H3DJQL">منذ 12 دقيقة</div>
+            </div>
+            <span class="activity-badge astro-U2H3DJQL" style="background:#EFF6FF;color:#1D4ED8">جديد</span>
+          </div>
+          <div class="activity-item astro-U2H3DJQL">
+            <div class="activity-icon astro-U2H3DJQL" style="background:#FFFBEB">🚗</div>
+            <div class="activity-content astro-U2H3DJQL">
+              <div class="activity-text astro-U2H3DJQL">سائق جديد انضم: خالد إبراهيم - القاهرة</div>
+              <div class="activity-time astro-U2H3DJQL">منذ 25 دقيقة</div>
+            </div>
+            <span class="activity-badge astro-U2H3DJQL" style="background:#FFFBEB;color:#D97706">مراجعة</span>
+          </div>
+          <div class="activity-item astro-U2H3DJQL">
+            <div class="activity-icon astro-U2H3DJQL" style="background:#FFF5F5">❌</div>
+            <div class="activity-content astro-U2H3DJQL">
+              <div class="activity-text astro-U2H3DJQL">تم إلغاء طلب مشوار #4518 من المستخدم</div>
+              <div class="activity-time astro-U2H3DJQL">منذ 40 دقيقة</div>
+            </div>
+            <span class="activity-badge astro-U2H3DJQL" style="background:#FFF5F5;color:#EF4444">ملغي</span>
+          </div>
+          <div class="activity-item astro-U2H3DJQL">
+            <div class="activity-icon astro-U2H3DJQL" style="background:#F0FDF4">💰</div>
+            <div class="activity-content astro-U2H3DJQL">
+              <div class="activity-text astro-U2H3DJQL">شحن محفظة 500 جنيه من أحمد محمود</div>
+              <div class="activity-time astro-U2H3DJQL">منذ ساعة</div>
+            </div>
+            <span class="activity-badge astro-U2H3DJQL" style="background:#F0FDF4;color:#10B981">+500 جنيه</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

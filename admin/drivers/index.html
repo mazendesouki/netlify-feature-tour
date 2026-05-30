@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-54V23KXI">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة السائقين - وصله Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/drivers.f90c84a9.css" /><script type="module">
+</script></head>
+<body class="astro-54V23KXI">
+  <div class="admin-layout astro-54V23KXI">
+    <div class="sidebar astro-54V23KXI">
+      <div class="sidebar-logo astro-54V23KXI">🚀 وصله</div>
+      <div class="sidebar-nav astro-54V23KXI">
+        <a href="/admin" class="nav-item astro-54V23KXI">📊 لوحة التحكم</a>
+        <a href="/admin/orders" class="nav-item astro-54V23KXI">📋 الطلبات</a>
+        <a href="/admin/users" class="nav-item astro-54V23KXI">👥 المستخدمون</a>
+        <a href="/admin/drivers" class="nav-item active astro-54V23KXI">🚗 السائقون</a>
+        <a href="/login" class="nav-item astro-54V23KXI">🚪 خروج</a>
+      </div>
+    </div>
+
+    <div class="main-content astro-54V23KXI">
+      <div class="topbar astro-54V23KXI">
+        <div class="topbar-title astro-54V23KXI">🚗 إدارة السائقين</div>
+        <div style="display:flex;gap:12px" class="astro-54V23KXI">
+          <a href="/admin" style="color:#64748B;font-size:13px;font-weight:700;text-decoration:none" class="astro-54V23KXI">← لوحة التحكم</a>
+          <button class="btn-sm astro-54V23KXI" style="background:#10B981;color:white" onclick="exportDrivers()">📥 تصدير</button>
+          <button class="btn-sm btn-blue astro-54V23KXI" onclick="addDriver()">➕ سائق جديد</button>
+        </div>
+      </div>
+
+      <div class="page-content astro-54V23KXI">
+        <!-- Stats -->
+        <div class="stats-mini astro-54V23KXI">
+          <div class="mini-stat astro-54V23KXI">
+            <div class="mini-num astro-54V23KXI">342</div>
+            <div class="mini-label astro-54V23KXI">🚗 إجمالي السائقين</div>
+          </div>
+          <div class="mini-stat astro-54V23KXI" style="border-color:#10B981">
+            <div class="mini-num astro-54V23KXI" style="color:#10B981">185</div>
+            <div class="mini-label astro-54V23KXI">🟢 متاحون الآن</div>
+          </div>
+          <div class="mini-stat astro-54V23KXI" style="border-color:#F59E0B">
+            <div class="mini-num astro-54V23KXI" style="color:#F59E0B">45</div>
+            <div class="mini-label astro-54V23KXI">🔴 في رحلة</div>
+          </div>
+          <div class="mini-stat astro-54V23KXI" style="border-color:#94A3B8">
+            <div class="mini-num astro-54V23KXI" style="color:#94A3B8">107</div>
+            <div class="mini-label astro-54V23KXI">⚫ غير متصل</div>
+          </div>
+          <div class="mini-stat astro-54V23KXI" style="border-color:#EF4444">
+            <div class="mini-num astro-54V23KXI" style="color:#EF4444">5</div>
+            <div class="mini-label astro-54V23KXI">⏳ بانتظار موافقة</div>
+          </div>
+        </div>
+
+        <!-- Pending Approval -->
+        <div class="pending-section astro-54V23KXI">
+          <div class="pending-title astro-54V23KXI">⏳ سائقون بانتظار الموافقة <span style="background:#FFF5F5;color:#EF4444;padding:4px 12px;border-radius:10px;font-size:12px" class="astro-54V23KXI">5 طلبات</span></div>
+
+          <div class="pending-driver-row astro-54V23KXI">
+            <div class="pending-av astro-54V23KXI">خ</div>
+            <div class="pending-info astro-54V23KXI">
+              <div class="pending-name astro-54V23KXI">خالد إبراهيم محمد</div>
+              <div class="pending-sub astro-54V23KXI">🚗 تويوتا كامري • القاهرة • قدّم منذ 2 ساعة</div>
+            </div>
+            <div class="pending-actions astro-54V23KXI">
+              <button class="approve-btn astro-54V23KXI" onclick="approveDriver('خالد إبراهيم')">✅ قبول</button>
+              <button class="reject-btn astro-54V23KXI" onclick="rejectDriver('خالد إبراهيم')">❌ رفض</button>
+              <button style="padding:8px 14px;background:#EFF6FF;color:#1D4ED8;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer" onclick="viewDocs('خالد إبراهيم')" class="astro-54V23KXI">📄 مستندات</button>
+            </div>
+          </div>
+
+          <div class="pending-driver-row astro-54V23KXI">
+            <div class="pending-av astro-54V23KXI" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">ر</div>
+            <div class="pending-info astro-54V23KXI">
+              <div class="pending-name astro-54V23KXI">رامي سعد إبراهيم</div>
+              <div class="pending-sub astro-54V23KXI">🏍️ دراجة توصيل • الإسكندرية • قدّم منذ 5 ساعات</div>
+            </div>
+            <div class="pending-actions astro-54V23KXI">
+              <button class="approve-btn astro-54V23KXI" onclick="approveDriver('رامي سعد')">✅ قبول</button>
+              <button class="reject-btn astro-54V23KXI" onclick="rejectDriver('رامي سعد')">❌ رفض</button>
+              <button style="padding:8px 14px;background:#EFF6FF;color:#1D4ED8;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer" onclick="viewDocs('رامي سعد')" class="astro-54V23KXI">📄 مستندات</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar astro-54V23KXI">
+          <input type="text" class="search-input astro-54V23KXI" placeholder="🔍 بحث باسم السائق أو رقم السيارة...">
+          <select class="filter-select astro-54V23KXI">
+            <option class="astro-54V23KXI">جميع الحالات</option>
+            <option class="astro-54V23KXI">🟢 متاح</option>
+            <option class="astro-54V23KXI">🔴 في رحلة</option>
+            <option class="astro-54V23KXI">⚫ غير متصل</option>
+          </select>
+          <select class="filter-select astro-54V23KXI">
+            <option class="astro-54V23KXI">جميع المحافظات</option>
+            <option class="astro-54V23KXI">القاهرة</option>
+            <option class="astro-54V23KXI">الإسكندرية</option>
+          </select>
+          <select class="filter-select astro-54V23KXI">
+            <option class="astro-54V23KXI">جميع أنواع المركبات</option>
+            <option class="astro-54V23KXI">🚗 سيارة</option>
+            <option class="astro-54V23KXI">🚐 ميكروباص</option>
+            <option class="astro-54V23KXI">🏍️ دراجة</option>
+          </select>
+          <button class="btn-sm btn-blue astro-54V23KXI">🔍 بحث</button>
+        </div>
+
+        <!-- Driver Cards -->
+        <div class="driver-cards astro-54V23KXI">
+          <!-- Driver 1 - Online -->
+          <div class="driver-card astro-54V23KXI">
+            <div class="driver-card-top astro-54V23KXI">
+              <div style="display:flex;align-items:center;gap:12px" class="astro-54V23KXI">
+                <div class="driver-av astro-54V23KXI" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6)">م</div>
+                <div class="astro-54V23KXI">
+                  <div class="driver-name astro-54V23KXI">محمد أحمد علي</div>
+                  <div class="driver-id astro-54V23KXI">ID: DRV-001</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px" class="astro-54V23KXI">
+                <div class="driver-status-dot dot-online astro-54V23KXI"></div>
+                <span class="status-badge badge-online astro-54V23KXI">🟢 متاح</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle astro-54V23KXI">
+              <span class="astro-54V23KXI">🚗</span>
+              <span class="astro-54V23KXI">تويوتا كامري 2022 - أبيض</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0" class="astro-54V23KXI">أ ب ج 1234</span>
+            </div>
+
+            <div class="driver-info-grid astro-54V23KXI">
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">إجمالي الرحلات</div>
+                <div class="info-value astro-54V23KXI">✅ 342</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">التقييم</div>
+                <div class="info-value astro-54V23KXI">⭐ 4.9</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">الأرباح الشهرية</div>
+                <div class="info-value astro-54V23KXI" style="color:#10B981">8,400 ج</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">المحافظة</div>
+                <div class="info-value astro-54V23KXI">القاهرة</div>
+              </div>
+            </div>
+
+            <div class="driver-actions astro-54V23KXI">
+              <button class="drv-btn drv-btn-blue astro-54V23KXI" onclick="viewDriver('محمد أحمد')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber astro-54V23KXI" onclick="callDriver('محمد أحمد')">📞 اتصال</button>
+              <button class="drv-btn drv-btn-red astro-54V23KXI" onclick="suspendDriver('محمد أحمد')">⏸️ إيقاف</button>
+            </div>
+          </div>
+
+          <!-- Driver 2 - Busy -->
+          <div class="driver-card astro-54V23KXI">
+            <div class="driver-card-top astro-54V23KXI">
+              <div style="display:flex;align-items:center;gap:12px" class="astro-54V23KXI">
+                <div class="driver-av astro-54V23KXI" style="background:linear-gradient(135deg,#059669,#34D399)">أ</div>
+                <div class="astro-54V23KXI">
+                  <div class="driver-name astro-54V23KXI">أحمد مصطفى</div>
+                  <div class="driver-id astro-54V23KXI">ID: DRV-002</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px" class="astro-54V23KXI">
+                <div class="driver-status-dot dot-busy astro-54V23KXI"></div>
+                <span class="status-badge badge-busy astro-54V23KXI">🔴 في رحلة</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle astro-54V23KXI">
+              <span class="astro-54V23KXI">🚙</span>
+              <span class="astro-54V23KXI">هيونداي إيلنترا 2021 - فضي</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0" class="astro-54V23KXI">د ه و 5678</span>
+            </div>
+
+            <div class="driver-info-grid astro-54V23KXI">
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">إجمالي الرحلات</div>
+                <div class="info-value astro-54V23KXI">✅ 198</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">التقييم</div>
+                <div class="info-value astro-54V23KXI">⭐ 4.8</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">الأرباح الشهرية</div>
+                <div class="info-value astro-54V23KXI" style="color:#10B981">6,200 ج</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">المحافظة</div>
+                <div class="info-value astro-54V23KXI">الإسكندرية</div>
+              </div>
+            </div>
+
+            <div class="driver-actions astro-54V23KXI">
+              <button class="drv-btn drv-btn-blue astro-54V23KXI" onclick="viewDriver('أحمد مصطفى')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber astro-54V23KXI" onclick="trackDriver('أحمد مصطفى')">📍 تتبع</button>
+              <button class="drv-btn drv-btn-green astro-54V23KXI" onclick="callDriver('أحمد مصطفى')">📞 اتصال</button>
+            </div>
+          </div>
+
+          <!-- Driver 3 - Offline -->
+          <div class="driver-card astro-54V23KXI">
+            <div class="driver-card-top astro-54V23KXI">
+              <div style="display:flex;align-items:center;gap:12px" class="astro-54V23KXI">
+                <div class="driver-av astro-54V23KXI" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">س</div>
+                <div class="astro-54V23KXI">
+                  <div class="driver-name astro-54V23KXI">سامي عبدالله</div>
+                  <div class="driver-id astro-54V23KXI">ID: DRV-003</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px" class="astro-54V23KXI">
+                <div class="driver-status-dot dot-offline astro-54V23KXI"></div>
+                <span class="status-badge badge-offline astro-54V23KXI">⚫ غير متصل</span>
+              </div>
+            </div>
+
+            <div class="driver-vehicle astro-54V23KXI">
+              <span class="astro-54V23KXI">🚐</span>
+              <span class="astro-54V23KXI">تويوتا هايس 2019 - أبيض</span>
+              <span style="margin-right:auto;font-size:11px;background:white;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0" class="astro-54V23KXI">ز ح ط 9012</span>
+            </div>
+
+            <div class="driver-info-grid astro-54V23KXI">
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">إجمالي الرحلات</div>
+                <div class="info-value astro-54V23KXI">✅ 87</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">التقييم</div>
+                <div class="info-value astro-54V23KXI">⭐ 4.7</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">الأرباح الشهرية</div>
+                <div class="info-value astro-54V23KXI" style="color:#10B981">4,800 ج</div>
+              </div>
+              <div class="info-item astro-54V23KXI">
+                <div class="info-label astro-54V23KXI">المحافظة</div>
+                <div class="info-value astro-54V23KXI">الجيزة</div>
+              </div>
+            </div>
+
+            <div class="driver-actions astro-54V23KXI">
+              <button class="drv-btn drv-btn-blue astro-54V23KXI" onclick="viewDriver('سامي عبدالله')">👁️ عرض</button>
+              <button class="drv-btn drv-btn-amber astro-54V23KXI" onclick="callDriver('سامي عبدالله')">📞 اتصال</button>
+              <button class="drv-btn drv-btn-red astro-54V23KXI" onclick="suspendDriver('سامي عبدالله')">🚫 حظر</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

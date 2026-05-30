@@ -1,0 +1,352 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مشاوير - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: #F8FAFC; padding-bottom: 100px; }
+    .rides-header { background: linear-gradient(135deg, #065F46 0%, #059669 100%); padding: 20px; padding-bottom: 30px; }
+    .header-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .back-btn { color: white; font-size: 20px; text-decoration: none; }
+    .header-title { color: white; font-size: 20px; font-weight: 800; }
+    .ride-type-tabs { display: flex; gap: 8px; }
+    .ride-tab { flex: 1; padding: 10px; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.1); color: white; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s; text-align: center; }
+    .ride-tab.active { background: white; color: #059669; border-color: white; }
+    .page-content { padding: 20px; }
+    .booking-card { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    .booking-title { font-size: 17px; font-weight: 800; color: #1E293B; margin-bottom: 16px; }
+    .route-input { position: relative; margin-bottom: 12px; }
+    .route-input-field { width: 100%; padding: 14px 16px 14px 50px; border: 2px solid #E2E8F0; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 15px; outline: none; transition: all 0.3s; background: #F8FAFC; direction: rtl; }
+    .route-input-field:focus { border-color: #059669; background: white; box-shadow: 0 0 0 4px rgba(5,150,105,0.12); }
+    .route-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 20px; }
+    .route-connector { display: flex; flex-direction: column; align-items: flex-end; padding-right: 27px; gap: 3px; margin: -4px 0; }
+    .connector-dot { width: 6px; height: 6px; border-radius: 50%; background: #CBD5E1; }
+    .swap-btn { width: 36px; height: 36px; background: #ECFDF5; border-radius: 50%; border: 2px solid #6EE7B7; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; margin: 8px auto; transition: all 0.3s; }
+    .swap-btn:hover { background: #059669; border-color: #059669; }
+    .ride-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .ride-option { border: 2px solid #E2E8F0; border-radius: 16px; padding: 16px; cursor: pointer; transition: all 0.3s; text-align: center; }
+    .ride-option.selected, .ride-option:hover { border-color: #059669; background: #ECFDF5; }
+    .ride-option-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .ride-option-name { font-size: 14px; font-weight: 800; color: #1E293B; }
+    .ride-option-desc { font-size: 11px; color: #94A3B8; margin-top: 3px; }
+    .ride-option-price { font-size: 15px; font-weight: 900; color: #059669; margin-top: 6px; }
+    .schedule-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .schedule-btn { flex: 1; padding: 12px; border: 2px solid #E2E8F0; border-radius: 12px; background: white; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s; }
+    .schedule-btn.active { border-color: #059669; background: #ECFDF5; color: #059669; }
+    .price-estimate { background: linear-gradient(135deg, #065F46, #059669); border-radius: 16px; padding: 20px; color: white; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .estimate-label { font-size: 13px; opacity: 0.85; }
+    .estimate-price { font-size: 28px; font-weight: 900; }
+    .estimate-details { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+    .book-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #065F46, #059669); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(5,150,105,0.35); transition: all 0.3s; }
+    .book-btn:hover { transform: translateY(-2px); }
+    .features-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 20px; }
+    .features-list { display: flex; flex-direction: column; gap: 12px; }
+    .feature-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #F0FDF4; border-radius: 12px; }
+    .feature-row-icon { font-size: 22px; }
+    .feature-row-text { font-size: 14px; font-weight: 700; color: #1E293B; }
+    .feature-row-sub { font-size: 12px; color: #64748B; margin-top: 2px; }
+    .governorates-section { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .gov-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .gov-chip { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 8px; text-align: center; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s; }
+    .gov-chip:hover { background: #ECFDF5; border-color: #059669; color: #059669; }
+    .driver-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+    .driver-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #059669, #34D399); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; flex-shrink: 0; }
+    .driver-info { flex: 1; }
+    .driver-name { font-size: 16px; font-weight: 800; color: #1E293B; }
+    .driver-rating { font-size: 13px; color: #F59E0B; font-weight: 700; margin-top: 2px; }
+    .driver-car { font-size: 12px; color: #94A3B8; margin-top: 4px; }
+    .driver-eta { font-size: 20px; font-weight: 900; color: #059669; }
+    .driver-eta-label { font-size: 11px; color: #94A3B8; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="rides-header">
+    <div class="header-nav">
+      <a href="/home" class="back-btn">←</a>
+      <div class="header-title">🚗 خدمة المشاوير</div>
+    </div>
+
+    <div class="ride-type-tabs">
+      <button class="ride-tab active" onclick="switchRideType(this, 'local')">🏙️ داخل المحافظة</button>
+      <button class="ride-tab" onclick="switchRideType(this, 'inter')">🗺️ بين المحافظات</button>
+      <button class="ride-tab" onclick="switchRideType(this, 'charter')">📅 تشارتر</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <!-- Booking Card -->
+    <div class="booking-card">
+      <div class="booking-title">📍 أين تريد الذهاب؟</div>
+
+      <div class="route-input">
+        <input type="text" class="route-input-field" placeholder="📍 من أين؟ موقعك الحالي" id="fromLocation" onclick="setLocation('from')">
+        <span class="route-icon">🟢</span>
+      </div>
+
+      <div style="text-align:center;margin:-8px 0">
+        <button class="swap-btn" onclick="swapLocations()" title="عكس الاتجاه">↕️</button>
+      </div>
+
+      <div class="route-input">
+        <input type="text" class="route-input-field" placeholder="🏁 إلى أين؟ الوجهة" id="toLocation" onclick="setLocation('to')">
+        <span class="route-icon">🔴</span>
+      </div>
+
+      <!-- Inter-governorate selector -->
+      <div id="govSelector" style="display:none;margin-top:12px">
+        <label class="form-label">📍 المحافظة الوجهة</label>
+        <select class="form-control form-select" id="targetGov">
+          <option>اختر المحافظة</option>
+          <option>الإسكندرية</option>
+          <option>الجيزة</option>
+          <option>الدقهلية</option>
+          <option>البحر الأحمر</option>
+          <option>الفيوم</option>
+          <option>المنوفية</option>
+          <option>المنيا</option>
+          <option>الإسماعيلية</option>
+          <option>السويس</option>
+          <option>بورسعيد</option>
+          <option>أسوان</option>
+          <option>أسيوط</option>
+          <option>الأقصر</option>
+          <option>الشرقية</option>
+          <option>شمال سيناء</option>
+          <option>جنوب سيناء</option>
+        </select>
+      </div>
+
+      <!-- Ride Options -->
+      <div style="font-size:15px;font-weight:800;color:#1E293B;margin:16px 0 12px">🚗 اختر نوع السيارة</div>
+      <div class="ride-options">
+        <div class="ride-option selected" onclick="selectRide(this, 70)">
+          <span class="ride-option-icon">🚗</span>
+          <div class="ride-option-name">اقتصادي</div>
+          <div class="ride-option-desc">1-4 أشخاص</div>
+          <div class="ride-option-price">من 70 جنيه</div>
+        </div>
+        <div class="ride-option" onclick="selectRide(this, 120)">
+          <span class="ride-option-icon">🚙</span>
+          <div class="ride-option-name">مريح</div>
+          <div class="ride-option-desc">سيارة كبيرة</div>
+          <div class="ride-option-price">من 120 جنيه</div>
+        </div>
+        <div class="ride-option" onclick="selectRide(this, 200)">
+          <span class="ride-option-icon">🚐</span>
+          <div class="ride-option-name">ميكروباص</div>
+          <div class="ride-option-desc">1-8 أشخاص</div>
+          <div class="ride-option-price">من 200 جنيه</div>
+        </div>
+        <div class="ride-option" onclick="selectRide(this, 350)">
+          <span class="ride-option-icon">👑</span>
+          <div class="ride-option-name">VIP</div>
+          <div class="ride-option-desc">فاخر ومريح</div>
+          <div class="ride-option-price">من 350 جنيه</div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="schedule-row">
+        <button class="schedule-btn active" onclick="scheduleNow(this)">⚡ الآن</button>
+        <button class="schedule-btn" onclick="scheduleLater(this)">📅 لاحقاً</button>
+      </div>
+
+      <div id="scheduleTime" style="display:none;margin-bottom:16px">
+        <input type="datetime-local" class="form-control">
+      </div>
+
+      <!-- Price Estimate -->
+      <div class="price-estimate">
+        <div>
+          <div class="estimate-label">💰 السعر المقدر</div>
+          <div class="estimate-price" id="estimatedPrice">70 - 90 جنيه</div>
+          <div class="estimate-details">⏱️ وصول السائق ~5 دقائق</div>
+        </div>
+        <div style="font-size:40px;opacity:0.7">🚗</div>
+      </div>
+
+      <button class="book-btn" onclick="bookRide()">🚗 احجز الآن</button>
+    </div>
+
+    <!-- Nearby Drivers -->
+    <div class="section-title">🚗 <span>سائقون قريبون</span></div>
+
+    <div class="driver-card">
+      <div class="driver-avatar">م</div>
+      <div class="driver-info">
+        <div class="driver-name">محمد أحمد</div>
+        <div class="driver-rating">⭐⭐⭐⭐⭐ 4.9 (120 رحلة)</div>
+        <div class="driver-car">🚗 تويوتا كامري 2022 - أبيض</div>
+      </div>
+      <div style="text-align:center">
+        <div class="driver-eta">3 دق</div>
+        <div class="driver-eta-label">وقت الوصول</div>
+      </div>
+    </div>
+
+    <div class="driver-card">
+      <div class="driver-avatar" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">أ</div>
+      <div class="driver-info">
+        <div class="driver-name">أحمد مصطفى</div>
+        <div class="driver-rating">⭐⭐⭐⭐⭐ 4.8 (85 رحلة)</div>
+        <div class="driver-car">🚙 هيونداي إيلنترا 2021 - فضي</div>
+      </div>
+      <div style="text-align:center">
+        <div class="driver-eta" style="color:#7C3AED">5 دق</div>
+        <div class="driver-eta-label">وقت الوصول</div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features-card">
+      <div class="section-title">✨ <span>مميزات خدمة المشاوير</span></div>
+      <div class="features-list">
+        <div class="feature-row">
+          <span class="feature-row-icon">💰</span>
+          <div><div class="feature-row-text">سعر محدد مسبقاً</div><div class="feature-row-sub">لا توجد مفاجآت في السعر</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">📍</span>
+          <div><div class="feature-row-text">تتبع مباشر</div><div class="feature-row-sub">تابع السائق على الخريطة لحظة بلحظة</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">🛡️</span>
+          <div><div class="feature-row-text">سائقون معتمدون</div><div class="feature-row-sub">تم التحقق من هوية وسجل كل سائق</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">🌙</span>
+          <div><div class="feature-row-text">خدمة 24/7</div><div class="feature-row-sub">متاح في أي وقت من ليل أو نهار</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">🗺️</span>
+          <div><div class="feature-row-text">27 محافظة</div><div class="feature-row-sub">نصل لجميع أنحاء مصر</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">📅</span>
+          <div><div class="feature-row-text">حجز مسبق</div><div class="feature-row-sub">خطط رحلتك مسبقاً</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">📞</span>
+          <div><div class="feature-row-text">دعم فوري</div><div class="feature-row-sub">تواصل مع السائق أو الدعم في أي وقت</div></div>
+        </div>
+        <div class="feature-row">
+          <span class="feature-row-icon">💳</span>
+          <div><div class="feature-row-text">دفع متعدد</div><div class="feature-row-sub">كاش، بطاقة، أو محفظة وصله</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Governorates -->
+    <div class="governorates-section">
+      <div class="section-title">📍 <span>المحافظات المتاحة</span></div>
+      <div class="gov-grid">
+        <div class="gov-chip">🏙️ القاهرة</div>
+        <div class="gov-chip">🏖️ الإسكندرية</div>
+        <div class="gov-chip">🌿 الجيزة</div>
+        <div class="gov-chip">🌊 البحر الأحمر</div>
+        <div class="gov-chip">🏔️ أسوان</div>
+        <div class="gov-chip">⛩️ الأقصر</div>
+        <div class="gov-chip">🌴 الفيوم</div>
+        <div class="gov-chip">🏭 السويس</div>
+        <div class="gov-chip">🌊 بورسعيد</div>
+        <div class="gov-chip">🌻 المنيا</div>
+        <div class="gov-chip">🌾 أسيوط</div>
+        <div class="gov-chip">✨ سيناء</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="/home" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item">
+      <span class="nav-icon">📋</span>
+      <span>طلباتي</span>
+    </a>
+    <a href="/rides" class="nav-center-btn">🚗</a>
+    <a href="/wallet" class="nav-item">
+      <span class="nav-icon">👛</span>
+      <span>المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
+
+  <script>
+    let currentRideType = 'local';
+    let selectedPrice = 70;
+
+    function switchRideType(btn, type) {
+      document.querySelectorAll('.ride-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentRideType = type;
+      document.getElementById('govSelector').style.display = type === 'inter' ? 'block' : 'none';
+      if (type === 'inter') {
+        document.getElementById('estimatedPrice').textContent = '300 - 600 جنيه';
+      } else if (type === 'charter') {
+        document.getElementById('estimatedPrice').textContent = '500 - 1200 جنيه / يوم';
+      } else {
+        updatePrice();
+      }
+    }
+
+    function selectRide(el, price) {
+      document.querySelectorAll('.ride-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPrice = price;
+      updatePrice();
+    }
+
+    function updatePrice() {
+      document.getElementById('estimatedPrice').textContent = selectedPrice + ' - ' + (selectedPrice + 30) + ' جنيه';
+    }
+
+    function swapLocations() {
+      const from = document.getElementById('fromLocation').value;
+      const to = document.getElementById('toLocation').value;
+      document.getElementById('fromLocation').value = to;
+      document.getElementById('toLocation').value = from;
+    }
+
+    function setLocation(field) {
+      const locations = ['مدينة نصر، شارع عباس العقاد', 'المعادي، شارع 9', 'الزمالك، شارع 26 يوليو', 'المهندسين، شارع جامعة الدول', 'العباسية', 'هليوبوليس'];
+      const loc = locations[Math.floor(Math.random() * locations.length)];
+      document.getElementById(field + 'Location').value = loc;
+    }
+
+    function scheduleNow(btn) {
+      document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('scheduleTime').style.display = 'none';
+    }
+
+    function scheduleLater(btn) {
+      document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('scheduleTime').style.display = 'block';
+    }
+
+    function bookRide() {
+      const from = document.getElementById('fromLocation').value;
+      const to = document.getElementById('toLocation').value;
+      if (!from || !to) { alert('⚠️ يرجى تحديد نقطة الانطلاق والوجهة'); return; }
+      if (confirm('✅ تأكيد الحجز؟\nمن: ' + from + '\nإلى: ' + to + '\nالسعر: ' + selectedPrice + ' جنيه')) {
+        alert('🎉 تم حجز مشوارك!\n🚗 السائق في الطريق إليك\nوقت الوصول: ~5 دقائق\nرقم الطلب: #' + Math.floor(Math.random() * 9000 + 1000));
+        window.location.href = '/orders';
+      }
+    }
+  </script>
+</body>
+</html>

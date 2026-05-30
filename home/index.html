@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-REUXUYY6">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الرئيسية - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/home.736e5643.css" /><script type="module">const e=JSON.parse(localStorage.getItem("wslha_user")||"{}");e.name?(document.getElementById("userName").textContent=e.name,document.getElementById("userBalance").textContent=(e.balance||250).toLocaleString("ar-EG")):window.location.href="/login";
+</script></head>
+<body class="astro-REUXUYY6">
+
+  <!-- Header -->
+  <div class="home-header astro-REUXUYY6">
+    <div class="header-top astro-REUXUYY6">
+      <div class="user-greeting astro-REUXUYY6">
+        <div class="greeting-sub astro-REUXUYY6">🌟 أهلاً وسهلاً،</div>
+        <div class="greeting-name astro-REUXUYY6" id="userName">جاري التحميل...</div>
+      </div>
+      <div class="header-icons astro-REUXUYY6">
+        <a href="/orders" class="icon-btn astro-REUXUYY6" title="الطلبات">📋</a>
+        <button class="icon-btn astro-REUXUYY6" onclick="showNotifications()" style="position:relative;">
+          🔔
+          <span class="notif-dot astro-REUXUYY6"></span>
+        </button>
+        <a href="/settings" class="icon-btn astro-REUXUYY6" title="الإعدادات">⚙️</a>
+      </div>
+    </div>
+
+    <a href="/wallet" class="balance-chip astro-REUXUYY6">
+      👛 رصيد محفظتك: <strong id="userBalance" class="astro-REUXUYY6">0</strong> جنيه
+    </a>
+
+    <div class="search-box astro-REUXUYY6">
+      <input type="text" class="search-input astro-REUXUYY6" placeholder="🔍 ابحث عن خدمة أو موقع...">
+      <button class="search-icon-btn astro-REUXUYY6">🗺️</button>
+    </div>
+  </div>
+
+  <!-- Services Grid -->
+  <div class="services-grid astro-REUXUYY6">
+    <a href="/delivery" class="service-tile astro-REUXUYY6">
+      <span class="tile-icon astro-REUXUYY6">🏪</span>
+      <div class="tile-name astro-REUXUYY6">توصيل طلبات</div>
+      <div class="tile-sub astro-REUXUYY6">المتاجر المحلية</div>
+      <div class="tile-badge astro-REUXUYY6">⚡ 30 دقيقة</div>
+    </a>
+    <a href="/rides" class="service-tile astro-REUXUYY6">
+      <span class="tile-icon astro-REUXUYY6">🚗</span>
+      <div class="tile-name astro-REUXUYY6">مشاوير</div>
+      <div class="tile-sub astro-REUXUYY6">داخل وبين المحافظات</div>
+      <div class="tile-badge astro-REUXUYY6">🗺️ 27 محافظة</div>
+    </a>
+    <a href="/airport" class="service-tile astro-REUXUYY6">
+      <span class="tile-icon astro-REUXUYY6">✈️</span>
+      <div class="tile-name astro-REUXUYY6">المطار</div>
+      <div class="tile-sub astro-REUXUYY6">ذهاب وعودة</div>
+      <div class="tile-badge astro-REUXUYY6">🛡️ مضمون</div>
+    </a>
+    <a href="/wallet" class="service-tile astro-REUXUYY6">
+      <span class="tile-icon astro-REUXUYY6">👛</span>
+      <div class="tile-name astro-REUXUYY6">محفظتي</div>
+      <div class="tile-sub astro-REUXUYY6">شحن وسحب رصيد</div>
+      <div class="tile-badge astro-REUXUYY6">💳 متعدد</div>
+    </a>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section-container astro-REUXUYY6">
+    <div class="quick-actions astro-REUXUYY6">
+      <a href="/orders" class="quick-action astro-REUXUYY6">
+        <span class="qa-icon astro-REUXUYY6">📋</span>
+        <div class="qa-text astro-REUXUYY6">طلباتي</div>
+      </a>
+      <a href="/ratings" class="quick-action astro-REUXUYY6">
+        <span class="qa-icon astro-REUXUYY6">⭐</span>
+        <div class="qa-text astro-REUXUYY6">التقييمات</div>
+      </a>
+      <a href="/wallet" class="quick-action astro-REUXUYY6">
+        <span class="qa-icon astro-REUXUYY6">💰</span>
+        <div class="qa-text astro-REUXUYY6">شحن رصيد</div>
+      </a>
+      <a href="/settings" class="quick-action astro-REUXUYY6">
+        <span class="qa-icon astro-REUXUYY6">⚙️</span>
+        <div class="qa-text astro-REUXUYY6">الإعدادات</div>
+      </a>
+    </div>
+
+    <!-- Promo Banners -->
+    <div class="section-row astro-REUXUYY6">
+      <div class="section-title-text astro-REUXUYY6">🎁 عروض حصرية</div>
+    </div>
+
+    <div class="promos-scroll astro-REUXUYY6">
+      <div class="promo-card promo-1 astro-REUXUYY6">
+        <div style="font-size:13px;opacity:0.9;margin-bottom:4px" class="astro-REUXUYY6">خصم أول طلب</div>
+        <div style="font-size:22px;font-weight:900" class="astro-REUXUYY6">30% خصم</div>
+        <div style="font-size:11px;opacity:0.8;margin-top:4px" class="astro-REUXUYY6">على أول طلب توصيل</div>
+        <div class="promo-code astro-REUXUYY6">WSLHA30</div>
+      </div>
+      <div class="promo-card promo-2 astro-REUXUYY6">
+        <div style="font-size:13px;opacity:0.9;margin-bottom:4px" class="astro-REUXUYY6">مشوار مجاني</div>
+        <div style="font-size:22px;font-weight:900" class="astro-REUXUYY6">رحلة مجانية 🎉</div>
+        <div style="font-size:11px;opacity:0.8;margin-top:4px" class="astro-REUXUYY6">لكل مستخدم جديد</div>
+        <div class="promo-code astro-REUXUYY6">FREE1</div>
+      </div>
+      <div class="promo-card promo-3 astro-REUXUYY6">
+        <div style="font-size:13px;opacity:0.9;margin-bottom:4px;color:#1E293B" class="astro-REUXUYY6">توصيل المطار</div>
+        <div style="font-size:22px;font-weight:900;color:#1E293B" class="astro-REUXUYY6">20% خصم</div>
+        <div style="font-size:11px;opacity:0.8;margin-top:4px;color:#1E293B" class="astro-REUXUYY6">على رحلات المطار</div>
+        <div class="promo-code astro-REUXUYY6" style="color:#1E293B;border-color:#1E293B">AIR20</div>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="section-row astro-REUXUYY6" style="margin-top: 20px;">
+      <div class="section-title-text astro-REUXUYY6">📋 آخر الطلبات</div>
+      <a href="/orders" class="see-all-link astro-REUXUYY6">عرض الكل</a>
+    </div>
+
+    <a href="/orders" class="order-mini-card success astro-REUXUYY6">
+      <div class="order-mini-icon astro-REUXUYY6">🏪</div>
+      <div class="order-mini-info astro-REUXUYY6">
+        <div class="order-mini-title astro-REUXUYY6">طلب من سوبر ماركت</div>
+        <div class="order-mini-sub astro-REUXUYY6">✅ تم التوصيل • منذ ساعتين</div>
+      </div>
+      <div class="order-mini-price astro-REUXUYY6">45 جنيه</div>
+    </a>
+
+    <a href="/orders" class="order-mini-card astro-REUXUYY6">
+      <div class="order-mini-icon astro-REUXUYY6">🚗</div>
+      <div class="order-mini-info astro-REUXUYY6">
+        <div class="order-mini-title astro-REUXUYY6">مشوار - وسط البلد</div>
+        <div class="order-mini-sub astro-REUXUYY6">✅ مكتمل • أمس</div>
+      </div>
+      <div class="order-mini-price astro-REUXUYY6">80 جنيه</div>
+    </a>
+
+    <a href="/orders" class="order-mini-card pending astro-REUXUYY6">
+      <div class="order-mini-icon astro-REUXUYY6">✈️</div>
+      <div class="order-mini-info astro-REUXUYY6">
+        <div class="order-mini-title astro-REUXUYY6">توصيل مطار القاهرة</div>
+        <div class="order-mini-sub astro-REUXUYY6">⏳ قيد التنفيذ</div>
+      </div>
+      <div class="order-mini-price astro-REUXUYY6">150 جنيه</div>
+    </a>
+
+    <!-- Ratings Summary -->
+    <div class="section-row astro-REUXUYY6" style="margin-top: 20px;">
+      <div class="section-title-text astro-REUXUYY6">⭐ تقييمك</div>
+      <a href="/ratings" class="see-all-link astro-REUXUYY6">تفاصيل</a>
+    </div>
+
+    <div class="rating-preview astro-REUXUYY6">
+      <div style="display:flex;gap:20px;align-items:center" class="astro-REUXUYY6">
+        <div style="text-align:center" class="astro-REUXUYY6">
+          <div class="rating-big-num astro-REUXUYY6">4.8</div>
+          <div class="rating-stars-row astro-REUXUYY6">⭐⭐⭐⭐⭐</div>
+          <div class="rating-count astro-REUXUYY6">من 24 تقييم</div>
+        </div>
+        <div class="rating-bars astro-REUXUYY6">
+          <div class="rating-bar-row astro-REUXUYY6"><div class="rating-bar-label astro-REUXUYY6">5⭐</div><div class="rating-bar-track astro-REUXUYY6"><div class="rating-bar-fill astro-REUXUYY6" style="width:80%"></div></div><div class="rating-bar-pct astro-REUXUYY6">80%</div></div>
+          <div class="rating-bar-row astro-REUXUYY6"><div class="rating-bar-label astro-REUXUYY6">4⭐</div><div class="rating-bar-track astro-REUXUYY6"><div class="rating-bar-fill astro-REUXUYY6" style="width:15%"></div></div><div class="rating-bar-pct astro-REUXUYY6">15%</div></div>
+          <div class="rating-bar-row astro-REUXUYY6"><div class="rating-bar-label astro-REUXUYY6">3⭐</div><div class="rating-bar-track astro-REUXUYY6"><div class="rating-bar-fill astro-REUXUYY6" style="width:4%"></div></div><div class="rating-bar-pct astro-REUXUYY6">4%</div></div>
+          <div class="rating-bar-row astro-REUXUYY6"><div class="rating-bar-label astro-REUXUYY6">2⭐</div><div class="rating-bar-track astro-REUXUYY6"><div class="rating-bar-fill astro-REUXUYY6" style="width:1%"></div></div><div class="rating-bar-pct astro-REUXUYY6">1%</div></div>
+          <div class="rating-bar-row astro-REUXUYY6"><div class="rating-bar-label astro-REUXUYY6">1⭐</div><div class="rating-bar-track astro-REUXUYY6"><div class="rating-bar-fill astro-REUXUYY6" style="width:0%"></div></div><div class="rating-bar-pct astro-REUXUYY6">0%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav astro-REUXUYY6">
+    <a href="/home" class="nav-item active astro-REUXUYY6">
+      <span class="nav-icon astro-REUXUYY6">🏠</span>
+      <span class="astro-REUXUYY6">الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item astro-REUXUYY6">
+      <span class="nav-icon astro-REUXUYY6">📋</span>
+      <span class="astro-REUXUYY6">طلباتي</span>
+    </a>
+    <a href="/delivery" class="nav-center-btn astro-REUXUYY6" title="طلب جديد">+</a>
+    <a href="/wallet" class="nav-item astro-REUXUYY6">
+      <span class="nav-icon astro-REUXUYY6">👛</span>
+      <span class="astro-REUXUYY6">المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item astro-REUXUYY6">
+      <span class="nav-icon astro-REUXUYY6">⚙️</span>
+      <span class="astro-REUXUYY6">الإعدادات</span>
+    </a>
+  </nav>
+
+  <!-- Notification Modal -->
+  <div class="modal-overlay hidden astro-REUXUYY6" id="notifModal" onclick="hideNotifications()">
+    <div class="modal-content astro-REUXUYY6" onclick="event.stopPropagation()">
+      <div class="modal-handle astro-REUXUYY6"></div>
+      <div class="modal-title astro-REUXUYY6">🔔 الإشعارات</div>
+      <div style="display:flex;flex-direction:column;gap:12px" class="astro-REUXUYY6">
+        <div style="display:flex;gap:12px;padding:14px;background:#F0FDF4;border-radius:14px;border-right:3px solid #10B981" class="astro-REUXUYY6">
+          <span style="font-size:24px" class="astro-REUXUYY6">✅</span>
+          <div class="astro-REUXUYY6"><div style="font-weight:700;font-size:14px" class="astro-REUXUYY6">تم توصيل طلبك بنجاح</div><div style="font-size:12px;color:#94A3B8;margin-top:4px" class="astro-REUXUYY6">طلب رقم #4521 • منذ ساعتين</div></div>
+        </div>
+        <div style="display:flex;gap:12px;padding:14px;background:#EFF6FF;border-radius:14px;border-right:3px solid #1D4ED8" class="astro-REUXUYY6">
+          <span style="font-size:24px" class="astro-REUXUYY6">🎁</span>
+          <div class="astro-REUXUYY6"><div style="font-weight:700;font-size:14px" class="astro-REUXUYY6">عرض خاص! خصم 30%</div><div style="font-size:12px;color:#94A3B8;margin-top:4px" class="astro-REUXUYY6">استخدم كود WSLHA30 • ينتهي اليوم</div></div>
+        </div>
+        <div style="display:flex;gap:12px;padding:14px;background:#FFFBEB;border-radius:14px;border-right:3px solid #F59E0B" class="astro-REUXUYY6">
+          <span style="font-size:24px" class="astro-REUXUYY6">⭐</span>
+          <div class="astro-REUXUYY6"><div style="font-weight:700;font-size:14px" class="astro-REUXUYY6">قيّم رحلتك الأخيرة</div><div style="font-size:12px;color:#94A3B8;margin-top:4px" class="astro-REUXUYY6">ساعد في تحسين الخدمة • أمس</div></div>
+        </div>
+        <div style="display:flex;gap:12px;padding:14px;background:#F8FAFC;border-radius:14px;border-right:3px solid #94A3B8" class="astro-REUXUYY6">
+          <span style="font-size:24px" class="astro-REUXUYY6">🚗</span>
+          <div class="astro-REUXUYY6"><div style="font-weight:700;font-size:14px" class="astro-REUXUYY6">سائقك في الطريق إليك</div><div style="font-size:12px;color:#94A3B8;margin-top:4px" class="astro-REUXUYY6">يصل خلال 5 دقائق • قبل يومين</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

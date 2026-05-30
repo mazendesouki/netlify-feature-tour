@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-SWHFEJ32">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإعدادات - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/settings.9e44be41.css" /><script type="module">const e=JSON.parse(localStorage.getItem("wslha_user")||"{}");e.name&&(document.getElementById("profileName").textContent=e.name,document.getElementById("avatarLetter").textContent=e.name.charAt(0),e.phone&&(document.getElementById("profilePhone").textContent="📱 "+e.phone,document.getElementById("currentPhone").textContent=e.phone));
+</script></head>
+<body class="astro-SWHFEJ32">
+
+  <!-- Profile Section -->
+  <div class="profile-section astro-SWHFEJ32">
+    <div class="profile-card astro-SWHFEJ32">
+      <div class="profile-avatar astro-SWHFEJ32" id="avatarLetter">م</div>
+      <div class="profile-info astro-SWHFEJ32">
+        <div class="profile-name astro-SWHFEJ32" id="profileName">مستخدم وصله</div>
+        <div class="profile-phone astro-SWHFEJ32" id="profilePhone">📱 01XXXXXXXXX</div>
+        <div class="profile-rating astro-SWHFEJ32">⭐⭐⭐⭐⭐ 4.8 (24 تقييم)</div>
+      </div>
+      <button class="profile-edit-btn astro-SWHFEJ32" onclick="editProfile()">✏️ تعديل</button>
+    </div>
+  </div>
+
+  <div class="page-content astro-SWHFEJ32">
+    <!-- Account Settings -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">👤 إعدادات الحساب</div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="editProfile()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">👤</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">تعديل الملف الشخصي</div>
+            <div class="setting-sub astro-SWHFEJ32">الاسم، الصورة، البيانات</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="changePhone()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">📱</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">تغيير رقم الهاتف</div>
+            <div class="setting-sub astro-SWHFEJ32" id="currentPhone">01XXXXXXXXX</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="changePassword()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">🔒</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">تغيير كلمة المرور</div>
+            <div class="setting-sub astro-SWHFEJ32">آخر تغيير منذ 30 يوم</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="manageAddresses()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-green astro-SWHFEJ32">📍</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">عناواين محفوظة</div>
+            <div class="setting-sub astro-SWHFEJ32">3 عناوين محفوظة</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-value astro-SWHFEJ32">3</span>
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="managePayments()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-amber astro-SWHFEJ32">💳</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">طرق الدفع</div>
+            <div class="setting-sub astro-SWHFEJ32">فيزا، فودافون كاش</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">🔔 الإشعارات</div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">🔔</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">إشعارات الطلبات</div>
+            <div class="setting-sub astro-SWHFEJ32">تحديثات حالة طلبك</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" checked onchange="toggleSetting('orders_notif', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-amber astro-SWHFEJ32">🎁</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">العروض والخصومات</div>
+            <div class="setting-sub astro-SWHFEJ32">كوبونات ومكافآت</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" checked onchange="toggleSetting('promo_notif', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-green astro-SWHFEJ32">💰</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">عمليات المحفظة</div>
+            <div class="setting-sub astro-SWHFEJ32">شحن، سحب، تحويل</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" checked onchange="toggleSetting('wallet_notif', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">📧</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">إشعارات البريد</div>
+            <div class="setting-sub astro-SWHFEJ32">ملخص أسبوعي</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" onchange="toggleSetting('email_notif', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- App Settings -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">⚙️ إعدادات التطبيق</div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">🌐</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">اللغة</div>
+          </div>
+        </div>
+        <div class="language-options astro-SWHFEJ32">
+          <button class="lang-btn active astro-SWHFEJ32">العربية</button>
+          <button class="lang-btn astro-SWHFEJ32" onclick="switchLanguage()">English</button>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="toggleDarkMode()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-gray astro-SWHFEJ32">🌙</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">الوضع الليلي</div>
+            <div class="setting-sub astro-SWHFEJ32">تغيير مظهر التطبيق</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" id="darkModeToggle" onchange="toggleSetting('dark_mode', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="setDefaultLocation()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-green astro-SWHFEJ32">📍</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">موقعك الافتراضي</div>
+            <div class="setting-sub astro-SWHFEJ32">مدينة نصر، القاهرة</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">💳</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">طريقة الدفع الافتراضية</div>
+            <div class="setting-sub astro-SWHFEJ32">محفظة وصله</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Referral -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">🎁 الإحالة والمكافآت</div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="showReferral()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-amber astro-SWHFEJ32">🎁</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">اعزم صاحبك</div>
+            <div class="setting-sub astro-SWHFEJ32">كل إحالة ناجحة = 20 جنيه</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-value astro-SWHFEJ32" style="color:#D97706;font-weight:800">كود: WSLHA123</span>
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="showPoints()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-amber astro-SWHFEJ32">⭐</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">نقاط المكافآت</div>
+            <div class="setting-sub astro-SWHFEJ32">استبدل نقاطك بخصومات</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <span class="setting-value astro-SWHFEJ32" style="color:#D97706;font-weight:800">1,240 نقطة</span>
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy & Security -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">🔐 الأمان والخصوصية</div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="enable2FA()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-green astro-SWHFEJ32">🛡️</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">التحقق بخطوتين</div>
+            <div class="setting-sub astro-SWHFEJ32">حماية إضافية لحسابك</div>
+          </div>
+        </div>
+        <label class="toggle astro-SWHFEJ32">
+          <input type="checkbox" onchange="toggleSetting('2fa', this.checked)" class="astro-SWHFEJ32">
+          <span class="toggle-slider astro-SWHFEJ32"></span>
+        </label>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="showPrivacy()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">📄</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">سياسة الخصوصية</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32"><span class="setting-arrow astro-SWHFEJ32">›</span></div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="showTerms()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">📋</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">شروط الاستخدام</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32"><span class="setting-arrow astro-SWHFEJ32">›</span></div>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="settings-section astro-SWHFEJ32">
+      <div class="section-label astro-SWHFEJ32">💬 الدعم والمساعدة</div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="chatSupport()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-green astro-SWHFEJ32">💬</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">الدعم الفوري</div>
+            <div class="setting-sub astro-SWHFEJ32">متاح 24/7</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32">
+          <div style="background:#10B981;color:white;padding:3px 8px;border-radius:8px;font-size:10px;font-weight:700" class="astro-SWHFEJ32">متصل</div>
+          <span class="setting-arrow astro-SWHFEJ32">›</span>
+        </div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="callSupport()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-blue astro-SWHFEJ32">📞</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">اتصل بنا</div>
+            <div class="setting-sub astro-SWHFEJ32">19123 - مجاني</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32"><span class="setting-arrow astro-SWHFEJ32">›</span></div>
+      </div>
+
+      <div class="setting-item astro-SWHFEJ32" onclick="reportProblem()">
+        <div class="setting-left astro-SWHFEJ32">
+          <div class="setting-icon-box icon-amber astro-SWHFEJ32">⚠️</div>
+          <div class="astro-SWHFEJ32">
+            <div class="setting-text astro-SWHFEJ32">الإبلاغ عن مشكلة</div>
+          </div>
+        </div>
+        <div class="setting-right astro-SWHFEJ32"><span class="setting-arrow astro-SWHFEJ32">›</span></div>
+      </div>
+    </div>
+
+    <!-- Logout & Delete -->
+    <button class="danger-btn astro-SWHFEJ32" onclick="logout()">🚪 تسجيل الخروج</button>
+
+    <div style="margin-top:10px" class="astro-SWHFEJ32">
+      <button class="danger-btn astro-SWHFEJ32" style="color:#94A3B8;border-color:#F1F5F9;font-size:14px" onclick="deleteAccount()">🗑️ حذف الحساب</button>
+    </div>
+
+    <!-- Version Info -->
+    <div class="version-info astro-SWHFEJ32">
+      <div class="app-version astro-SWHFEJ32">وصله v2.0.1</div>
+      <div class="astro-SWHFEJ32">تطبيق التوصيل والتنقل في مصر</div>
+      <div class="badge-row astro-SWHFEJ32">
+        <div class="app-badge astro-SWHFEJ32">🇪🇬 مصر</div>
+        <div class="app-badge astro-SWHFEJ32">📱 iOS & Android</div>
+        <div class="app-badge astro-SWHFEJ32">🌐 Web</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav astro-SWHFEJ32">
+    <a href="/home" class="nav-item astro-SWHFEJ32">
+      <span class="nav-icon astro-SWHFEJ32">🏠</span>
+      <span class="astro-SWHFEJ32">الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item astro-SWHFEJ32">
+      <span class="nav-icon astro-SWHFEJ32">📋</span>
+      <span class="astro-SWHFEJ32">طلباتي</span>
+    </a>
+    <a href="/delivery" class="nav-center-btn astro-SWHFEJ32">+</a>
+    <a href="/wallet" class="nav-item astro-SWHFEJ32">
+      <span class="nav-icon astro-SWHFEJ32">👛</span>
+      <span class="astro-SWHFEJ32">المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item active astro-SWHFEJ32">
+      <span class="nav-icon astro-SWHFEJ32">⚙️</span>
+      <span class="astro-SWHFEJ32">الإعدادات</span>
+    </a>
+  </nav>
+
+  
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-P3UPOO52">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلباتي - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/orders.66153f3c.css" /><script type="module">
+</script></head>
+<body class="astro-P3UPOO52">
+
+  <!-- Header -->
+  <div class="orders-header astro-P3UPOO52">
+    <div class="header-nav astro-P3UPOO52">
+      <a href="/home" class="back-btn astro-P3UPOO52">←</a>
+      <div class="header-title astro-P3UPOO52">📋 طلباتي</div>
+    </div>
+
+    <div class="status-tabs astro-P3UPOO52">
+      <button class="status-tab active astro-P3UPOO52" onclick="filterOrders('all', this)">🔄 الكل (7)</button>
+      <button class="status-tab astro-P3UPOO52" onclick="filterOrders('active', this)">⏳ نشطة (1)</button>
+      <button class="status-tab astro-P3UPOO52" onclick="filterOrders('delivered', this)">✅ مكتملة (5)</button>
+      <button class="status-tab astro-P3UPOO52" onclick="filterOrders('cancelled', this)">❌ ملغاة (1)</button>
+    </div>
+  </div>
+
+  <div class="page-content astro-P3UPOO52">
+    <!-- Search -->
+    <div class="search-orders astro-P3UPOO52">
+      <input type="text" placeholder="🔍 ابحث في طلباتك..." id="searchInput" oninput="searchOrders(this.value)" class="astro-P3UPOO52">
+      <span class="search-orders-icon astro-P3UPOO52">🔍</span>
+    </div>
+
+    <!-- Active Order (In Progress) -->
+    <div class="order-card in-progress astro-P3UPOO52" id="order-active" onclick="trackOrder('#ORD-4523')">
+      <div class="order-header astro-P3UPOO52">
+        <div class="order-id-badge astro-P3UPOO52">#ORD-4523 🔴 LIVE</div>
+        <div class="order-time astro-P3UPOO52">الآن</div>
+      </div>
+
+      <div class="order-type-row astro-P3UPOO52">
+        <div class="order-type-icon astro-P3UPOO52" style="background:#EFF6FF">✈️</div>
+        <div class="astro-P3UPOO52">
+          <div class="order-type-name astro-P3UPOO52">توصيل مطار القاهرة</div>
+          <div class="order-type-sub astro-P3UPOO52">السائق: محمد أحمد • 🚗 تويوتا أبيض</div>
+        </div>
+      </div>
+
+      <div class="order-route astro-P3UPOO52">
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-from astro-P3UPOO52"></span> مدينة نصر، شارع التسعين</div>
+        <div style="padding-right:3px" class="astro-P3UPOO52"><div class="route-line-connector astro-P3UPOO52"></div></div>
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-to astro-P3UPOO52"></span> مطار القاهرة الدولي - T3</div>
+      </div>
+
+      <!-- Progress Steps -->
+      <div style="position:relative;padding:0 10px" class="astro-P3UPOO52">
+        <div class="progress-steps astro-P3UPOO52">
+          <div class="prog-fill astro-P3UPOO52" style="width: 50%"></div>
+          <div class="prog-step astro-P3UPOO52">
+            <div class="prog-dot done astro-P3UPOO52">✓</div>
+            <div class="prog-label active astro-P3UPOO52">تأكيد</div>
+          </div>
+          <div class="prog-step astro-P3UPOO52">
+            <div class="prog-dot current astro-P3UPOO52">🚗</div>
+            <div class="prog-label active astro-P3UPOO52">في الطريق</div>
+          </div>
+          <div class="prog-step astro-P3UPOO52">
+            <div class="prog-dot astro-P3UPOO52">📍</div>
+            <div class="prog-label astro-P3UPOO52">وصل</div>
+          </div>
+          <div class="prog-step astro-P3UPOO52">
+            <div class="prog-dot astro-P3UPOO52">✅</div>
+            <div class="prog-label astro-P3UPOO52">مكتمل</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-footer astro-P3UPOO52">
+        <div class="order-price astro-P3UPOO52">150 جنيه</div>
+        <div class="order-actions astro-P3UPOO52">
+          <button class="action-btn action-btn-track astro-P3UPOO52" onclick="event.stopPropagation(); trackOrder('#ORD-4523')">📍 تتبع</button>
+          <button class="action-btn action-btn-cancel astro-P3UPOO52" onclick="event.stopPropagation(); cancelOrder('#ORD-4523')">❌ إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivered Orders -->
+    <div class="order-card delivered astro-P3UPOO52" id="order-1" onclick="showOrderDetails('#ORD-4521')">
+      <div class="order-header astro-P3UPOO52">
+        <div class="order-id-badge astro-P3UPOO52" style="background:#F0FDF4;color:#10B981">#ORD-4521 ✅</div>
+        <div class="order-time astro-P3UPOO52">منذ ساعتين</div>
+      </div>
+      <div class="order-type-row astro-P3UPOO52">
+        <div class="order-type-icon astro-P3UPOO52" style="background:#F0FDF4">🏪</div>
+        <div class="astro-P3UPOO52">
+          <div class="order-type-name astro-P3UPOO52">توصيل من كارفور</div>
+          <div class="order-type-sub astro-P3UPOO52">سوبر ماركت • 5 منتجات</div>
+        </div>
+      </div>
+      <div class="order-route astro-P3UPOO52">
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-from astro-P3UPOO52"></span> كارفور مدينة نصر</div>
+        <div style="padding-right:3px" class="astro-P3UPOO52"><div class="route-line-connector astro-P3UPOO52"></div></div>
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-to astro-P3UPOO52"></span> مدينة نصر، شارع 90</div>
+      </div>
+      <div class="order-footer astro-P3UPOO52">
+        <div class="order-price astro-P3UPOO52">45 جنيه</div>
+        <div class="order-actions astro-P3UPOO52">
+          <button class="action-btn action-btn-rate astro-P3UPOO52" onclick="event.stopPropagation(); rateOrder('#ORD-4521')">⭐ تقييم</button>
+          <button class="action-btn action-btn-reorder astro-P3UPOO52" onclick="event.stopPropagation(); reorder()">🔄 إعادة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-card delivered astro-P3UPOO52" id="order-2" onclick="showOrderDetails('#ORD-4518')">
+      <div class="order-header astro-P3UPOO52">
+        <div class="order-id-badge astro-P3UPOO52" style="background:#F0FDF4;color:#10B981">#ORD-4518 ✅</div>
+        <div class="order-time astro-P3UPOO52">أمس، 3:15 م</div>
+      </div>
+      <div class="order-type-row astro-P3UPOO52">
+        <div class="order-type-icon astro-P3UPOO52" style="background:#ECFDF5">🚗</div>
+        <div class="astro-P3UPOO52">
+          <div class="order-type-name astro-P3UPOO52">مشوار - المعادي</div>
+          <div class="order-type-sub astro-P3UPOO52">محمد علي • 12 كم</div>
+        </div>
+      </div>
+      <div class="order-route astro-P3UPOO52">
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-from astro-P3UPOO52"></span> المهندسين، شارع جامعة الدول</div>
+        <div style="padding-right:3px" class="astro-P3UPOO52"><div class="route-line-connector astro-P3UPOO52"></div></div>
+        <div class="route-row astro-P3UPOO52"><span class="route-dot-to astro-P3UPOO52"></span> المعادي، شارع 9</div>
+      </div>
+      <div class="order-footer astro-P3UPOO52">
+        <div class="order-price astro-P3UPOO52">80 جنيه</div>
+        <div class="order-actions astro-P3UPOO52">
+          <button class="action-btn action-btn-rate astro-P3UPOO52" onclick="event.stopPropagation(); rateOrder('#ORD-4518')">⭐ تقييم</button>
+          <button class="action-btn action-btn-reorder astro-P3UPOO52" onclick="event.stopPropagation(); reorder()">🔄 إعادة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-card delivered astro-P3UPOO52" id="order-3">
+      <div class="order-header astro-P3UPOO52">
+        <div class="order-id-badge astro-P3UPOO52" style="background:#F0FDF4;color:#10B981">#ORD-4510 ✅</div>
+        <div class="order-time astro-P3UPOO52">25 مارس</div>
+      </div>
+      <div class="order-type-row astro-P3UPOO52">
+        <div class="order-type-icon astro-P3UPOO52" style="background:#F0FDF4">💊</div>
+        <div class="astro-P3UPOO52">
+          <div class="order-type-name astro-P3UPOO52">توصيل صيدلية</div>
+          <div class="order-type-sub astro-P3UPOO52">3 أدوية • دفع كاش</div>
+        </div>
+      </div>
+      <div class="order-footer astro-P3UPOO52">
+        <div class="order-price astro-P3UPOO52">35 جنيه</div>
+        <div class="order-actions astro-P3UPOO52">
+          <button class="action-btn action-btn-rate astro-P3UPOO52" onclick="event.stopPropagation(); rateOrder('#ORD-4510')">⭐ تقييم</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancelled Order -->
+    <div class="order-card cancelled astro-P3UPOO52" id="order-4">
+      <div class="order-header astro-P3UPOO52">
+        <div class="order-id-badge astro-P3UPOO52" style="background:#FFF5F5;color:#EF4444">#ORD-4505 ❌</div>
+        <div class="order-time astro-P3UPOO52">22 مارس</div>
+      </div>
+      <div class="order-type-row astro-P3UPOO52">
+        <div class="order-type-icon astro-P3UPOO52" style="background:#FFF5F5">🚗</div>
+        <div class="astro-P3UPOO52">
+          <div class="order-type-name astro-P3UPOO52">مشوار - هليوبوليس</div>
+          <div class="order-type-sub astro-P3UPOO52">تم الإلغاء • سبب: لا يوجد سائق</div>
+        </div>
+      </div>
+      <div class="order-footer astro-P3UPOO52">
+        <div class="order-price astro-P3UPOO52" style="color:#EF4444">0 جنيه</div>
+        <div class="order-actions astro-P3UPOO52">
+          <button class="action-btn action-btn-reorder astro-P3UPOO52" onclick="reorder()">🔄 إعادة الطلب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav astro-P3UPOO52">
+    <a href="/home" class="nav-item astro-P3UPOO52">
+      <span class="nav-icon astro-P3UPOO52">🏠</span>
+      <span class="astro-P3UPOO52">الرئيسية</span>
+    </a>
+    <a href="/orders" class="nav-item active astro-P3UPOO52">
+      <span class="nav-icon astro-P3UPOO52">📋</span>
+      <span class="astro-P3UPOO52">طلباتي</span>
+    </a>
+    <a href="/delivery" class="nav-center-btn astro-P3UPOO52">+</a>
+    <a href="/wallet" class="nav-item astro-P3UPOO52">
+      <span class="nav-icon astro-P3UPOO52">👛</span>
+      <span class="astro-P3UPOO52">المحفظة</span>
+    </a>
+    <a href="/settings" class="nav-item astro-P3UPOO52">
+      <span class="nav-icon astro-P3UPOO52">⚙️</span>
+      <span class="astro-P3UPOO52">الإعدادات</span>
+    </a>
+  </nav>
+
+  
+</body>
+</html>

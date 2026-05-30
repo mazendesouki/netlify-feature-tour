@@ -1,0 +1,199 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; min-height: 100vh; background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); }
+    .login-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .login-header { padding: 24px; display: flex; align-items: center; gap: 12px; }
+    .back-btn { color: rgba(255,255,255,0.8); font-size: 24px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+    .back-btn:hover { color: white; }
+    .login-hero { padding: 20px 24px 32px; text-align: center; }
+    .login-logo { width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px; backdrop-filter: blur(20px); border: 2px solid rgba(255,255,255,0.3); }
+    .login-title { font-size: 28px; font-weight: 900; color: white; margin-bottom: 8px; }
+    .login-subtitle { font-size: 14px; color: rgba(255,255,255,0.75); }
+    .login-card { background: white; border-radius: 32px 32px 0 0; padding: 32px 24px; flex: 1; min-height: 500px; }
+    .social-login { display: flex; gap: 12px; margin-bottom: 24px; }
+    .social-btn { flex: 1; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; background: white; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #1E293B; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
+    .social-btn:hover { background: #F8FAFC; border-color: #3B82F6; }
+    .social-icon { font-size: 20px; }
+    .divider-text { text-align: center; position: relative; margin: 20px 0; }
+    .divider-text::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #E2E8F0; }
+    .divider-text span { background: white; padding: 0 16px; position: relative; color: #94A3B8; font-size: 13px; font-weight: 600; }
+    .input-group { position: relative; }
+    .input-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #94A3B8; }
+    .input-eye { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #94A3B8; cursor: pointer; background: none; border: none; padding: 0; }
+    .form-control-icon { padding-right: 48px; }
+    .forgot-link { text-align: left; margin-top: -12px; margin-bottom: 20px; }
+    .forgot-link a { color: #3B82F6; text-decoration: none; font-size: 13px; font-weight: 700; }
+    .remember-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .remember-check { display: flex; align-items: center; gap: 8px; }
+    .remember-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: #1D4ED8; cursor: pointer; }
+    .remember-label { font-size: 14px; font-weight: 600; color: #475569; cursor: pointer; }
+    .login-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(29, 78, 216, 0.35); }
+    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(29, 78, 216, 0.45); }
+    .register-link { text-align: center; margin-top: 24px; font-size: 14px; color: #64748B; }
+    .register-link a { color: #1D4ED8; font-weight: 800; text-decoration: none; }
+    .features-preview { display: flex; gap: 12px; margin-top: 28px; }
+    .feat-item { flex: 1; background: #F8FAFC; border-radius: 14px; padding: 14px 10px; text-align: center; border: 1px solid #E2E8F0; }
+    .feat-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+    .feat-text { font-size: 11px; font-weight: 700; color: #475569; }
+    .admin-link { text-align: center; margin-top: 16px; }
+    .admin-link a { color: #94A3B8; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .admin-link a:hover { color: #1D4ED8; }
+    .success-toast { position: fixed; top: 20px; right: 20px; left: 20px; background: #10B981; color: white; padding: 16px 20px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); transform: translateY(-100px); transition: all 0.4s; z-index: 999; display: flex; align-items: center; gap: 10px; }
+    .success-toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-header">
+      <a href="/" class="back-btn">← العودة للرئيسية</a>
+    </div>
+
+    <div class="login-hero">
+      <div class="login-logo">🚀</div>
+      <div class="login-title">مرحباً بعودتك!</div>
+      <div class="login-subtitle">سجّل دخولك للاستمتاع بخدمات وصله</div>
+    </div>
+
+    <div class="login-card">
+      <!-- Social Login -->
+      <div class="social-login">
+        <button class="social-btn" onclick="socialLogin('google')">
+          <span class="social-icon">🔵</span> Google
+        </button>
+        <button class="social-btn" onclick="socialLogin('facebook')">
+          <span class="social-icon">🔷</span> Facebook
+        </button>
+      </div>
+
+      <div class="divider-text"><span>أو بالبريد الإلكتروني</span></div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">📧 البريد الإلكتروني أو رقم الهاتف</label>
+          <div class="input-group">
+            <input type="text" class="form-control form-control-icon" placeholder="example@email.com أو 01XXXXXXXXX" id="emailPhone" required>
+            <span class="input-icon">📱</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔒 كلمة المرور</label>
+          <div class="input-group">
+            <input type="password" class="form-control form-control-icon" placeholder="أدخل كلمة المرور" id="password" required style="padding-left: 48px;">
+            <span class="input-icon">🔑</span>
+            <button type="button" class="input-eye" onclick="togglePassword()" id="eyeBtn">👁️</button>
+          </div>
+        </div>
+
+        <div class="remember-row">
+          <label class="remember-check">
+            <input type="checkbox" id="remember">
+            <span class="remember-label">تذكّرني</span>
+          </label>
+          <div class="forgot-link" style="margin: 0;">
+            <a href="#" onclick="forgotPassword()">نسيت كلمة المرور؟</a>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+          تسجيل الدخول 🚀
+        </button>
+      </form>
+
+      <div class="register-link">
+        ليس لديك حساب؟ <a href="/register">إنشاء حساب جديد</a>
+      </div>
+
+      <!-- Features Preview -->
+      <div class="features-preview">
+        <div class="feat-item"><span class="feat-icon">🚚</span><div class="feat-text">توصيل سريع</div></div>
+        <div class="feat-item"><span class="feat-icon">🚗</span><div class="feat-text">مشاوير</div></div>
+        <div class="feat-item"><span class="feat-icon">✈️</span><div class="feat-text">المطار</div></div>
+        <div class="feat-item"><span class="feat-icon">👛</span><div class="feat-text">محفظتك</div></div>
+      </div>
+
+      <div class="admin-link">
+        <a href="/admin">🛠️ لوحة تحكم الإدارة</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div class="success-toast" id="toast">✅ تم تسجيل الدخول بنجاح! جاري التحويل...</div>
+
+  <script>
+    function togglePassword() {
+      const pwd = document.getElementById('password');
+      const btn = document.getElementById('eyeBtn');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        pwd.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailPhone').value;
+      const pwd = document.getElementById('password').value;
+
+      // Demo: admin login
+      if (email === 'admin' || email === 'admin@wslha.com') {
+        localStorage.setItem('wslha_user', JSON.stringify({ name: 'المدير', role: 'admin', email: email }));
+        showToast('✅ مرحباً بك في لوحة التحكم!');
+        setTimeout(() => window.location.href = '/admin', 1500);
+        return;
+      }
+
+      if (email && pwd.length >= 4) {
+        const userName = email.includes('@') ? email.split('@')[0] : email;
+        localStorage.setItem('wslha_user', JSON.stringify({ name: userName, role: 'user', email: email, balance: 250 }));
+        showToast('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
+        setTimeout(() => window.location.href = '/home', 1500);
+      } else {
+        alert('❌ يرجى إدخال بيانات صحيحة (كلمة المرور 4 أحرف على الأقل)');
+      }
+    }
+
+    function socialLogin(provider) {
+      localStorage.setItem('wslha_user', JSON.stringify({ name: 'مستخدم ' + provider, role: 'user', email: 'user@' + provider + '.com', balance: 250 }));
+      showToast('✅ تم تسجيل الدخول بـ ' + (provider === 'google' ? 'Google' : 'Facebook'));
+      setTimeout(() => window.location.href = '/home', 1500);
+    }
+
+    function forgotPassword() {
+      alert('📱 سيتم إرسال رمز التحقق على هاتفك المسجل\n\nهذه ميزة تجريبية في نسخة العرض');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Check if already logged in
+    const user = localStorage.getItem('wslha_user');
+    if (user) {
+      const userData = JSON.parse(user);
+      if (userData.role === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/home';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-7CQWYBCJ">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الطلبات - وصله Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/orders.9e8c2e00.css" /><script type="module">
+</script></head>
+<body class="astro-7CQWYBCJ">
+  <div class="admin-layout astro-7CQWYBCJ">
+    <div class="sidebar astro-7CQWYBCJ">
+      <div class="sidebar-logo astro-7CQWYBCJ">🚀 وصله</div>
+      <div class="sidebar-nav astro-7CQWYBCJ">
+        <a href="/admin" class="nav-item astro-7CQWYBCJ">📊 لوحة التحكم</a>
+        <a href="/admin/orders" class="nav-item active astro-7CQWYBCJ">📋 الطلبات</a>
+        <a href="/admin/users" class="nav-item astro-7CQWYBCJ">👥 المستخدمون</a>
+        <a href="/admin/drivers" class="nav-item astro-7CQWYBCJ">🚗 السائقون</a>
+        <a href="/login" class="nav-item astro-7CQWYBCJ">🚪 خروج</a>
+      </div>
+    </div>
+
+    <div class="main-content astro-7CQWYBCJ">
+      <div class="topbar astro-7CQWYBCJ">
+        <div class="topbar-title astro-7CQWYBCJ">📋 إدارة الطلبات</div>
+        <div style="display:flex;gap:12px;align-items:center" class="astro-7CQWYBCJ">
+          <a href="/admin" style="color:#64748B;font-size:13px;font-weight:700;text-decoration:none" class="astro-7CQWYBCJ">← لوحة التحكم</a>
+          <button class="filter-btn btn-export astro-7CQWYBCJ" onclick="exportOrders()">📥 تصدير Excel</button>
+        </div>
+      </div>
+
+      <div class="page-content astro-7CQWYBCJ">
+        <!-- Mini Stats -->
+        <div class="stats-mini astro-7CQWYBCJ">
+          <div class="mini-stat mini-stat-all astro-7CQWYBCJ" onclick="filterByStatus('all')">
+            <div class="mini-num astro-7CQWYBCJ">1,284</div>
+            <div class="mini-label astro-7CQWYBCJ">🔄 جميع الطلبات</div>
+          </div>
+          <div class="mini-stat mini-stat-active astro-7CQWYBCJ" onclick="filterByStatus('active')">
+            <div class="mini-num astro-7CQWYBCJ">12</div>
+            <div class="mini-label astro-7CQWYBCJ">⏳ نشطة الآن</div>
+          </div>
+          <div class="mini-stat mini-stat-done astro-7CQWYBCJ" onclick="filterByStatus('done')">
+            <div class="mini-num astro-7CQWYBCJ">1,198</div>
+            <div class="mini-label astro-7CQWYBCJ">✅ مكتملة</div>
+          </div>
+          <div class="mini-stat mini-stat-pending astro-7CQWYBCJ" onclick="filterByStatus('pending')">
+            <div class="mini-num astro-7CQWYBCJ">42</div>
+            <div class="mini-label astro-7CQWYBCJ">🟡 معلقة</div>
+          </div>
+          <div class="mini-stat mini-stat-cancelled astro-7CQWYBCJ" onclick="filterByStatus('cancelled')">
+            <div class="mini-num astro-7CQWYBCJ">74</div>
+            <div class="mini-label astro-7CQWYBCJ">❌ ملغاة</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar astro-7CQWYBCJ">
+          <input type="text" class="search-filter astro-7CQWYBCJ" placeholder="🔍 بحث برقم الطلب أو اسم العميل...">
+          <select class="filter-select astro-7CQWYBCJ">
+            <option class="astro-7CQWYBCJ">جميع الخدمات</option>
+            <option class="astro-7CQWYBCJ">🏪 توصيل طلبات</option>
+            <option class="astro-7CQWYBCJ">🚗 مشاوير</option>
+            <option class="astro-7CQWYBCJ">✈️ مطار</option>
+          </select>
+          <select class="filter-select astro-7CQWYBCJ">
+            <option class="astro-7CQWYBCJ">جميع المحافظات</option>
+            <option class="astro-7CQWYBCJ">القاهرة</option>
+            <option class="astro-7CQWYBCJ">الإسكندرية</option>
+            <option class="astro-7CQWYBCJ">الجيزة</option>
+          </select>
+          <select class="filter-select astro-7CQWYBCJ">
+            <option class="astro-7CQWYBCJ">جميع الحالات</option>
+            <option class="astro-7CQWYBCJ">قيد التنفيذ</option>
+            <option class="astro-7CQWYBCJ">مكتمل</option>
+            <option class="astro-7CQWYBCJ">ملغي</option>
+            <option class="astro-7CQWYBCJ">معلق</option>
+          </select>
+          <select class="filter-select astro-7CQWYBCJ">
+            <option class="astro-7CQWYBCJ">اليوم</option>
+            <option class="astro-7CQWYBCJ">أمس</option>
+            <option class="astro-7CQWYBCJ">آخر 7 أيام</option>
+            <option class="astro-7CQWYBCJ">هذا الشهر</option>
+          </select>
+          <button class="filter-btn btn-primary-sm astro-7CQWYBCJ" onclick="applyFilters()">🔍 بحث</button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="orders-table astro-7CQWYBCJ">
+          <div class="table-header-row astro-7CQWYBCJ">
+            <div class="table-h-title astro-7CQWYBCJ">📋 قائمة الطلبات (1,284)</div>
+            <div style="display:flex;gap:8px" class="astro-7CQWYBCJ">
+              <button class="filter-btn astro-7CQWYBCJ" style="background:#F8FAFC;color:#64748B;border:1px solid #E2E8F0" onclick="refreshOrders()">🔄 تحديث</button>
+            </div>
+          </div>
+          <table class="data-table astro-7CQWYBCJ">
+            <thead class="astro-7CQWYBCJ">
+              <tr class="astro-7CQWYBCJ">
+                <th class="astro-7CQWYBCJ">☑️</th>
+                <th class="astro-7CQWYBCJ">رقم الطلب</th>
+                <th class="astro-7CQWYBCJ">العميل</th>
+                <th class="astro-7CQWYBCJ">الخدمة</th>
+                <th class="astro-7CQWYBCJ">المحافظة</th>
+                <th class="astro-7CQWYBCJ">المبلغ</th>
+                <th class="astro-7CQWYBCJ">السائق</th>
+                <th class="astro-7CQWYBCJ">الحالة</th>
+                <th class="astro-7CQWYBCJ">التاريخ</th>
+                <th class="astro-7CQWYBCJ">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody class="astro-7CQWYBCJ">
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4523</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ">أ</div>
+                    أحمد محمود
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">✈️</span>مطار</td>
+                <td class="astro-7CQWYBCJ">القاهرة</td>
+                <td class="order-amount astro-7CQWYBCJ">150 جنيه</td>
+                <td class="astro-7CQWYBCJ">محمد أحمد</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-blue astro-7CQWYBCJ">قيد التنفيذ ⏳</span></td>
+                <td class="astro-7CQWYBCJ">اليوم 10:30</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4523')" title="عرض">👁️</button>
+                    <button class="act-btn act-edit astro-7CQWYBCJ" onclick="editOrder('#4523')" title="تعديل">✏️</button>
+                    <button class="act-btn act-delete astro-7CQWYBCJ" onclick="cancelOrder('#4523')" title="إلغاء">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4522</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ" style="background:linear-gradient(135deg,#059669,#34D399)">س</div>
+                    سارة أحمد
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">🏪</span>توصيل</td>
+                <td class="astro-7CQWYBCJ">الإسكندرية</td>
+                <td class="order-amount astro-7CQWYBCJ">45 جنيه</td>
+                <td class="astro-7CQWYBCJ">أحمد مصطفى</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-green astro-7CQWYBCJ">مكتمل ✅</span></td>
+                <td class="astro-7CQWYBCJ">اليوم 9:15</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4522')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve astro-7CQWYBCJ" onclick="viewInvoice('#4522')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4521</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">م</div>
+                    محمد علي
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">🚗</span>مشوار</td>
+                <td class="astro-7CQWYBCJ">الجيزة</td>
+                <td class="order-amount astro-7CQWYBCJ">80 جنيه</td>
+                <td class="astro-7CQWYBCJ">سامي عبدالله</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-green astro-7CQWYBCJ">مكتمل ✅</span></td>
+                <td class="astro-7CQWYBCJ">أمس 15:30</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4521')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve astro-7CQWYBCJ" onclick="viewInvoice('#4521')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4520</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ" style="background:linear-gradient(135deg,#D97706,#FCD34D)">ن</div>
+                    نور الهدى
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">🏪</span>توصيل</td>
+                <td class="astro-7CQWYBCJ">القاهرة</td>
+                <td class="order-amount astro-7CQWYBCJ">35 جنيه</td>
+                <td class="astro-7CQWYBCJ">—</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-amber astro-7CQWYBCJ">معلق ⏳</span></td>
+                <td class="astro-7CQWYBCJ">أمس 12:00</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4520')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve astro-7CQWYBCJ" onclick="assignDriver('#4520')" title="تعيين سائق">🚗</button>
+                    <button class="act-btn act-delete astro-7CQWYBCJ" onclick="cancelOrder('#4520')" title="إلغاء">❌</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4519</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ" style="background:linear-gradient(135deg,#EF4444,#F87171)">ف</div>
+                    فاطمة مصطفى
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">✈️</span>مطار</td>
+                <td class="astro-7CQWYBCJ">القاهرة</td>
+                <td class="order-amount astro-7CQWYBCJ">250 جنيه</td>
+                <td class="astro-7CQWYBCJ">محمد أحمد</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-green astro-7CQWYBCJ">مكتمل ✅</span></td>
+                <td class="astro-7CQWYBCJ">25 مارس</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4519')" title="عرض">👁️</button>
+                    <button class="act-btn act-approve astro-7CQWYBCJ" onclick="viewInvoice('#4519')" title="فاتورة">🧾</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="astro-7CQWYBCJ">
+                <td class="astro-7CQWYBCJ"><input type="checkbox" class="astro-7CQWYBCJ"></td>
+                <td class="astro-7CQWYBCJ"><strong class="astro-7CQWYBCJ">#4518</strong></td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="user-cell astro-7CQWYBCJ">
+                    <div class="user-mini-av astro-7CQWYBCJ">ع</div>
+                    علي حسن
+                  </div>
+                </td>
+                <td class="astro-7CQWYBCJ"><span class="service-icon astro-7CQWYBCJ">🚗</span>مشوار</td>
+                <td class="astro-7CQWYBCJ">الإسكندرية</td>
+                <td class="order-amount astro-7CQWYBCJ">0 جنيه</td>
+                <td class="astro-7CQWYBCJ">—</td>
+                <td class="astro-7CQWYBCJ"><span class="pill pill-red astro-7CQWYBCJ">ملغي ❌</span></td>
+                <td class="astro-7CQWYBCJ">22 مارس</td>
+                <td class="astro-7CQWYBCJ">
+                  <div class="action-btns astro-7CQWYBCJ">
+                    <button class="act-btn act-view astro-7CQWYBCJ" onclick="viewOrder('#4518')" title="عرض">👁️</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="pagination astro-7CQWYBCJ">
+            <div class="pagination-info astro-7CQWYBCJ">عرض 1-6 من 1,284 طلب</div>
+            <div class="pagination-btns astro-7CQWYBCJ">
+              <button class="page-btn astro-7CQWYBCJ">‹</button>
+              <button class="page-btn active astro-7CQWYBCJ">1</button>
+              <button class="page-btn astro-7CQWYBCJ">2</button>
+              <button class="page-btn astro-7CQWYBCJ">3</button>
+              <button class="page-btn astro-7CQWYBCJ">...</button>
+              <button class="page-btn astro-7CQWYBCJ">214</button>
+              <button class="page-btn astro-7CQWYBCJ">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

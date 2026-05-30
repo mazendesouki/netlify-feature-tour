@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-GUOZQM2C">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل سائق - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  
+<link rel="stylesheet" href="/_astro/driver-register.d2d3b285.css" /><script type="module">
+</script></head>
+<body class="astro-GUOZQM2C">
+  <div class="driver-header astro-GUOZQM2C">
+    <a href="/" class="back-btn astro-GUOZQM2C">← العودة للرئيسية</a>
+  </div>
+
+  <div class="driver-hero astro-GUOZQM2C">
+    <div class="driver-logo astro-GUOZQM2C">🚗</div>
+    <div class="driver-title astro-GUOZQM2C">سجّل كسائق واكسب!</div>
+    <div class="driver-subtitle astro-GUOZQM2C">انضم لشبكة سائقي وصله وحقّق دخلاً إضافياً ممتازاً</div>
+  </div>
+
+  <div class="earnings-preview astro-GUOZQM2C">
+    <div class="earn-card astro-GUOZQM2C"><span class="earn-num astro-GUOZQM2C">+5000</span><div class="earn-label astro-GUOZQM2C">جنيه شهرياً</div></div>
+    <div class="earn-card astro-GUOZQM2C"><span class="earn-num astro-GUOZQM2C">85%</span><div class="earn-label astro-GUOZQM2C">نسبتك من كل رحلة</div></div>
+    <div class="earn-card astro-GUOZQM2C"><span class="earn-num astro-GUOZQM2C">+200</span><div class="earn-label astro-GUOZQM2C">سائق نشط</div></div>
+  </div>
+
+  <div class="driver-card astro-GUOZQM2C">
+    <!-- Tabs -->
+    <div class="tabs astro-GUOZQM2C">
+      <button class="tab active astro-GUOZQM2C" onclick="switchTab('info')">البيانات</button>
+      <button class="tab astro-GUOZQM2C" onclick="switchTab('vehicle')">المركبة</button>
+      <button class="tab astro-GUOZQM2C" onclick="switchTab('docs')">المستندات</button>
+    </div>
+
+    <!-- Tab: Personal Info -->
+    <div class="tab-content active astro-GUOZQM2C" id="tab-info">
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">👤 الاسم الكامل</label>
+        <input type="text" class="form-control astro-GUOZQM2C" placeholder="اسمك الكامل" id="driverName">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">📱 رقم الهاتف</label>
+        <input type="tel" class="form-control astro-GUOZQM2C" placeholder="01XXXXXXXXX" id="driverPhone">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🪪 رقم البطاقة الوطنية</label>
+        <input type="text" class="form-control astro-GUOZQM2C" placeholder="12 أو 14 رقم" id="nationalId" maxlength="14">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">📍 المحافظة</label>
+        <select class="form-control form-select astro-GUOZQM2C" id="governorate">
+          <option class="astro-GUOZQM2C">اختر المحافظة</option>
+          <option class="astro-GUOZQM2C">القاهرة</option>
+          <option class="astro-GUOZQM2C">الجيزة</option>
+          <option class="astro-GUOZQM2C">الإسكندرية</option>
+          <option class="astro-GUOZQM2C">الدقهلية</option>
+          <option class="astro-GUOZQM2C">البحر الأحمر</option>
+          <option class="astro-GUOZQM2C">البحيرة</option>
+          <option class="astro-GUOZQM2C">الفيوم</option>
+          <option class="astro-GUOZQM2C">الغربية</option>
+          <option class="astro-GUOZQM2C">الإسماعيلية</option>
+          <option class="astro-GUOZQM2C">المنوفية</option>
+          <option class="astro-GUOZQM2C">المنيا</option>
+          <option class="astro-GUOZQM2C">القليوبية</option>
+          <option class="astro-GUOZQM2C">الوادي الجديد</option>
+          <option class="astro-GUOZQM2C">السويس</option>
+          <option class="astro-GUOZQM2C">أسوان</option>
+          <option class="astro-GUOZQM2C">أسيوط</option>
+          <option class="astro-GUOZQM2C">بني سويف</option>
+          <option class="astro-GUOZQM2C">بورسعيد</option>
+          <option class="astro-GUOZQM2C">دمياط</option>
+          <option class="astro-GUOZQM2C">جنوب سيناء</option>
+          <option class="astro-GUOZQM2C">شمال سيناء</option>
+          <option class="astro-GUOZQM2C">سوهاج</option>
+          <option class="astro-GUOZQM2C">قنا</option>
+          <option class="astro-GUOZQM2C">كفر الشيخ</option>
+          <option class="astro-GUOZQM2C">مطروح</option>
+          <option class="astro-GUOZQM2C">الأقصر</option>
+          <option class="astro-GUOZQM2C">الشرقية</option>
+        </select>
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🔒 كلمة المرور</label>
+        <input type="password" class="form-control astro-GUOZQM2C" placeholder="6 أحرف على الأقل" id="driverPassword">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🔑 تأكيد كلمة المرور</label>
+        <input type="password" class="form-control astro-GUOZQM2C" placeholder="أعد إدخال كلمة المرور" id="driverConfirmPassword">
+      </div>
+      <button class="next-btn astro-GUOZQM2C" onclick="switchTab('vehicle')">التالي - بيانات المركبة ←</button>
+    </div>
+
+    <!-- Tab: Vehicle -->
+    <div class="tab-content astro-GUOZQM2C" id="tab-vehicle">
+      <div style="font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 16px;" class="astro-GUOZQM2C">🚗 اختر نوع مركبتك</div>
+      <div class="vehicle-types astro-GUOZQM2C">
+        <div class="vehicle-card astro-GUOZQM2C" onclick="selectVehicle(this, 'sedan')">
+          <span class="vehicle-icon astro-GUOZQM2C">🚗</span>
+          <div class="vehicle-name astro-GUOZQM2C">سيارة خاصة</div>
+          <div class="vehicle-desc astro-GUOZQM2C">مشاوير وطلبات</div>
+        </div>
+        <div class="vehicle-card astro-GUOZQM2C" onclick="selectVehicle(this, 'van')">
+          <span class="vehicle-icon astro-GUOZQM2C">🚐</span>
+          <div class="vehicle-name astro-GUOZQM2C">ميكروباص</div>
+          <div class="vehicle-desc astro-GUOZQM2C">مشاوير جماعية</div>
+        </div>
+        <div class="vehicle-card astro-GUOZQM2C" onclick="selectVehicle(this, 'truck')">
+          <span class="vehicle-icon astro-GUOZQM2C">🚚</span>
+          <div class="vehicle-name astro-GUOZQM2C">سيارة نقل</div>
+          <div class="vehicle-desc astro-GUOZQM2C">توصيل بضائع</div>
+        </div>
+        <div class="vehicle-card astro-GUOZQM2C" onclick="selectVehicle(this, 'motorcycle')">
+          <span class="vehicle-icon astro-GUOZQM2C">🏍️</span>
+          <div class="vehicle-name astro-GUOZQM2C">موتوسيكل</div>
+          <div class="vehicle-desc astro-GUOZQM2C">توصيل سريع</div>
+        </div>
+      </div>
+
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🏷️ ماركة السيارة والموديل</label>
+        <input type="text" class="form-control astro-GUOZQM2C" placeholder="مثال: تويوتا كامري 2020" id="carModel">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🔢 رقم اللوحة</label>
+        <input type="text" class="form-control astro-GUOZQM2C" placeholder="أ ب ج 1234" id="plateNumber">
+      </div>
+      <div class="form-group astro-GUOZQM2C">
+        <label class="form-label astro-GUOZQM2C">🎨 لون السيارة</label>
+        <select class="form-control form-select astro-GUOZQM2C" id="carColor">
+          <option class="astro-GUOZQM2C">أبيض</option>
+          <option class="astro-GUOZQM2C">أسود</option>
+          <option class="astro-GUOZQM2C">فضي</option>
+          <option class="astro-GUOZQM2C">رمادي</option>
+          <option class="astro-GUOZQM2C">أزرق</option>
+          <option class="astro-GUOZQM2C">أحمر</option>
+          <option class="astro-GUOZQM2C">آخر</option>
+        </select>
+      </div>
+
+      <button class="next-btn astro-GUOZQM2C" onclick="switchTab('docs')">التالي - رفع المستندات ←</button>
+      <button class="prev-btn astro-GUOZQM2C" onclick="switchTab('info')">← رجوع</button>
+    </div>
+
+    <!-- Tab: Documents -->
+    <div class="tab-content astro-GUOZQM2C" id="tab-docs">
+      <p style="font-size: 13px; color: #64748B; margin-bottom: 20px; background: #F8FAFC; padding: 12px; border-radius: 10px;" class="astro-GUOZQM2C">
+        📌 يرجى رفع صور واضحة للمستندات المطلوبة. سيتم مراجعتها خلال 24-48 ساعة.
+      </p>
+
+      <div class="doc-upload astro-GUOZQM2C" onclick="simulateUpload(this, 'بطاقة الهوية الوطنية')">
+        <div class="doc-upload-icon astro-GUOZQM2C">🪪</div>
+        <div class="doc-upload-title astro-GUOZQM2C">بطاقة الهوية الوطنية</div>
+        <div class="doc-upload-sub astro-GUOZQM2C">الوجه الأمامي والخلفي</div>
+      </div>
+
+      <div class="doc-upload astro-GUOZQM2C" onclick="simulateUpload(this, 'رخصة القيادة')">
+        <div class="doc-upload-icon astro-GUOZQM2C">📜</div>
+        <div class="doc-upload-title astro-GUOZQM2C">رخصة القيادة</div>
+        <div class="doc-upload-sub astro-GUOZQM2C">سارية المفعول</div>
+      </div>
+
+      <div class="doc-upload astro-GUOZQM2C" onclick="simulateUpload(this, 'استمارة السيارة')">
+        <div class="doc-upload-icon astro-GUOZQM2C">📋</div>
+        <div class="doc-upload-title astro-GUOZQM2C">استمارة السيارة</div>
+        <div class="doc-upload-sub astro-GUOZQM2C">ملكية السيارة</div>
+      </div>
+
+      <div class="doc-upload astro-GUOZQM2C" onclick="simulateUpload(this, 'صورة شخصية')">
+        <div class="doc-upload-icon astro-GUOZQM2C">📸</div>
+        <div class="doc-upload-title astro-GUOZQM2C">صورة شخصية حديثة</div>
+        <div class="doc-upload-sub astro-GUOZQM2C">خلفية بيضاء</div>
+      </div>
+
+      <div style="background: #ECFDF5; border: 1px solid #6EE7B7; border-radius: 14px; padding: 16px; margin-bottom: 20px;" class="astro-GUOZQM2C">
+        <div style="font-size: 15px; font-weight: 800; color: #065F46; margin-bottom: 12px;" class="astro-GUOZQM2C">🌟 مميزات السائق في وصله</div>
+        <div class="benefits-grid astro-GUOZQM2C">
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">💰</span><div class="benefit-box-title astro-GUOZQM2C">85% من كل رحلة</div><div class="benefit-box-sub astro-GUOZQM2C">أعلى نسبة في السوق</div></div>
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">💳</span><div class="benefit-box-title astro-GUOZQM2C">سحب فوري</div><div class="benefit-box-sub astro-GUOZQM2C">استلم أرباحك فوراً</div></div>
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">📱</span><div class="benefit-box-title astro-GUOZQM2C">تطبيق سائق</div><div class="benefit-box-sub astro-GUOZQM2C">سهل الاستخدام</div></div>
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">🛡️</span><div class="benefit-box-title astro-GUOZQM2C">تأمين شامل</div><div class="benefit-box-sub astro-GUOZQM2C">أثناء العمل</div></div>
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">⭐</span><div class="benefit-box-title astro-GUOZQM2C">مكافآت وبونص</div><div class="benefit-box-sub astro-GUOZQM2C">للمتميزين</div></div>
+          <div class="benefit-box astro-GUOZQM2C"><span class="benefit-box-icon astro-GUOZQM2C">🎓</span><div class="benefit-box-title astro-GUOZQM2C">تدريب مجاني</div><div class="benefit-box-sub astro-GUOZQM2C">قبل البدء</div></div>
+        </div>
+      </div>
+
+      <button class="submit-btn astro-GUOZQM2C" onclick="submitDriverRegistration()">✅ إرسال طلب التسجيل</button>
+      <button class="prev-btn astro-GUOZQM2C" onclick="switchTab('vehicle')">← رجوع</button>
+    </div>
+  </div>
+
+  <div class="success-toast astro-GUOZQM2C" id="toast"></div>
+
+  
+</body>
+</html>

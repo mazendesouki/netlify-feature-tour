@@ -1,0 +1,279 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل سائق - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/wslha.css">
+  <style>
+    body { padding: 0; background: linear-gradient(135deg, #064E3B 0%, #059669 100%); min-height: 100vh; }
+    .driver-header { padding: 24px; display: flex; align-items: center; }
+    .back-btn { color: rgba(255,255,255,0.85); font-size: 15px; font-weight: 700; text-decoration: none; }
+    .driver-hero { padding: 16px 24px 28px; text-align: center; }
+    .driver-logo { width: 80px; height: 80px; background: rgba(255,255,255,0.15); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 16px; border: 2px solid rgba(255,255,255,0.3); }
+    .driver-title { font-size: 26px; font-weight: 900; color: white; margin-bottom: 6px; }
+    .driver-subtitle { font-size: 14px; color: rgba(255,255,255,0.8); }
+    .earnings-preview { display: flex; gap: 12px; padding: 0 24px; margin-bottom: 8px; }
+    .earn-card { flex: 1; background: rgba(255,255,255,0.12); border-radius: 16px; padding: 16px 12px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+    .earn-num { font-size: 22px; font-weight: 900; color: white; display: block; }
+    .earn-label { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+    .driver-card { background: white; border-radius: 32px 32px 0 0; padding: 28px 24px 60px; margin-top: 16px; }
+    .tabs { display: flex; background: #F1F5F9; border-radius: 14px; padding: 4px; gap: 4px; margin-bottom: 24px; }
+    .tab { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; color: #64748B; cursor: pointer; transition: all 0.3s; }
+    .tab.active { background: white; color: #059669; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .doc-upload { border: 2px dashed #CBD5E1; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; background: #F8FAFC; margin-bottom: 16px; }
+    .doc-upload:hover { border-color: #059669; background: #ECFDF5; }
+    .doc-upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .doc-upload-title { font-size: 15px; font-weight: 700; color: #1E293B; margin-bottom: 4px; }
+    .doc-upload-sub { font-size: 12px; color: #94A3B8; }
+    .vehicle-types { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .vehicle-card { border: 2px solid #E2E8F0; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s; }
+    .vehicle-card.selected, .vehicle-card:hover { border-color: #059669; background: #ECFDF5; }
+    .vehicle-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+    .vehicle-name { font-size: 14px; font-weight: 800; color: #1E293B; }
+    .vehicle-desc { font-size: 11px; color: #94A3B8; margin-top: 4px; }
+    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #064E3B, #059669); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.35); transition: all 0.3s; }
+    .submit-btn:hover { transform: translateY(-2px); }
+    .prev-btn { width: 100%; padding: 12px; background: #F8FAFC; color: #64748B; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .next-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #064E3B, #059669); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; transition: all 0.3s; }
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .benefit-box { background: #F8FAFC; border-radius: 14px; padding: 16px; text-align: center; border: 1px solid #E2E8F0; }
+    .benefit-box-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .benefit-box-title { font-size: 13px; font-weight: 800; color: #1E293B; }
+    .benefit-box-sub { font-size: 11px; color: #94A3B8; margin-top: 4px; }
+    .success-toast { position: fixed; top: 20px; right: 20px; left: 20px; background: #059669; color: white; padding: 16px 20px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4); transform: translateY(-100px); transition: all 0.4s; z-index: 999; text-align: center; }
+    .success-toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="driver-header">
+    <a href="/" class="back-btn">← العودة للرئيسية</a>
+  </div>
+
+  <div class="driver-hero">
+    <div class="driver-logo">🚗</div>
+    <div class="driver-title">سجّل كسائق واكسب!</div>
+    <div class="driver-subtitle">انضم لشبكة سائقي وصله وحقّق دخلاً إضافياً ممتازاً</div>
+  </div>
+
+  <div class="earnings-preview">
+    <div class="earn-card"><span class="earn-num">+5000</span><div class="earn-label">جنيه شهرياً</div></div>
+    <div class="earn-card"><span class="earn-num">85%</span><div class="earn-label">نسبتك من كل رحلة</div></div>
+    <div class="earn-card"><span class="earn-num">+200</span><div class="earn-label">سائق نشط</div></div>
+  </div>
+
+  <div class="driver-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('info')">البيانات</button>
+      <button class="tab" onclick="switchTab('vehicle')">المركبة</button>
+      <button class="tab" onclick="switchTab('docs')">المستندات</button>
+    </div>
+
+    <!-- Tab: Personal Info -->
+    <div class="tab-content active" id="tab-info">
+      <div class="form-group">
+        <label class="form-label">👤 الاسم الكامل</label>
+        <input type="text" class="form-control" placeholder="اسمك الكامل" id="driverName">
+      </div>
+      <div class="form-group">
+        <label class="form-label">📱 رقم الهاتف</label>
+        <input type="tel" class="form-control" placeholder="01XXXXXXXXX" id="driverPhone">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🪪 رقم البطاقة الوطنية</label>
+        <input type="text" class="form-control" placeholder="12 أو 14 رقم" id="nationalId" maxlength="14">
+      </div>
+      <div class="form-group">
+        <label class="form-label">📍 المحافظة</label>
+        <select class="form-control form-select" id="governorate">
+          <option>اختر المحافظة</option>
+          <option>القاهرة</option>
+          <option>الجيزة</option>
+          <option>الإسكندرية</option>
+          <option>الدقهلية</option>
+          <option>البحر الأحمر</option>
+          <option>البحيرة</option>
+          <option>الفيوم</option>
+          <option>الغربية</option>
+          <option>الإسماعيلية</option>
+          <option>المنوفية</option>
+          <option>المنيا</option>
+          <option>القليوبية</option>
+          <option>الوادي الجديد</option>
+          <option>السويس</option>
+          <option>أسوان</option>
+          <option>أسيوط</option>
+          <option>بني سويف</option>
+          <option>بورسعيد</option>
+          <option>دمياط</option>
+          <option>جنوب سيناء</option>
+          <option>شمال سيناء</option>
+          <option>سوهاج</option>
+          <option>قنا</option>
+          <option>كفر الشيخ</option>
+          <option>مطروح</option>
+          <option>الأقصر</option>
+          <option>الشرقية</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔒 كلمة المرور</label>
+        <input type="password" class="form-control" placeholder="6 أحرف على الأقل" id="driverPassword">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔑 تأكيد كلمة المرور</label>
+        <input type="password" class="form-control" placeholder="أعد إدخال كلمة المرور" id="driverConfirmPassword">
+      </div>
+      <button class="next-btn" onclick="switchTab('vehicle')">التالي - بيانات المركبة ←</button>
+    </div>
+
+    <!-- Tab: Vehicle -->
+    <div class="tab-content" id="tab-vehicle">
+      <div style="font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 16px;">🚗 اختر نوع مركبتك</div>
+      <div class="vehicle-types">
+        <div class="vehicle-card" onclick="selectVehicle(this, 'sedan')">
+          <span class="vehicle-icon">🚗</span>
+          <div class="vehicle-name">سيارة خاصة</div>
+          <div class="vehicle-desc">مشاوير وطلبات</div>
+        </div>
+        <div class="vehicle-card" onclick="selectVehicle(this, 'van')">
+          <span class="vehicle-icon">🚐</span>
+          <div class="vehicle-name">ميكروباص</div>
+          <div class="vehicle-desc">مشاوير جماعية</div>
+        </div>
+        <div class="vehicle-card" onclick="selectVehicle(this, 'truck')">
+          <span class="vehicle-icon">🚚</span>
+          <div class="vehicle-name">سيارة نقل</div>
+          <div class="vehicle-desc">توصيل بضائع</div>
+        </div>
+        <div class="vehicle-card" onclick="selectVehicle(this, 'motorcycle')">
+          <span class="vehicle-icon">🏍️</span>
+          <div class="vehicle-name">موتوسيكل</div>
+          <div class="vehicle-desc">توصيل سريع</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🏷️ ماركة السيارة والموديل</label>
+        <input type="text" class="form-control" placeholder="مثال: تويوتا كامري 2020" id="carModel">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔢 رقم اللوحة</label>
+        <input type="text" class="form-control" placeholder="أ ب ج 1234" id="plateNumber">
+      </div>
+      <div class="form-group">
+        <label class="form-label">🎨 لون السيارة</label>
+        <select class="form-control form-select" id="carColor">
+          <option>أبيض</option>
+          <option>أسود</option>
+          <option>فضي</option>
+          <option>رمادي</option>
+          <option>أزرق</option>
+          <option>أحمر</option>
+          <option>آخر</option>
+        </select>
+      </div>
+
+      <button class="next-btn" onclick="switchTab('docs')">التالي - رفع المستندات ←</button>
+      <button class="prev-btn" onclick="switchTab('info')">← رجوع</button>
+    </div>
+
+    <!-- Tab: Documents -->
+    <div class="tab-content" id="tab-docs">
+      <p style="font-size: 13px; color: #64748B; margin-bottom: 20px; background: #F8FAFC; padding: 12px; border-radius: 10px;">
+        📌 يرجى رفع صور واضحة للمستندات المطلوبة. سيتم مراجعتها خلال 24-48 ساعة.
+      </p>
+
+      <div class="doc-upload" onclick="simulateUpload(this, 'بطاقة الهوية الوطنية')">
+        <div class="doc-upload-icon">🪪</div>
+        <div class="doc-upload-title">بطاقة الهوية الوطنية</div>
+        <div class="doc-upload-sub">الوجه الأمامي والخلفي</div>
+      </div>
+
+      <div class="doc-upload" onclick="simulateUpload(this, 'رخصة القيادة')">
+        <div class="doc-upload-icon">📜</div>
+        <div class="doc-upload-title">رخصة القيادة</div>
+        <div class="doc-upload-sub">سارية المفعول</div>
+      </div>
+
+      <div class="doc-upload" onclick="simulateUpload(this, 'استمارة السيارة')">
+        <div class="doc-upload-icon">📋</div>
+        <div class="doc-upload-title">استمارة السيارة</div>
+        <div class="doc-upload-sub">ملكية السيارة</div>
+      </div>
+
+      <div class="doc-upload" onclick="simulateUpload(this, 'صورة شخصية')">
+        <div class="doc-upload-icon">📸</div>
+        <div class="doc-upload-title">صورة شخصية حديثة</div>
+        <div class="doc-upload-sub">خلفية بيضاء</div>
+      </div>
+
+      <div style="background: #ECFDF5; border: 1px solid #6EE7B7; border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+        <div style="font-size: 15px; font-weight: 800; color: #065F46; margin-bottom: 12px;">🌟 مميزات السائق في وصله</div>
+        <div class="benefits-grid">
+          <div class="benefit-box"><span class="benefit-box-icon">💰</span><div class="benefit-box-title">85% من كل رحلة</div><div class="benefit-box-sub">أعلى نسبة في السوق</div></div>
+          <div class="benefit-box"><span class="benefit-box-icon">💳</span><div class="benefit-box-title">سحب فوري</div><div class="benefit-box-sub">استلم أرباحك فوراً</div></div>
+          <div class="benefit-box"><span class="benefit-box-icon">📱</span><div class="benefit-box-title">تطبيق سائق</div><div class="benefit-box-sub">سهل الاستخدام</div></div>
+          <div class="benefit-box"><span class="benefit-box-icon">🛡️</span><div class="benefit-box-title">تأمين شامل</div><div class="benefit-box-sub">أثناء العمل</div></div>
+          <div class="benefit-box"><span class="benefit-box-icon">⭐</span><div class="benefit-box-title">مكافآت وبونص</div><div class="benefit-box-sub">للمتميزين</div></div>
+          <div class="benefit-box"><span class="benefit-box-icon">🎓</span><div class="benefit-box-title">تدريب مجاني</div><div class="benefit-box-sub">قبل البدء</div></div>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitDriverRegistration()">✅ إرسال طلب التسجيل</button>
+      <button class="prev-btn" onclick="switchTab('vehicle')">← رجوع</button>
+    </div>
+  </div>
+
+  <div class="success-toast" id="toast"></div>
+
+  <script>
+    let vehicleType = '';
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      const tabs = ['info', 'vehicle', 'docs'];
+      const idx = tabs.indexOf(tab);
+      document.querySelectorAll('.tab')[idx].classList.add('active');
+    }
+
+    function selectVehicle(el, type) {
+      document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      vehicleType = type;
+    }
+
+    function simulateUpload(el, docName) {
+      el.style.borderColor = '#059669';
+      el.style.background = '#ECFDF5';
+      el.querySelector('.doc-upload-icon').textContent = '✅';
+      el.querySelector('.doc-upload-title').textContent = docName + ' - تم الرفع';
+      el.querySelector('.doc-upload-sub').textContent = 'تم رفع المستند بنجاح';
+    }
+
+    function submitDriverRegistration() {
+      const name = document.getElementById('driverName').value;
+      if (!name) { alert('⚠️ يرجى ملء بيانات السائق الشخصية'); switchTab('info'); return; }
+      showToast('🎉 تم إرسال طلبك بنجاح! سيتم مراجعة بياناتك خلال 24-48 ساعة');
+      localStorage.setItem('wslha_driver', JSON.stringify({ name, status: 'pending', vehicleType, rating: 0 }));
+      setTimeout(() => window.location.href = '/', 2500);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+  </script>
+</body>
+</html>
