@@ -7,12 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/netlify-feature-tour/wslha.css">
   
-<link rel="stylesheet" href="/netlify-feature-tour/_astro/login.780b5bcf.css" /><script type="module">const e=localStorage.getItem("wslha_user");e&&(JSON.parse(e).role==="admin"?window.location.href="/netlify-feature-tour/admin":window.location.href="/netlify-feature-tour/home");
+<link rel="stylesheet" href="/netlify-feature-tour/_astro/login.780b5bcf.css" /><script type="module">const e=location.pathname.startsWith("/netlify-feature-tour")?"/netlify-feature-tour":"";document.getElementById("backHomeBtn").href=e+"/";document.getElementById("registerLink").href=e+"/register";document.getElementById("adminLink").href=e+"/admin";const t=localStorage.getItem("wslha_user");t&&(JSON.parse(t).role==="admin"?window.location.href=e+"/admin":window.location.href=e+"/home");
 </script></head>
 <body class="astro-SGPQYURT">
   <div class="login-page astro-SGPQYURT">
     <div class="login-header astro-SGPQYURT">
-      <a href="/netlify-feature-tour/" class="back-btn astro-SGPQYURT">← العودة للرئيسية</a>
+      <a href="/netlify-feature-tour/" class="back-btn astro-SGPQYURT" id="backHomeBtn">← العودة للرئيسية</a>
     </div>
 
     <div class="login-hero astro-SGPQYURT">
@@ -69,7 +69,7 @@
       </form>
 
       <div class="register-link astro-SGPQYURT">
-        ليس لديك حساب؟ <a href="/netlify-feature-tour/register" class="astro-SGPQYURT">إنشاء حساب جديد</a>
+        ليس لديك حساب؟ <a href="/netlify-feature-tour/register" id="registerLink" class="astro-SGPQYURT">إنشاء حساب جديد</a>
       </div>
 
       <!-- Features Preview -->
@@ -81,7 +81,7 @@
       </div>
 
       <div class="admin-link astro-SGPQYURT">
-        <a href="/netlify-feature-tour/admin" class="astro-SGPQYURT">🛠️ لوحة تحكم الإدارة</a>
+        <a href="/netlify-feature-tour/admin" id="adminLink" class="astro-SGPQYURT">🛠️ لوحة تحكم الإدارة</a>
       </div>
     </div>
   </div>

@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/netlify-feature-tour/wslha.css">
   
-<link rel="stylesheet" href="/netlify-feature-tour/_astro/register.433e1fa8.css" /><script type="module">
+<link rel="stylesheet" href="/netlify-feature-tour/_astro/register.9740660d.css" /><script type="module">const l=location.pathname.startsWith("/netlify-feature-tour")?"/netlify-feature-tour":"";document.getElementById("backHomeBtn").href=l+"/";document.getElementById("loginLink").href=l+"/login";let u="";const n=["otp1","otp2","otp3","otp4"];n.forEach((o,e)=>{const t=document.getElementById(o);t.addEventListener("input",function(){this.value=this.value.replace(/\D/g,""),this.classList.toggle("filled",this.value.length===1),this.value&&e<3&&document.getElementById(n[e+1]).focus(),n.map(s=>document.getElementById(s).value).join("")==="1234"&&setTimeout(m,400)}),t.addEventListener("keydown",function(s){if(s.key==="Backspace"&&!this.value&&e>0){const a=document.getElementById(n[e-1]);a.value="",a.classList.remove("filled"),a.focus()}})});function m(){if(n.map(t=>document.getElementById(t).value).join("")!=="1234"){i("❌ رمز التحقق غير صحيح. جرّب: 1234",!0);return}const e=document.getElementById("submitBtn");e.disabled=!0,e.textContent="⏳ جارٍ إنشاء الحساب...",localStorage.setItem("wslha_user",JSON.stringify({name:document.getElementById("fullName").value.trim(),email:document.getElementById("email").value.trim(),phone:"+20"+document.getElementById("phone").value.trim(),role:"user",gender:u,balance:0,joinDate:new Date().toLocaleDateString("ar-EG")})),i("🎉 تم إنشاء حسابك بنجاح! مرحباً بك في وصله!"),setTimeout(()=>{window.location.href=l+"/home"},1800)}function i(o,e=!1){const t=document.getElementById("toast");t.textContent=o,t.className="success-toast"+(e?" error-toast":""),t.classList.add("show"),setTimeout(()=>t.classList.remove("show"),3200)}
 </script></head>
 <body class="astro-QRAOSRXQ">
   <div class="reg-header astro-QRAOSRXQ">
-    <a href="/netlify-feature-tour/" class="back-btn astro-QRAOSRXQ">← العودة للرئيسية</a>
+    <a href="/netlify-feature-tour/" class="back-btn astro-QRAOSRXQ" id="backHomeBtn">← العودة للرئيسية</a>
   </div>
 
   <div class="reg-hero astro-QRAOSRXQ">
@@ -21,120 +21,96 @@
   </div>
 
   <div class="reg-card astro-QRAOSRXQ">
-    <!-- Step Indicators -->
     <div class="steps-indicator astro-QRAOSRXQ">
       <div class="step-indicator active astro-QRAOSRXQ" id="ind-1"></div>
       <div class="step-indicator astro-QRAOSRXQ" id="ind-2"></div>
       <div class="step-indicator astro-QRAOSRXQ" id="ind-3"></div>
     </div>
 
-    <!-- Step 1: Basic Info -->
+    <!-- Step 1 -->
     <div class="step-content active astro-QRAOSRXQ" id="step-1">
       <div class="step-title astro-QRAOSRXQ">👋 معلوماتك الأساسية</div>
-
       <div class="form-group astro-QRAOSRXQ">
         <label class="form-label astro-QRAOSRXQ">👤 الاسم الكامل</label>
-        <input type="text" class="form-control astro-QRAOSRXQ" placeholder="محمد أحمد علي" id="fullName">
+        <input type="text" class="form-control astro-QRAOSRXQ" placeholder="محمد أحمد علي" id="fullName" autocomplete="name">
+        <div class="field-error astro-QRAOSRXQ" id="nameErr">يرجى إدخال الاسم الكامل</div>
       </div>
-
       <div class="form-group astro-QRAOSRXQ">
         <label class="form-label astro-QRAOSRXQ">📱 رقم الهاتف</label>
         <div class="phone-prefix astro-QRAOSRXQ">
-          <select class="prefix-select astro-QRAOSRXQ">
-            <option class="astro-QRAOSRXQ">🇪🇬 +20</option>
-          </select>
-          <input type="tel" class="form-control astro-QRAOSRXQ" placeholder="01XXXXXXXXX" id="phone">
+          <select class="prefix-select astro-QRAOSRXQ"><option class="astro-QRAOSRXQ">🇪🇬 +20</option></select>
+          <input type="tel" class="form-control astro-QRAOSRXQ" placeholder="01XXXXXXXXX" id="phone" autocomplete="tel">
         </div>
+        <div class="field-error astro-QRAOSRXQ" id="phoneErr">يرجى إدخال رقم هاتف صحيح (01XXXXXXXXX)</div>
       </div>
-
       <div class="form-group astro-QRAOSRXQ">
-        <label class="form-label astro-QRAOSRXQ">📧 البريد الإلكتروني</label>
-        <input type="email" class="form-control astro-QRAOSRXQ" placeholder="example@gmail.com" id="email">
+        <label class="form-label astro-QRAOSRXQ">📧 البريد الإلكتروني (اختياري)</label>
+        <input type="email" class="form-control astro-QRAOSRXQ" placeholder="example@gmail.com" id="email" autocomplete="email">
+        <div class="field-error astro-QRAOSRXQ" id="emailErr">صيغة البريد الإلكتروني غير صحيحة</div>
       </div>
-
       <div class="form-group astro-QRAOSRXQ">
-        <label class="form-label astro-QRAOSRXQ">⚧ الجنس</label>
+        <label class="form-label astro-QRAOSRXQ">الجنس</label>
         <div class="gender-btns astro-QRAOSRXQ">
-          <button class="gender-btn astro-QRAOSRXQ" onclick="selectGender(this, 'male')">👨 ذكر</button>
-          <button class="gender-btn astro-QRAOSRXQ" onclick="selectGender(this, 'female')">👩 أنثى</button>
+          <button class="gender-btn astro-QRAOSRXQ" onclick="selectGender(this,'male')" type="button">👨 ذكر</button>
+          <button class="gender-btn astro-QRAOSRXQ" onclick="selectGender(this,'female')" type="button">👩 أنثى</button>
         </div>
+        <div class="field-error astro-QRAOSRXQ" id="genderErr">يرجى اختيار الجنس</div>
       </div>
-
-      <button class="next-btn astro-QRAOSRXQ" onclick="goStep(2)">التالي ←</button>
-      <div class="login-link astro-QRAOSRXQ">لديك حساب؟ <a href="/netlify-feature-tour/login" class="astro-QRAOSRXQ">تسجيل الدخول</a></div>
+      <button class="next-btn astro-QRAOSRXQ" onclick="goStep(2)" type="button">التالي ←</button>
+      <div class="login-link astro-QRAOSRXQ">لديك حساب؟ <a href="/netlify-feature-tour/login" id="loginLink" class="astro-QRAOSRXQ">تسجيل الدخول</a></div>
     </div>
 
-    <!-- Step 2: Password & Benefits -->
+    <!-- Step 2 -->
     <div class="step-content astro-QRAOSRXQ" id="step-2">
       <div class="step-title astro-QRAOSRXQ">🔒 كلمة المرور والمميزات</div>
-
       <div class="form-group astro-QRAOSRXQ">
         <label class="form-label astro-QRAOSRXQ">🔑 كلمة المرور</label>
-        <input type="password" class="form-control astro-QRAOSRXQ" placeholder="8 أحرف على الأقل" id="password" oninput="checkStrength(this.value)">
+        <input type="password" class="form-control astro-QRAOSRXQ" placeholder="6 أحرف على الأقل" id="password" oninput="checkStrength(this.value)">
         <div class="password-strength astro-QRAOSRXQ">
           <div class="strength-bar astro-QRAOSRXQ"><div class="strength-fill astro-QRAOSRXQ" id="strengthFill"></div></div>
           <span class="strength-label astro-QRAOSRXQ" id="strengthLabel" style="color:#94A3B8">أدخل كلمة المرور</span>
         </div>
+        <div class="field-error astro-QRAOSRXQ" id="pwdErr">كلمة المرور يجب أن تكون 6 أحرف على الأقل</div>
       </div>
-
       <div class="form-group astro-QRAOSRXQ">
         <label class="form-label astro-QRAOSRXQ">🔑 تأكيد كلمة المرور</label>
         <input type="password" class="form-control astro-QRAOSRXQ" placeholder="أعد إدخال كلمة المرور" id="confirmPassword">
+        <div class="field-error astro-QRAOSRXQ" id="confirmErr">كلمتا المرور غير متطابقتين</div>
       </div>
-
       <div class="benefits-list astro-QRAOSRXQ">
-        <div class="benefit-item astro-QRAOSRXQ">
-          <span class="benefit-icon astro-QRAOSRXQ">🚚</span>
-          <div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">توصيل الطلبات من المتاجر</div><div class="benefit-sub astro-QRAOSRXQ">آلاف المتاجر المحلية في مصر</div></div>
-        </div>
-        <div class="benefit-item astro-QRAOSRXQ">
-          <span class="benefit-icon astro-QRAOSRXQ">🚗</span>
-          <div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">مشاوير داخل وبين المحافظات</div><div class="benefit-sub astro-QRAOSRXQ">27 محافظة في جميع أنحاء مصر</div></div>
-        </div>
-        <div class="benefit-item astro-QRAOSRXQ">
-          <span class="benefit-icon astro-QRAOSRXQ">✈️</span>
-          <div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">خدمة توصيل المطار</div><div class="benefit-sub astro-QRAOSRXQ">جميع المطارات المصرية</div></div>
-        </div>
-        <div class="benefit-item astro-QRAOSRXQ">
-          <span class="benefit-icon astro-QRAOSRXQ">👛</span>
-          <div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">محفظة إلكترونية متكاملة</div><div class="benefit-sub astro-QRAOSRXQ">شحن رصيد وسحب وتحويل</div></div>
-        </div>
+        <div class="benefit-item astro-QRAOSRXQ"><span class="benefit-icon astro-QRAOSRXQ">🚚</span><div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">توصيل من المتاجر المحلية</div><div class="benefit-sub astro-QRAOSRXQ">آلاف المتاجر في مصر</div></div></div>
+        <div class="benefit-item astro-QRAOSRXQ"><span class="benefit-icon astro-QRAOSRXQ">🚗</span><div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">مشاوير داخل وبين المحافظات</div><div class="benefit-sub astro-QRAOSRXQ">27 محافظة في جميع أنحاء مصر</div></div></div>
+        <div class="benefit-item astro-QRAOSRXQ"><span class="benefit-icon astro-QRAOSRXQ">✈️</span><div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">خدمة توصيل المطار</div><div class="benefit-sub astro-QRAOSRXQ">جميع المطارات المصرية</div></div></div>
+        <div class="benefit-item astro-QRAOSRXQ"><span class="benefit-icon astro-QRAOSRXQ">👛</span><div class="astro-QRAOSRXQ"><div class="benefit-text astro-QRAOSRXQ">محفظة إلكترونية متكاملة</div><div class="benefit-sub astro-QRAOSRXQ">شحن رصيد وسحب وتحويل</div></div></div>
       </div>
-
       <div class="terms-check astro-QRAOSRXQ">
         <input type="checkbox" id="terms" class="astro-QRAOSRXQ">
         <span class="terms-text astro-QRAOSRXQ">أوافق على <a href="#" class="astro-QRAOSRXQ">شروط الاستخدام</a> و<a href="#" class="astro-QRAOSRXQ">سياسة الخصوصية</a> لتطبيق وصله</span>
       </div>
-
-      <button class="next-btn astro-QRAOSRXQ" onclick="goStep(3)">التالي ←</button>
-      <button class="back-step-btn astro-QRAOSRXQ" onclick="goStep(1)">← رجوع</button>
+      <div class="field-error astro-QRAOSRXQ" id="termsErr">يجب الموافقة على الشروط للمتابعة</div>
+      <button class="next-btn astro-QRAOSRXQ" onclick="goStep(3)" type="button">التالي ←</button>
+      <button class="back-step-btn astro-QRAOSRXQ" onclick="goStep(1)" type="button">← رجوع</button>
     </div>
 
-    <!-- Step 3: OTP Verification -->
+    <!-- Step 3 -->
     <div class="step-content astro-QRAOSRXQ" id="step-3">
       <div class="step-title astro-QRAOSRXQ">📲 تأكيد رقم الهاتف</div>
-      <p style="font-size: 14px; color: #64748B; margin-bottom: 20px; text-align: center;" class="astro-QRAOSRXQ">
-        تم إرسال رمز التحقق المكون من 4 أرقام على رقمك المسجل
-      </p>
-
+      <p class="phone-display astro-QRAOSRXQ">تم إرسال رمز التحقق على: <strong id="phoneDisplay" class="astro-QRAOSRXQ"></strong></p>
+      <p style="font-size:13px;color:#64748B;text-align:center;margin-bottom:8px;" class="astro-QRAOSRXQ">أدخل الرمز المكون من 4 أرقام</p>
       <div class="otp-inputs astro-QRAOSRXQ">
-        <input type="text" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp1" oninput="moveOTP(this, 'otp2')">
-        <input type="text" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp2" oninput="moveOTP(this, 'otp3')">
-        <input type="text" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp3" oninput="moveOTP(this, 'otp4')">
-        <input type="text" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp4" oninput="checkOTP()">
+        <input type="text" inputmode="numeric" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp1">
+        <input type="text" inputmode="numeric" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp2">
+        <input type="text" inputmode="numeric" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp3">
+        <input type="text" inputmode="numeric" class="otp-input astro-QRAOSRXQ" maxlength="1" id="otp4">
       </div>
-
+      <div class="otp-hint astro-QRAOSRXQ">💡 للتجربة: الرمز هو <strong class="astro-QRAOSRXQ">1234</strong></div>
       <div class="otp-resend astro-QRAOSRXQ">
-        لم يصلك الرمز؟ <a href="#" onclick="resendOTP()" class="astro-QRAOSRXQ">إعادة الإرسال</a>
-        <span id="timer" style="color:#94A3B8" class="astro-QRAOSRXQ"> (60 ثانية)</span>
+        لم يصلك الرمز؟
+        <a href="#" id="resendLink" onclick="resendOTP(event)" class="astro-QRAOSRXQ">إعادة الإرسال</a>
+        <span id="timer" class="astro-QRAOSRXQ"></span>
       </div>
-
-      <p style="text-align:center; font-size: 13px; color: #94A3B8; margin-bottom: 16px; background: #F8FAFC; padding: 10px; border-radius: 10px;" class="astro-QRAOSRXQ">
-        💡 للاختبار: ادخل الرمز <strong class="astro-QRAOSRXQ">1234</strong>
-      </p>
-
-      <button class="submit-btn astro-QRAOSRXQ" onclick="submitRegister()">إنشاء الحساب ✅</button>
-      <button class="back-step-btn astro-QRAOSRXQ" onclick="goStep(2)">← رجوع</button>
+      <button class="submit-btn astro-QRAOSRXQ" onclick="submitRegister()" type="button" id="submitBtn">إنشاء الحساب ✅</button>
+      <button class="back-step-btn astro-QRAOSRXQ" onclick="goStep(2)" type="button">← رجوع</button>
     </div>
   </div>
 
