@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="astro-476ICIYF">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>تتبع مباشر - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+<link rel="stylesheet" href="/netlify-feature-tour/_astro/tracking.b58b00e8.css" /><script type="module" src="/netlify-feature-tour/_astro/hoisted.a4dc33db.js"></script></head>
+<body class="astro-476ICIYF">
+
+<!-- Map -->
+<div id="map" class="astro-476ICIYF">
+  <div class="map-demo astro-476ICIYF" id="mapDemo">
+    <div class="map-grid astro-476ICIYF"></div>
+    <!-- Mock Cairo roads -->
+    <div class="road-h road-main astro-476ICIYF" style="top:45%;left:0;right:0;"></div>
+    <div class="road-h astro-476ICIYF" style="top:30%;left:0;right:0;"></div>
+    <div class="road-h astro-476ICIYF" style="top:60%;left:0;right:0;"></div>
+    <div class="road-h astro-476ICIYF" style="top:72%;left:0;right:0;"></div>
+    <div class="road-h astro-476ICIYF" style="top:20%;left:0;right:0;"></div>
+    <div class="road-v road-main astro-476ICIYF" style="left:40%;top:0;bottom:0;"></div>
+    <div class="road-v astro-476ICIYF" style="left:20%;top:0;bottom:0;"></div>
+    <div class="road-v astro-476ICIYF" style="left:60%;top:0;bottom:0;"></div>
+    <div class="road-v astro-476ICIYF" style="left:75%;top:0;bottom:0;"></div>
+    <div class="road-v astro-476ICIYF" style="left:10%;top:0;bottom:0;"></div>
+    <!-- Route line (SVG) -->
+    <svg id="routeSvg" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none" class="astro-476ICIYF">
+      <defs class="astro-476ICIYF">
+        <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%" class="astro-476ICIYF">
+          <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" class="astro-476ICIYF"></stop>
+          <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" class="astro-476ICIYF"></stop>
+        </linearGradient>
+        <filter id="glow" class="astro-476ICIYF">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" class="astro-476ICIYF"></feGaussianBlur>
+          <feMerge class="astro-476ICIYF"><feMergeNode in="coloredBlur" class="astro-476ICIYF"></feMergeNode><feMergeNode in="SourceGraphic" class="astro-476ICIYF"></feMergeNode></feMerge>
+        </filter>
+      </defs>
+      <polyline id="routeLine" points="" fill="none" stroke="url(#routeGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 6" filter="url(#glow)" opacity="0.9" class="astro-476ICIYF"></polyline>
+      <!-- Destination marker -->
+      <g id="destMarker" class="astro-476ICIYF">
+        <circle r="22" fill="#10B981" fill-opacity="0.2" class="astro-476ICIYF"></circle>
+        <circle r="14" fill="#10B981" class="astro-476ICIYF"></circle>
+        <text text-anchor="middle" dy="5" font-size="14" class="astro-476ICIYF">📦</text>
+      </g>
+      <!-- Origin marker -->
+      <g id="originMarker" class="astro-476ICIYF">
+        <circle r="18" fill="#3B82F6" fill-opacity="0.2" class="astro-476ICIYF"></circle>
+        <circle r="11" fill="#3B82F6" class="astro-476ICIYF"></circle>
+        <text text-anchor="middle" dy="5" font-size="11" class="astro-476ICIYF">🏠</text>
+      </g>
+      <!-- Driver marker -->
+      <g id="driverMarker" class="astro-476ICIYF">
+        <circle r="26" fill="rgba(29,78,216,0.2)" class="astro-476ICIYF"></circle>
+        <circle r="18" fill="#1D4ED8" stroke="white" stroke-width="3" class="astro-476ICIYF"></circle>
+        <text text-anchor="middle" dy="6" font-size="18" class="astro-476ICIYF">🚗</text>
+        <!-- Pulse ring -->
+        <circle r="26" fill="none" stroke="#1D4ED8" stroke-width="2" opacity="0" class="astro-476ICIYF">
+          <animate attributeName="r" from="18" to="36" dur="1.5s" repeatCount="indefinite" class="astro-476ICIYF"></animate>
+          <animate attributeName="opacity" from="0.8" to="0" dur="1.5s" repeatCount="indefinite" class="astro-476ICIYF"></animate>
+        </circle>
+      </g>
+    </svg>
+    <!-- Area label -->
+    <div style="position:absolute;top:38%;left:15%;color:rgba(148,163,184,0.5);font-size:11px;font-weight:700;letter-spacing:1px;" class="astro-476ICIYF">القاهرة - مصر</div>
+    <div style="position:absolute;top:55%;left:55%;color:rgba(148,163,184,0.4);font-size:10px;font-weight:700;" class="astro-476ICIYF">مدينة نصر</div>
+    <div style="position:absolute;top:25%;left:35%;color:rgba(148,163,184,0.4);font-size:10px;font-weight:700;" class="astro-476ICIYF">هليوبوليس</div>
+    <div style="position:absolute;top:65%;left:12%;color:rgba(148,163,184,0.35);font-size:10px;font-weight:700;" class="astro-476ICIYF">المطرية</div>
+    <div style="position:absolute;top:18%;left:60%;color:rgba(148,163,184,0.35);font-size:10px;font-weight:700;" class="astro-476ICIYF">عين شمس</div>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div class="top-bar astro-476ICIYF">
+  <a href="/netlify-feature-tour/orders" class="back-btn astro-476ICIYF" id="backBtn">←</a>
+  <div class="order-info-chip astro-476ICIYF" id="orderChip">#ORD-4523</div>
+  <div class="live-badge astro-476ICIYF"><div class="live-dot astro-476ICIYF"></div> مباشر</div>
+</div>
+
+<!-- ETA card -->
+<div class="eta-card astro-476ICIYF">
+  <div class="eta-minutes astro-476ICIYF" id="etaMinutes">8</div>
+  <div class="eta-label astro-476ICIYF">دقائق للوصول</div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-bar astro-476ICIYF">
+  <div class="steps astro-476ICIYF">
+    <div class="step done astro-476ICIYF" id="s1">
+      <div class="step-dot astro-476ICIYF">✓</div>
+      <div class="step-label astro-476ICIYF">تأكيد</div>
+    </div>
+    <div class="step done astro-476ICIYF" id="s2">
+      <div class="step-dot astro-476ICIYF">✓</div>
+      <div class="step-label astro-476ICIYF">استلام</div>
+    </div>
+    <div class="step active astro-476ICIYF" id="s3">
+      <div class="step-dot astro-476ICIYF">3</div>
+      <div class="step-label astro-476ICIYF">في الطريق</div>
+    </div>
+    <div class="step astro-476ICIYF" id="s4">
+      <div class="step-dot astro-476ICIYF">4</div>
+      <div class="step-label astro-476ICIYF">تسليم</div>
+    </div>
+  </div>
+</div>
+
+<!-- API Key banner -->
+<div class="api-banner astro-476ICIYF" id="apiBanner">
+  <div class="api-banner-title astro-476ICIYF">🗺️ أدخل Google Maps API Key لتفعيل الخريطة الحية</div>
+  <div class="api-input-row astro-476ICIYF">
+    <input type="text" class="api-input astro-476ICIYF" id="apiKeyInput" placeholder="AIzaSy...">
+    <button class="api-save-btn astro-476ICIYF" onclick="saveApiKey()">حفظ</button>
+  </div>
+  <div class="api-skip astro-476ICIYF" onclick="dismissBanner()">متابعة بالخريطة التجريبية ←</div>
+</div>
+
+<!-- Bottom sheet -->
+<div class="bottom-sheet astro-476ICIYF">
+  <div class="sheet-handle astro-476ICIYF"></div>
+
+  <!-- Driver info -->
+  <div class="driver-card astro-476ICIYF">
+    <div class="driver-avatar astro-476ICIYF">🧑‍✈️<div class="driver-online-dot astro-476ICIYF"></div></div>
+    <div class="astro-476ICIYF">
+      <div class="driver-name astro-476ICIYF">محمد أحمد</div>
+      <div class="driver-vehicle astro-476ICIYF">تويوتا كورولا • ABJ 2847</div>
+      <div class="driver-rating astro-476ICIYF">⭐ 4.9 · 1,240 رحلة</div>
+    </div>
+    <div class="driver-actions astro-476ICIYF">
+      <button class="action-circle btn-call astro-476ICIYF" onclick="callDriver()" title="اتصال">📞</button>
+      <button class="action-circle btn-chat astro-476ICIYF" onclick="chatDriver()" title="رسالة">💬</button>
+    </div>
+  </div>
+
+  <!-- Route -->
+  <div class="route-info astro-476ICIYF">
+    <div class="route-line-container astro-476ICIYF">
+      <div class="route-dot start astro-476ICIYF"></div>
+      <div class="route-line astro-476ICIYF"></div>
+      <div class="route-dot end astro-476ICIYF"></div>
+    </div>
+    <div class="route-points astro-476ICIYF">
+      <div class="route-point-row astro-476ICIYF">
+        <div class="route-point astro-476ICIYF">شارع التحرير، وسط القاهرة</div>
+        <div class="route-sub astro-476ICIYF">نقطة الانطلاق</div>
+      </div>
+      <div class="route-gap astro-476ICIYF"></div>
+      <div class="route-point-row astro-476ICIYF">
+        <div class="route-point astro-476ICIYF" id="destText">شارع مصر والسودان، مدينة نصر</div>
+        <div class="route-sub astro-476ICIYF">وجهتك</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fare -->
+  <div class="fare-card astro-476ICIYF">
+    <div class="astro-476ICIYF">
+      <div class="fare-label astro-476ICIYF">قيمة الطلب</div>
+      <div class="fare-method astro-476ICIYF">💳 بطاقة بنكية</div>
+    </div>
+    <div class="fare-value astro-476ICIYF" id="fareValue">85 ج.م</div>
+  </div>
+</div>
+
+<div class="toast astro-476ICIYF" id="toast"></div>
+
+<!-- Google Maps API (loads if key exists) -->
+<div id="googleMapContainer" style="display:none;position:fixed;inset:0;z-index:1;" class="astro-476ICIYF"></div>
+
+
+</body>
+</html>
