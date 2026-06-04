@@ -18,48 +18,59 @@
     .reg-subtitle { font-size: 14px; color: rgba(255,255,255,0.75); }
     .reg-card { background: white; border-radius: 32px 32px 0 0; padding: 28px 24px 40px; min-height: 550px; }
     .steps-indicator { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; }
-    .step-indicator { width: 36px; height: 8px; border-radius: 4px; background: #E2E8F0; transition: all 0.3s; }
+    .step-indicator { width: 36px; height: 8px; border-radius: 4px; background: #E2E8F0; transition: all 0.35s cubic-bezier(.4,0,.2,1); }
     .step-indicator.active { width: 64px; background: #1D4ED8; }
     .step-indicator.done { background: #10B981; width: 36px; }
     .step-content { display: none; }
-    .step-content.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .step-content.active { display: block; animation: fadeInUp 0.35s ease; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
     .step-title { font-size: 20px; font-weight: 800; color: #1E293B; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px; }
+    .form-control { width: 100%; padding: 14px 16px; border: 2px solid #E2E8F0; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 15px; color: #1E293B; background: #F8FAFC; outline: none; transition: all 0.25s; box-sizing: border-box; }
+    .form-control:focus { border-color: #1D4ED8; background: white; box-shadow: 0 0 0 4px rgba(29,78,216,0.1); }
+    .form-control.error { border-color: #EF4444; background: #FFF5F5; }
+    .field-error { font-size: 12px; color: #EF4444; font-weight: 600; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
     .phone-prefix { display: flex; gap: 8px; }
     .prefix-select { width: 110px; padding: 14px 12px; border: 2px solid #E2E8F0; border-radius: 12px; font-family: 'Cairo', sans-serif; font-size: 14px; background: #F8FAFC; flex-shrink: 0; outline: none; }
     .gender-btns { display: flex; gap: 12px; }
-    .gender-btn { flex: 1; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; background: white; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s; text-align: center; }
-    .gender-btn.selected, .gender-btn:hover { border-color: #1D4ED8; background: #EFF6FF; color: #1D4ED8; }
-    .next-btn, .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1E3A8A, #1D4ED8); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(29,78,216,0.35); margin-top: 8px; transition: all 0.3s; }
+    .gender-btn { flex: 1; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; background: white; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.25s; text-align: center; }
+    .gender-btn.selected { border-color: #1D4ED8; background: #EFF6FF; color: #1D4ED8; }
+    .next-btn, .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1E3A8A, #1D4ED8); color: white; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 20px rgba(29,78,216,0.35); margin-top: 8px; transition: all 0.25s; }
     .next-btn:hover, .submit-btn:hover { transform: translateY(-2px); }
-    .back-step-btn { width: 100%; padding: 12px; background: #F8FAFC; color: #64748B; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-    .terms-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
-    .terms-check input { width: 18px; height: 18px; accent-color: #1D4ED8; margin-top: 2px; flex-shrink: 0; }
+    .back-step-btn { width: 100%; padding: 12px; background: #F1F5F9; color: #64748B; border: none; border-radius: 14px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .password-strength { margin-top: 8px; }
+    .strength-bar { height: 5px; border-radius: 5px; background: #E2E8F0; margin-bottom: 5px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 5px; transition: all 0.35s; width: 0; }
+    .strength-label { font-size: 12px; font-weight: 700; }
+    .benefits-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .benefit-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #F8FAFC; border-radius: 14px; border: 1px solid #E2E8F0; }
+    .benefit-icon { font-size: 22px; flex-shrink: 0; }
+    .benefit-text { font-size: 14px; font-weight: 700; color: #1E293B; }
+    .benefit-sub { font-size: 12px; color: #94A3B8; margin-top: 1px; }
+    .terms-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .terms-check input { width: 18px; height: 18px; accent-color: #1D4ED8; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
     .terms-text { font-size: 13px; color: #64748B; line-height: 1.6; }
     .terms-text a { color: #1D4ED8; font-weight: 700; text-decoration: none; }
-    .password-strength { margin-top: 8px; }
-    .strength-bar { height: 4px; border-radius: 4px; background: #E2E8F0; margin-bottom: 4px; overflow: hidden; }
-    .strength-fill { height: 100%; border-radius: 4px; transition: all 0.3s; width: 0; }
-    .strength-label { font-size: 12px; font-weight: 700; }
-    .benefits-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-    .benefit-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: #F8FAFC; border-radius: 14px; border: 1px solid #E2E8F0; }
-    .benefit-icon { font-size: 24px; }
-    .benefit-text { font-size: 14px; font-weight: 600; color: #1E293B; }
-    .benefit-sub { font-size: 12px; color: #94A3B8; margin-top: 2px; }
-    .otp-inputs { display: flex; gap: 12px; justify-content: center; margin: 24px 0; }
-    .otp-input { width: 56px; height: 60px; border: 2px solid #E2E8F0; border-radius: 14px; text-align: center; font-family: 'Cairo', sans-serif; font-size: 24px; font-weight: 900; color: #1E293B; outline: none; transition: all 0.3s; }
-    .otp-input:focus { border-color: #1D4ED8; box-shadow: 0 0 0 4px rgba(29,78,216,0.15); }
-    .otp-resend { text-align: center; font-size: 13px; color: #64748B; margin-bottom: 16px; }
+    .otp-inputs { display: flex; gap: 12px; justify-content: center; margin: 24px 0; direction: ltr; }
+    .otp-input { width: 60px; height: 64px; border: 2px solid #E2E8F0; border-radius: 16px; text-align: center; font-family: 'Cairo', sans-serif; font-size: 26px; font-weight: 900; color: #1E293B; outline: none; transition: all 0.25s; background: #F8FAFC; }
+    .otp-input:focus { border-color: #1D4ED8; background: white; box-shadow: 0 0 0 4px rgba(29,78,216,0.15); }
+    .otp-input.filled { border-color: #10B981; background: #F0FDF4; color: #059669; }
+    .otp-hint { text-align: center; font-size: 13px; background: #F0F9FF; color: #0369A1; padding: 10px 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #BAE6FD; }
+    .otp-resend { text-align: center; font-size: 13px; color: #64748B; margin-bottom: 12px; }
     .otp-resend a { color: #1D4ED8; font-weight: 700; text-decoration: none; }
+    .phone-display { text-align: center; font-size: 14px; color: #475569; margin-bottom: 8px; font-weight: 600; }
     .login-link { text-align: center; margin-top: 20px; font-size: 14px; color: #64748B; }
     .login-link a { color: #1D4ED8; font-weight: 800; text-decoration: none; }
-    .success-toast { position: fixed; top: 20px; right: 20px; left: 20px; background: #10B981; color: white; padding: 16px 20px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 25px rgba(16,185,129,0.4); transform: translateY(-100px); transition: all 0.4s; z-index: 999; text-align: center; }
+    .success-toast { position: fixed; top: 20px; right: 16px; left: 16px; background: #10B981; color: white; padding: 16px 20px; border-radius: 16px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 25px rgba(16,185,129,0.45); transform: translateY(-120px); transition: all 0.4s cubic-bezier(.4,0,.2,1); z-index: 999; text-align: center; }
     .success-toast.show { transform: translateY(0); }
+    .error-toast { background: #EF4444 !important; }
   </style>
 </head>
 <body>
   <div class="reg-header">
-    <a href="/" class="back-btn">← العودة للرئيسية</a>
+    <a href="/" class="back-btn" id="backHomeBtn">← العودة للرئيسية</a>
   </div>
 
   <div class="reg-hero">
@@ -69,229 +80,256 @@
   </div>
 
   <div class="reg-card">
-    <!-- Step Indicators -->
     <div class="steps-indicator">
       <div class="step-indicator active" id="ind-1"></div>
       <div class="step-indicator" id="ind-2"></div>
       <div class="step-indicator" id="ind-3"></div>
     </div>
 
-    <!-- Step 1: Basic Info -->
+    <!-- Step 1 -->
     <div class="step-content active" id="step-1">
       <div class="step-title">👋 معلوماتك الأساسية</div>
-
       <div class="form-group">
         <label class="form-label">👤 الاسم الكامل</label>
-        <input type="text" class="form-control" placeholder="محمد أحمد علي" id="fullName">
+        <input type="text" class="form-control" placeholder="محمد أحمد علي" id="fullName" autocomplete="name">
+        <div class="field-error" id="nameErr">يرجى إدخال الاسم الكامل</div>
       </div>
-
       <div class="form-group">
         <label class="form-label">📱 رقم الهاتف</label>
         <div class="phone-prefix">
-          <select class="prefix-select">
-            <option>🇪🇬 +20</option>
-          </select>
-          <input type="tel" class="form-control" placeholder="01XXXXXXXXX" id="phone">
+          <select class="prefix-select"><option>🇪🇬 +20</option></select>
+          <input type="tel" class="form-control" placeholder="01XXXXXXXXX" id="phone" autocomplete="tel">
         </div>
+        <div class="field-error" id="phoneErr">يرجى إدخال رقم هاتف صحيح (01XXXXXXXXX)</div>
       </div>
-
       <div class="form-group">
-        <label class="form-label">📧 البريد الإلكتروني</label>
-        <input type="email" class="form-control" placeholder="example@gmail.com" id="email">
+        <label class="form-label">📧 البريد الإلكتروني (اختياري)</label>
+        <input type="email" class="form-control" placeholder="example@gmail.com" id="email" autocomplete="email">
+        <div class="field-error" id="emailErr">صيغة البريد الإلكتروني غير صحيحة</div>
       </div>
-
       <div class="form-group">
-        <label class="form-label">⚧ الجنس</label>
+        <label class="form-label">الجنس</label>
         <div class="gender-btns">
-          <button class="gender-btn" onclick="selectGender(this, 'male')">👨 ذكر</button>
-          <button class="gender-btn" onclick="selectGender(this, 'female')">👩 أنثى</button>
+          <button class="gender-btn" onclick="selectGender(this,'male')" type="button">👨 ذكر</button>
+          <button class="gender-btn" onclick="selectGender(this,'female')" type="button">👩 أنثى</button>
         </div>
+        <div class="field-error" id="genderErr">يرجى اختيار الجنس</div>
       </div>
-
-      <button class="next-btn" onclick="goStep(2)">التالي ←</button>
-      <div class="login-link">لديك حساب؟ <a href="/login">تسجيل الدخول</a></div>
+      <button class="next-btn" onclick="goStep(2)" type="button">التالي ←</button>
+      <div class="login-link">لديك حساب؟ <a href="/login" id="loginLink">تسجيل الدخول</a></div>
     </div>
 
-    <!-- Step 2: Password & Benefits -->
+    <!-- Step 2 -->
     <div class="step-content" id="step-2">
       <div class="step-title">🔒 كلمة المرور والمميزات</div>
-
       <div class="form-group">
         <label class="form-label">🔑 كلمة المرور</label>
-        <input type="password" class="form-control" placeholder="8 أحرف على الأقل" id="password" oninput="checkStrength(this.value)">
+        <input type="password" class="form-control" placeholder="6 أحرف على الأقل" id="password" oninput="checkStrength(this.value)">
         <div class="password-strength">
           <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
           <span class="strength-label" id="strengthLabel" style="color:#94A3B8">أدخل كلمة المرور</span>
         </div>
+        <div class="field-error" id="pwdErr">كلمة المرور يجب أن تكون 6 أحرف على الأقل</div>
       </div>
-
       <div class="form-group">
         <label class="form-label">🔑 تأكيد كلمة المرور</label>
         <input type="password" class="form-control" placeholder="أعد إدخال كلمة المرور" id="confirmPassword">
+        <div class="field-error" id="confirmErr">كلمتا المرور غير متطابقتين</div>
       </div>
-
       <div class="benefits-list">
-        <div class="benefit-item">
-          <span class="benefit-icon">🚚</span>
-          <div><div class="benefit-text">توصيل الطلبات من المتاجر</div><div class="benefit-sub">آلاف المتاجر المحلية في مصر</div></div>
-        </div>
-        <div class="benefit-item">
-          <span class="benefit-icon">🚗</span>
-          <div><div class="benefit-text">مشاوير داخل وبين المحافظات</div><div class="benefit-sub">27 محافظة في جميع أنحاء مصر</div></div>
-        </div>
-        <div class="benefit-item">
-          <span class="benefit-icon">✈️</span>
-          <div><div class="benefit-text">خدمة توصيل المطار</div><div class="benefit-sub">جميع المطارات المصرية</div></div>
-        </div>
-        <div class="benefit-item">
-          <span class="benefit-icon">👛</span>
-          <div><div class="benefit-text">محفظة إلكترونية متكاملة</div><div class="benefit-sub">شحن رصيد وسحب وتحويل</div></div>
-        </div>
+        <div class="benefit-item"><span class="benefit-icon">🚚</span><div><div class="benefit-text">توصيل من المتاجر المحلية</div><div class="benefit-sub">آلاف المتاجر في مصر</div></div></div>
+        <div class="benefit-item"><span class="benefit-icon">🚗</span><div><div class="benefit-text">مشاوير داخل وبين المحافظات</div><div class="benefit-sub">27 محافظة في جميع أنحاء مصر</div></div></div>
+        <div class="benefit-item"><span class="benefit-icon">✈️</span><div><div class="benefit-text">خدمة توصيل المطار</div><div class="benefit-sub">جميع المطارات المصرية</div></div></div>
+        <div class="benefit-item"><span class="benefit-icon">👛</span><div><div class="benefit-text">محفظة إلكترونية متكاملة</div><div class="benefit-sub">شحن رصيد وسحب وتحويل</div></div></div>
       </div>
-
       <div class="terms-check">
         <input type="checkbox" id="terms">
         <span class="terms-text">أوافق على <a href="#">شروط الاستخدام</a> و<a href="#">سياسة الخصوصية</a> لتطبيق وصله</span>
       </div>
-
-      <button class="next-btn" onclick="goStep(3)">التالي ←</button>
-      <button class="back-step-btn" onclick="goStep(1)">← رجوع</button>
+      <div class="field-error" id="termsErr">يجب الموافقة على الشروط للمتابعة</div>
+      <button class="next-btn" onclick="goStep(3)" type="button">التالي ←</button>
+      <button class="back-step-btn" onclick="goStep(1)" type="button">← رجوع</button>
     </div>
 
-    <!-- Step 3: OTP Verification -->
+    <!-- Step 3 -->
     <div class="step-content" id="step-3">
       <div class="step-title">📲 تأكيد رقم الهاتف</div>
-      <p style="font-size: 14px; color: #64748B; margin-bottom: 20px; text-align: center;">
-        تم إرسال رمز التحقق المكون من 4 أرقام على رقمك المسجل
-      </p>
-
+      <p class="phone-display">تم إرسال رمز التحقق على: <strong id="phoneDisplay"></strong></p>
+      <p style="font-size:13px;color:#64748B;text-align:center;margin-bottom:8px;">أدخل الرمز المكون من 4 أرقام</p>
       <div class="otp-inputs">
-        <input type="text" class="otp-input" maxlength="1" id="otp1" oninput="moveOTP(this, 'otp2')">
-        <input type="text" class="otp-input" maxlength="1" id="otp2" oninput="moveOTP(this, 'otp3')">
-        <input type="text" class="otp-input" maxlength="1" id="otp3" oninput="moveOTP(this, 'otp4')">
-        <input type="text" class="otp-input" maxlength="1" id="otp4" oninput="checkOTP()">
+        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp1">
+        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp2">
+        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp3">
+        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp4">
       </div>
-
+      <div class="otp-hint">💡 للتجربة: الرمز هو <strong>1234</strong></div>
       <div class="otp-resend">
-        لم يصلك الرمز؟ <a href="#" onclick="resendOTP()">إعادة الإرسال</a>
-        <span id="timer" style="color:#94A3B8"> (60 ثانية)</span>
+        لم يصلك الرمز؟
+        <a href="#" id="resendLink" onclick="resendOTP(event)">إعادة الإرسال</a>
+        <span id="timer"></span>
       </div>
-
-      <p style="text-align:center; font-size: 13px; color: #94A3B8; margin-bottom: 16px; background: #F8FAFC; padding: 10px; border-radius: 10px;">
-        💡 للاختبار: ادخل الرمز <strong>1234</strong>
-      </p>
-
-      <button class="submit-btn" onclick="submitRegister()">إنشاء الحساب ✅</button>
-      <button class="back-step-btn" onclick="goStep(2)">← رجوع</button>
+      <button class="submit-btn" onclick="submitRegister()" type="button" id="submitBtn">إنشاء الحساب ✅</button>
+      <button class="back-step-btn" onclick="goStep(2)" type="button">← رجوع</button>
     </div>
   </div>
 
   <div class="success-toast" id="toast"></div>
 
   <script>
-    let currentStep = 1;
-    let gender = '';
-    let timerInterval;
+    const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+    document.getElementById('backHomeBtn').href = BASE + '/';
+    document.getElementById('loginLink').href = BASE + '/login';
+
+    let currentStep = 1, gender = '', timerInterval;
 
     function selectGender(btn, value) {
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       gender = value;
+      showErr('genderErr', false);
+    }
+
+    function showErr(id, show) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('show', show);
+    }
+
+    function setFieldError(inputId, errId, hasError) {
+      const input = document.getElementById(inputId);
+      if (input) input.classList.toggle('error', hasError);
+      showErr(errId, hasError);
     }
 
     function goStep(step) {
-      if (step === 2) {
-        const name = document.getElementById('fullName').value;
-        const phone = document.getElementById('phone').value;
-        if (!name || !phone || !gender) {
-          alert('⚠️ يرجى ملء جميع الحقول واختيار الجنس');
-          return;
+      if (step > currentStep) {
+        if (currentStep === 1) {
+          const name = document.getElementById('fullName').value.trim();
+          const phone = document.getElementById('phone').value.trim().replace(/\s/g,'');
+          const email = document.getElementById('email').value.trim();
+          let ok = true;
+          setFieldError('fullName','nameErr',!name); if(!name) ok=false;
+          const phoneOk = /^01[0-9]{9}$/.test(phone);
+          setFieldError('phone','phoneErr',!phoneOk); if(!phoneOk) ok=false;
+          const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          setFieldError('email','emailErr',!emailOk); if(!emailOk) ok=false;
+          showErr('genderErr',!gender); if(!gender) ok=false;
+          if(!ok) return;
+          document.getElementById('phoneDisplay').textContent = '+20' + phone;
+        }
+        if (currentStep === 2) {
+          const pwd = document.getElementById('password').value;
+          const conf = document.getElementById('confirmPassword').value;
+          const terms = document.getElementById('terms').checked;
+          let ok = true;
+          setFieldError('password','pwdErr',pwd.length<6); if(pwd.length<6) ok=false;
+          setFieldError('confirmPassword','confirmErr',pwd!==conf); if(pwd!==conf) ok=false;
+          showErr('termsErr',!terms); if(!terms) ok=false;
+          if(!ok) return;
+          startTimer();
         }
       }
-      if (step === 3) {
-        const pwd = document.getElementById('password').value;
-        const confirm = document.getElementById('confirmPassword').value;
-        const terms = document.getElementById('terms').checked;
-        if (pwd.length < 6) { alert('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
-        if (pwd !== confirm) { alert('⚠️ كلمتا المرور غير متطابقتين'); return; }
-        if (!terms) { alert('⚠️ يجب الموافقة على شروط الاستخدام'); return; }
-        startTimer();
+
+      // Update step indicators
+      const prev = currentStep;
+      document.getElementById('step-' + prev).classList.remove('active');
+
+      if (step < prev) {
+        for (let i = step; i <= prev; i++) {
+          const ind = document.getElementById('ind-' + i);
+          if (ind) ind.classList.remove('active','done');
+        }
+      } else {
+        const prevInd = document.getElementById('ind-' + prev);
+        prevInd.classList.remove('active');
+        prevInd.classList.add('done');
       }
 
-      document.getElementById('step-' + currentStep).classList.remove('active');
-      document.getElementById('ind-' + currentStep).classList.remove('active');
-      document.getElementById('ind-' + currentStep).classList.add('done');
       currentStep = step;
-      document.getElementById('step-' + currentStep).classList.add('active');
-      document.getElementById('ind-' + currentStep).classList.add('active');
+      document.getElementById('step-' + step).classList.add('active');
+      document.getElementById('ind-' + step).classList.add('active');
+
+      // Mark all previous as done
+      for (let i = 1; i < step; i++) {
+        const ind = document.getElementById('ind-' + i);
+        if (ind) { ind.classList.remove('active'); ind.classList.add('done'); }
+      }
     }
 
     function checkStrength(value) {
       const fill = document.getElementById('strengthFill');
       const label = document.getElementById('strengthLabel');
-      let strength = 0;
-      if (value.length >= 6) strength++;
-      if (value.length >= 10) strength++;
-      if (/[A-Z]/.test(value)) strength++;
-      if (/[0-9]/.test(value)) strength++;
-      if (/[^A-Za-z0-9]/.test(value)) strength++;
-
-      const pct = (strength / 5) * 100;
-      fill.style.width = pct + '%';
-      if (strength <= 1) { fill.style.background = '#EF4444'; label.textContent = '😟 ضعيفة جداً'; label.style.color = '#EF4444'; }
-      else if (strength <= 2) { fill.style.background = '#F59E0B'; label.textContent = '😐 متوسطة'; label.style.color = '#F59E0B'; }
-      else if (strength <= 3) { fill.style.background = '#3B82F6'; label.textContent = '😊 جيدة'; label.style.color = '#3B82F6'; }
-      else { fill.style.background = '#10B981'; label.textContent = '💪 ممتازة'; label.style.color = '#10B981'; }
+      let s = 0;
+      if (value.length >= 6) s++;
+      if (value.length >= 10) s++;
+      if (/[A-Z]/.test(value)) s++;
+      if (/[0-9]/.test(value)) s++;
+      if (/[^A-Za-z0-9]/.test(value)) s++;
+      fill.style.width = (!value ? 0 : (s/5)*100) + '%';
+      if (!value) { label.textContent='أدخل كلمة المرور'; label.style.color='#94A3B8'; return; }
+      const map = [[1,'#EF4444','😟 ضعيفة جداً'],[2,'#F59E0B','😐 متوسطة'],[3,'#3B82F6','😊 جيدة'],[5,'#10B981','💪 ممتازة']];
+      const [,color,text] = map.find(([n])=>s<=n) || map[3];
+      fill.style.background = color; label.textContent = text; label.style.color = color;
     }
 
-    function moveOTP(input, nextId) {
-      if (input.value.length === 1 && nextId) {
-        document.getElementById(nextId).focus();
-      }
-    }
-
-    function checkOTP() {
-      const otp = ['otp1','otp2','otp3','otp4'].map(id => document.getElementById(id).value).join('');
-      if (otp === '1234') {
-        document.querySelectorAll('.otp-input').forEach(i => { i.style.borderColor = '#10B981'; i.style.background = '#F0FDF4'; });
-      }
-    }
+    const otpIds = ['otp1','otp2','otp3','otp4'];
+    otpIds.forEach((id, idx) => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g,'');
+        this.classList.toggle('filled', this.value.length === 1);
+        if (this.value && idx < 3) document.getElementById(otpIds[idx+1]).focus();
+        if (otpIds.map(i=>document.getElementById(i).value).join('') === '1234') setTimeout(submitRegister,400);
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key==='Backspace' && !this.value && idx>0) {
+          const prev = document.getElementById(otpIds[idx-1]);
+          prev.value=''; prev.classList.remove('filled'); prev.focus();
+        }
+      });
+    });
 
     function startTimer() {
-      let secs = 60;
+      const link = document.getElementById('resendLink');
       const timerEl = document.getElementById('timer');
+      link.style.pointerEvents='none'; link.style.opacity='0.5';
+      let secs=60;
       clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
+      timerEl.textContent = ' ('+secs+'ث)';
+      timerInterval = setInterval(()=>{
         secs--;
-        timerEl.textContent = ' (' + secs + ' ثانية)';
-        if (secs <= 0) { clearInterval(timerInterval); timerEl.textContent = ''; }
-      }, 1000);
+        timerEl.textContent = ' ('+secs+'ث)';
+        if(secs<=0){ clearInterval(timerInterval); timerEl.textContent=''; link.style.pointerEvents=''; link.style.opacity=''; }
+      },1000);
     }
 
-    function resendOTP() {
+    function resendOTP(e) {
+      e.preventDefault();
       showToast('📱 تم إرسال رمز التحقق مرة أخرى');
       startTimer();
     }
 
     function submitRegister() {
-      const otp = ['otp1','otp2','otp3','otp4'].map(id => document.getElementById(id).value).join('');
-      if (otp !== '1234') {
-        alert('❌ رمز التحقق غير صحيح. جرّب: 1234');
-        return;
-      }
-      const name = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      localStorage.setItem('wslha_user', JSON.stringify({ name, email, phone, role: 'user', gender, balance: 0, joinDate: new Date().toLocaleDateString('ar-EG') }));
+      const otp = otpIds.map(id=>document.getElementById(id).value).join('');
+      if (otp !== '1234') { showToast('❌ رمز التحقق غير صحيح. جرّب: 1234', true); return; }
+      const btn = document.getElementById('submitBtn');
+      btn.disabled=true; btn.textContent='⏳ جارٍ إنشاء الحساب...';
+      localStorage.setItem('wslha_user', JSON.stringify({
+        name: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: '+20' + document.getElementById('phone').value.trim(),
+        role: 'user', gender, balance: 0,
+        joinDate: new Date().toLocaleDateString('ar-EG')
+      }));
       showToast('🎉 تم إنشاء حسابك بنجاح! مرحباً بك في وصله!');
-      setTimeout(() => window.location.href = '/home', 2000);
+      setTimeout(()=>{ window.location.href = BASE+'/home'; }, 1800);
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+    function showToast(msg, isError=false) {
+      const t = document.getElementById('toast');
+      t.textContent=msg;
+      t.className='success-toast'+(isError?' error-toast':'');
+      t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),3200);
     }
   </script>
 </body>

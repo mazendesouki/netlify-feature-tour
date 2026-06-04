@@ -278,7 +278,9 @@
     }
 
     function trackOrder(orderId) {
-      alert('📍 تتبع الطلب ' + orderId + '\n\n🚗 السائق محمد أحمد\n📍 الموقع: شارع مصر والسودان\n⏱️ وقت الوصول المتوقع: 8 دقائق\n\nرقم السائق: 📞 01XXXXXXXXX');
+      const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+      window.location.href = BASE + '/tracking?order=' + encodeURIComponent(orderId) + '&dest=' + encodeURIComponent('شارع مصر والسودان، مدينة نصر') + '&fare=85 ج.م';
+      return;
     }
 
     function cancelOrder(orderId) {

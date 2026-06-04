@@ -1,0 +1,580 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>تتبع مباشر - وصله</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #0F172A; overflow: hidden; height: 100vh; }
+
+    /* Map container */
+    #map { width: 100%; height: 100vh; }
+
+    /* Top bar */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+      padding: 16px 20px 40px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .back-btn {
+      width: 44px; height: 44px; background: white; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .order-info-chip {
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 8px 16px;
+      color: white; font-size: 13px; font-weight: 700;
+    }
+    .live-badge {
+      margin-right: auto;
+      background: #EF4444; color: white;
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; gap: 6px;
+      animation: pulse-badge 1.5s infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.7; }
+    }
+    .live-dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
+
+    /* ETA card */
+    .eta-card {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 100; background: #1D4ED8;
+      border-radius: 20px; padding: 12px 24px;
+      box-shadow: 0 8px 32px rgba(29,78,216,0.5);
+      text-align: center; min-width: 180px;
+    }
+    .eta-minutes { font-size: 36px; font-weight: 900; color: white; line-height: 1; }
+    .eta-label { font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 700; margin-top: 2px; }
+
+    /* Progress steps */
+    .progress-bar {
+      position: fixed; top: 160px; left: 16px; right: 16px;
+      z-index: 100; background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px; padding: 14px 16px;
+    }
+    .steps { display: flex; align-items: center; }
+    .step {
+      display: flex; flex-direction: column; align-items: center; flex: 1;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; top: 14px; left: -50%; right: -50%;
+      height: 3px; background: rgba(255,255,255,0.2); z-index: -1;
+    }
+    .step.done:not(:last-child)::after { background: #10B981; }
+    .step.active:not(:last-child)::after { background: linear-gradient(90deg,#10B981,rgba(255,255,255,0.2)); }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; margin-bottom: 6px;
+      transition: all 0.5s;
+    }
+    .step.done .step-dot { background: #10B981; }
+    .step.active .step-dot { background: #1D4ED8; box-shadow: 0 0 0 4px rgba(29,78,216,0.4); animation: pulse-step 1.5s infinite; }
+    @keyframes pulse-step { 0%,100%{box-shadow:0 0 0 4px rgba(29,78,216,0.4)} 50%{box-shadow:0 0 0 8px rgba(29,78,216,0.2)} }
+    .step-label { font-size: 10px; color: rgba(255,255,255,0.7); font-weight: 700; text-align: center; }
+    .step.done .step-label, .step.active .step-label { color: white; }
+
+    /* Bottom sheet */
+    .bottom-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: white; border-radius: 28px 28px 0 0;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+      padding: 8px 20px 32px;
+    }
+    .sheet-handle { width: 40px; height: 4px; background: #E2E8F0; border-radius: 4px; margin: 8px auto 16px; }
+
+    /* Driver card */
+    .driver-card { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .driver-avatar {
+      width: 56px; height: 56px; border-radius: 18px;
+      background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0; position: relative;
+    }
+    .driver-online-dot {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 12px; height: 12px; background: #10B981;
+      border: 2px solid white; border-radius: 50%;
+    }
+    .driver-name { font-size: 17px; font-weight: 800; color: #1E293B; }
+    .driver-vehicle { font-size: 13px; color: #64748B; font-weight: 600; margin-top: 2px; }
+    .driver-rating { font-size: 13px; color: #F59E0B; font-weight: 700; }
+    .driver-actions { margin-right: auto; display: flex; gap: 10px; }
+    .action-circle {
+      width: 44px; height: 44px; border-radius: 14px; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      transition: all 0.2s;
+    }
+    .action-circle:active { transform: scale(0.92); }
+    .btn-call { background: #ECFDF5; }
+    .btn-chat { background: #EFF6FF; }
+    .btn-share { background: #FFF7ED; }
+
+    /* Route info */
+    .route-info { display: flex; align-items: stretch; gap: 0; background: #F8FAFC; border-radius: 16px; padding: 14px; margin-bottom: 16px; }
+    .route-points { display: flex; flex-direction: column; gap: 0; flex: 1; }
+    .route-line-container { display: flex; flex-direction: column; align-items: center; margin-left: 12px; margin-right: 12px; padding-top: 4px; }
+    .route-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .route-dot.start { background: #3B82F6; }
+    .route-dot.end { background: #10B981; }
+    .route-line { flex: 1; width: 2px; background: repeating-linear-gradient(to bottom, #CBD5E1 0px, #CBD5E1 4px, transparent 4px, transparent 8px); min-height: 20px; }
+    .route-point { font-size: 13px; color: #1E293B; font-weight: 700; }
+    .route-sub { font-size: 11px; color: #94A3B8; font-weight: 600; margin-top: 2px; }
+    .route-point-row { padding: 4px 0; }
+    .route-gap { height: 14px; }
+
+    /* Fare card */
+    .fare-card { display: flex; align-items: center; justify-content: space-between; background: #EFF6FF; border-radius: 14px; padding: 12px 16px; }
+    .fare-label { font-size: 13px; color: #64748B; font-weight: 600; }
+    .fare-value { font-size: 18px; font-weight: 900; color: #1D4ED8; }
+    .fare-method { font-size: 12px; color: #94A3B8; font-weight: 600; }
+
+    /* No API key overlay */
+    .no-key-overlay {
+      position: absolute; inset: 0; background: #1E293B;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 5; gap: 16px;
+    }
+    .map-demo { width: 100%; height: 100%; background: #1E293B; position: relative; overflow: hidden; }
+    .map-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    /* Cairo map mock roads */
+    .road-h { position: absolute; height: 4px; background: rgba(148,163,184,0.4); border-radius: 2px; }
+    .road-v { position: absolute; width: 4px; background: rgba(148,163,184,0.4); border-radius: 2px; }
+    .road-main { background: rgba(148,163,184,0.7); }
+
+    /* API key banner */
+    .api-banner {
+      position: fixed; bottom: 340px; left: 16px; right: 16px; z-index: 200;
+      background: #1E293B; border: 1px solid #334155;
+      border-radius: 16px; padding: 14px 16px;
+    }
+    .api-banner-title { font-size: 13px; font-weight: 800; color: white; margin-bottom: 8px; }
+    .api-input-row { display: flex; gap: 8px; }
+    .api-input { flex: 1; padding: 10px 14px; background: #0F172A; border: 1px solid #334155; border-radius: 10px; color: white; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; }
+    .api-input::placeholder { color: #475569; }
+    .api-save-btn { padding: 10px 16px; background: #1D4ED8; color: white; border: none; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .api-skip { font-size: 12px; color: #64748B; text-align: center; margin-top: 8px; cursor: pointer; }
+    .api-skip:hover { color: #94A3B8; }
+
+    /* Toast */
+    .toast { position: fixed; top: 20px; left: 16px; right: 16px; z-index: 999; background: #10B981; color: white; padding: 14px 18px; border-radius: 14px; font-weight: 700; font-size: 14px; text-align: center; transform: translateY(-80px); transition: all 0.4s; }
+    .toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- Map -->
+<div id="map">
+  <div class="map-demo" id="mapDemo">
+    <div class="map-grid"></div>
+    <!-- Mock Cairo roads -->
+    <div class="road-h road-main" style="top:45%;left:0;right:0;"></div>
+    <div class="road-h" style="top:30%;left:0;right:0;"></div>
+    <div class="road-h" style="top:60%;left:0;right:0;"></div>
+    <div class="road-h" style="top:72%;left:0;right:0;"></div>
+    <div class="road-h" style="top:20%;left:0;right:0;"></div>
+    <div class="road-v road-main" style="left:40%;top:0;bottom:0;"></div>
+    <div class="road-v" style="left:20%;top:0;bottom:0;"></div>
+    <div class="road-v" style="left:60%;top:0;bottom:0;"></div>
+    <div class="road-v" style="left:75%;top:0;bottom:0;"></div>
+    <div class="road-v" style="left:10%;top:0;bottom:0;"></div>
+    <!-- Route line (SVG) -->
+    <svg id="routeSvg" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none">
+      <defs>
+        <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#10B981;stop-opacity:1"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <polyline id="routeLine" points="" fill="none" stroke="url(#routeGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 6" filter="url(#glow)" opacity="0.9"/>
+      <!-- Destination marker -->
+      <g id="destMarker">
+        <circle r="22" fill="#10B981" fill-opacity="0.2"/>
+        <circle r="14" fill="#10B981"/>
+        <text text-anchor="middle" dy="5" font-size="14">📦</text>
+      </g>
+      <!-- Origin marker -->
+      <g id="originMarker">
+        <circle r="18" fill="#3B82F6" fill-opacity="0.2"/>
+        <circle r="11" fill="#3B82F6"/>
+        <text text-anchor="middle" dy="5" font-size="11">🏠</text>
+      </g>
+      <!-- Driver marker -->
+      <g id="driverMarker">
+        <circle r="26" fill="rgba(29,78,216,0.2)"/>
+        <circle r="18" fill="#1D4ED8" stroke="white" stroke-width="3"/>
+        <text text-anchor="middle" dy="6" font-size="18">🚗</text>
+        <!-- Pulse ring -->
+        <circle r="26" fill="none" stroke="#1D4ED8" stroke-width="2" opacity="0">
+          <animate attributeName="r" from="18" to="36" dur="1.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" from="0.8" to="0" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    </svg>
+    <!-- Area label -->
+    <div style="position:absolute;top:38%;left:15%;color:rgba(148,163,184,0.5);font-size:11px;font-weight:700;letter-spacing:1px;">القاهرة - مصر</div>
+    <div style="position:absolute;top:55%;left:55%;color:rgba(148,163,184,0.4);font-size:10px;font-weight:700;">مدينة نصر</div>
+    <div style="position:absolute;top:25%;left:35%;color:rgba(148,163,184,0.4);font-size:10px;font-weight:700;">هليوبوليس</div>
+    <div style="position:absolute;top:65%;left:12%;color:rgba(148,163,184,0.35);font-size:10px;font-weight:700;">المطرية</div>
+    <div style="position:absolute;top:18%;left:60%;color:rgba(148,163,184,0.35);font-size:10px;font-weight:700;">عين شمس</div>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <a href="/orders" class="back-btn" id="backBtn">←</a>
+  <div class="order-info-chip" id="orderChip">#ORD-4523</div>
+  <div class="live-badge"><div class="live-dot"></div> مباشر</div>
+</div>
+
+<!-- ETA card -->
+<div class="eta-card">
+  <div class="eta-minutes" id="etaMinutes">8</div>
+  <div class="eta-label">دقائق للوصول</div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-bar">
+  <div class="steps">
+    <div class="step done" id="s1">
+      <div class="step-dot">✓</div>
+      <div class="step-label">تأكيد</div>
+    </div>
+    <div class="step done" id="s2">
+      <div class="step-dot">✓</div>
+      <div class="step-label">استلام</div>
+    </div>
+    <div class="step active" id="s3">
+      <div class="step-dot">3</div>
+      <div class="step-label">في الطريق</div>
+    </div>
+    <div class="step" id="s4">
+      <div class="step-dot">4</div>
+      <div class="step-label">تسليم</div>
+    </div>
+  </div>
+</div>
+
+<!-- API Key banner -->
+<div class="api-banner" id="apiBanner">
+  <div class="api-banner-title">🗺️ أدخل Google Maps API Key لتفعيل الخريطة الحية</div>
+  <div class="api-input-row">
+    <input type="text" class="api-input" id="apiKeyInput" placeholder="AIzaSy...">
+    <button class="api-save-btn" onclick="saveApiKey()">حفظ</button>
+  </div>
+  <div class="api-skip" onclick="dismissBanner()">متابعة بالخريطة التجريبية ←</div>
+</div>
+
+<!-- Bottom sheet -->
+<div class="bottom-sheet">
+  <div class="sheet-handle"></div>
+
+  <!-- Driver info -->
+  <div class="driver-card">
+    <div class="driver-avatar">🧑‍✈️<div class="driver-online-dot"></div></div>
+    <div>
+      <div class="driver-name">محمد أحمد</div>
+      <div class="driver-vehicle">تويوتا كورولا • ABJ 2847</div>
+      <div class="driver-rating">⭐ 4.9 · 1,240 رحلة</div>
+    </div>
+    <div class="driver-actions">
+      <button class="action-circle btn-call" onclick="callDriver()" title="اتصال">📞</button>
+      <button class="action-circle btn-chat" onclick="chatDriver()" title="رسالة">💬</button>
+    </div>
+  </div>
+
+  <!-- Route -->
+  <div class="route-info">
+    <div class="route-line-container">
+      <div class="route-dot start"></div>
+      <div class="route-line"></div>
+      <div class="route-dot end"></div>
+    </div>
+    <div class="route-points">
+      <div class="route-point-row">
+        <div class="route-point">شارع التحرير، وسط القاهرة</div>
+        <div class="route-sub">نقطة الانطلاق</div>
+      </div>
+      <div class="route-gap"></div>
+      <div class="route-point-row">
+        <div class="route-point" id="destText">شارع مصر والسودان، مدينة نصر</div>
+        <div class="route-sub">وجهتك</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fare -->
+  <div class="fare-card">
+    <div>
+      <div class="fare-label">قيمة الطلب</div>
+      <div class="fare-method">💳 بطاقة بنكية</div>
+    </div>
+    <div class="fare-value" id="fareValue">85 ج.م</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Google Maps API (loads if key exists) -->
+<div id="googleMapContainer" style="display:none;position:fixed;inset:0;z-index:1;"></div>
+
+<script>
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+  document.getElementById('backBtn').href = BASE + '/orders';
+
+  // Read URL params
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get('order') || '#ORD-4523';
+  const dest = params.get('dest') || 'شارع مصر والسودان، مدينة نصر';
+  const fare = params.get('fare') || '85 ج.م';
+  document.getElementById('orderChip').textContent = orderId;
+  document.getElementById('destText').textContent = dest;
+  document.getElementById('fareValue').textContent = fare;
+
+  // Check for saved API key
+  const savedKey = localStorage.getItem('gmaps_api_key');
+  if (savedKey) {
+    document.getElementById('apiBanner').style.display = 'none';
+    loadGoogleMap(savedKey);
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key) return;
+    localStorage.setItem('gmaps_api_key', key);
+    document.getElementById('apiBanner').style.display = 'none';
+    loadGoogleMap(key);
+    showToast('✅ تم حفظ المفتاح! جاري تحميل الخريطة...');
+  }
+
+  function dismissBanner() {
+    document.getElementById('apiBanner').style.display = 'none';
+  }
+
+  function loadGoogleMap(apiKey) {
+    const container = document.getElementById('googleMapContainer');
+    container.style.display = 'block';
+    document.getElementById('mapDemo').style.display = 'none';
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initGoogleMap`;
+    script.async = true;
+    script.onerror = () => {
+      container.style.display = 'none';
+      document.getElementById('mapDemo').style.display = 'block';
+      showToast('❌ المفتاح غير صالح. يعمل التطبيق بالخريطة التجريبية', true);
+    };
+    document.head.appendChild(script);
+  }
+
+  // Google Maps init (called by Maps API)
+  window.initGoogleMap = function() {
+    const container = document.getElementById('googleMapContainer');
+    container.innerHTML = '<div id="gmap" style="width:100%;height:100%;"></div>';
+
+    const cairo = { lat: 30.0444, lng: 31.2357 };
+    const dest = { lat: 30.0626, lng: 31.2497 };
+
+    const map = new google.maps.Map(document.getElementById('gmap'), {
+      center: { lat: 30.053, lng: 31.242 },
+      zoom: 14,
+      mapTypeId: 'roadmap',
+      disableDefaultUI: true,
+      gestureHandling: 'greedy',
+      styles: [
+        { elementType: 'geometry', stylers: [{ color: '#1a2744' }] },
+        { elementType: 'labels.text.stroke', stylers: [{ color: '#1a2744' }] },
+        { elementType: 'labels.text.fill', stylers: [{ color: '#8a9bb5' }] },
+        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2c3e6b' }] },
+        { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#384f82' }] },
+        { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#4a63a0' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0d1b3e' }] },
+        { featureType: 'poi', elementType: 'all', stylers: [{ visibility: 'off' }] },
+        { featureType: 'transit', elementType: 'all', stylers: [{ visibility: 'off' }] }
+      ]
+    });
+
+    // Origin marker
+    new google.maps.Marker({ position: cairo, map, title: 'نقطة الانطلاق',
+      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#3B82F6', fillOpacity: 1, strokeColor: 'white', strokeWeight: 3 }
+    });
+
+    // Destination marker
+    new google.maps.Marker({ position: dest, map, title: 'الوجهة',
+      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 12, fillColor: '#10B981', fillOpacity: 1, strokeColor: 'white', strokeWeight: 3 },
+      label: { text: '📦', fontSize: '18px' }
+    });
+
+    // Draw route
+    const dir = new google.maps.DirectionsService();
+    const renderer = new google.maps.DirectionsRenderer({
+      map, suppressMarkers: true,
+      polylineOptions: { strokeColor: '#3B82F6', strokeWeight: 5, strokeOpacity: 0.9 }
+    });
+    dir.route({ origin: cairo, destination: dest, travelMode: 'DRIVING' }, (res, status) => {
+      if (status === 'OK') renderer.setDirections(res);
+    });
+
+    // Live driver marker
+    let driverPos = { lat: 30.038, lng: 31.228 };
+    const driverMarker = new google.maps.Marker({
+      position: driverPos, map, zIndex: 999,
+      icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="24" fill="#1D4ED8" stroke="white" stroke-width="3"/>
+          <text x="26" y="33" text-anchor="middle" font-size="22">🚗</text>
+        </svg>`),
+        scaledSize: new google.maps.Size(52, 52), anchor: new google.maps.Point(26, 26)
+      }
+    });
+
+    // Animate driver toward destination
+    let step = 0;
+    const totalSteps = 120;
+    const dlat = (dest.lat - driverPos.lat) / totalSteps;
+    const dlng = (dest.lng - driverPos.lng) / totalSteps;
+    const interval = setInterval(() => {
+      if (step >= totalSteps) { clearInterval(interval); return; }
+      step++;
+      driverPos = { lat: driverPos.lat + dlat, lng: driverPos.lng + dlng };
+      driverMarker.setPosition(driverPos);
+      const remaining = Math.max(0, Math.ceil((totalSteps - step) / 15));
+      document.getElementById('etaMinutes').textContent = remaining;
+      if (step >= totalSteps) {
+        advanceStep(4);
+        showToast('🎉 وصل السائق! الطلب تم تسليمه');
+      }
+    }, 500);
+  };
+
+  // ── Demo map animation (no API key) ──
+  const svg = document.getElementById('routeSvg');
+  const W = () => window.innerWidth;
+  const H = () => window.innerHeight;
+
+  // Fixed points (as % of screen)
+  const origin  = { x: 0.20, y: 0.62 };
+  const destPt  = { x: 0.72, y: 0.38 };
+  let driver    = { x: 0.15, y: 0.70 };
+
+  function pxX(p) { return p.x * W(); }
+  function pxY(p) { return p.y * H(); }
+
+  function updateSvgPositions() {
+    // Route line
+    const line = document.getElementById('routeLine');
+    const cp1x = W() * 0.40, cp1y = H() * 0.65;
+    const cp2x = W() * 0.55, cp2y = H() * 0.35;
+    line.setAttribute('points',
+      `${pxX(origin)},${pxY(origin)} ${cp1x},${cp1y} ${cp2x},${cp2y} ${pxX(destPt)},${pxY(destPt)}`);
+
+    // Dest marker
+    const dm = document.getElementById('destMarker');
+    dm.setAttribute('transform', `translate(${pxX(destPt)},${pxY(destPt)})`);
+
+    // Origin marker
+    const om = document.getElementById('originMarker');
+    om.setAttribute('transform', `translate(${pxX(origin)},${pxY(origin)})`);
+
+    // Driver marker
+    updateDriverMarker();
+  }
+
+  function updateDriverMarker() {
+    const drv = document.getElementById('driverMarker');
+    drv.setAttribute('transform', `translate(${pxX(driver)},${pxY(driver)})`);
+  }
+
+  updateSvgPositions();
+  window.addEventListener('resize', updateSvgPositions);
+
+  // Animate driver
+  let etaVal = 8;
+  let demoStep = 0;
+  const demoInterval = setInterval(() => {
+    demoStep++;
+    const t = demoStep / 160;
+    if (t >= 1) {
+      clearInterval(demoInterval);
+      driver = { x: destPt.x, y: destPt.y };
+      updateDriverMarker();
+      advanceStep(4);
+      showToast('🎉 وصل السائق! الطلب تم تسليمه');
+      document.getElementById('etaMinutes').textContent = '0';
+      return;
+    }
+    // Bezier interpolation
+    const mt = 1 - t;
+    const cp1 = { x: 0.40, y: 0.65 }, cp2 = { x: 0.55, y: 0.35 };
+    driver = {
+      x: mt*mt*mt*origin.x + 3*mt*mt*t*cp1.x + 3*mt*t*t*cp2.x + t*t*t*destPt.x,
+      y: mt*mt*mt*origin.y + 3*mt*mt*t*cp1.y + 3*mt*t*t*cp2.y + t*t*t*destPt.y
+    };
+    updateDriverMarker();
+    const remaining = Math.max(0, Math.ceil(8 * (1 - t)));
+    if (remaining !== etaVal) {
+      etaVal = remaining;
+      document.getElementById('etaMinutes').textContent = etaVal;
+    }
+  }, 450);
+
+  // Step advancement
+  let currentOrderStep = 3;
+  function advanceStep(s) {
+    currentOrderStep = s;
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('s' + i);
+      el.classList.remove('done','active');
+      if (i < s) el.classList.add('done');
+      else if (i === s) el.classList.add('active');
+    }
+    if (s === 4) {
+      document.getElementById('s4').querySelector('.step-dot').textContent = '✓';
+      document.getElementById('s4').classList.remove('active');
+      document.getElementById('s4').classList.add('done');
+    }
+  }
+
+  // ETA countdown
+  setInterval(() => {
+    const cur = parseInt(document.getElementById('etaMinutes').textContent) || 0;
+    if (cur > 0) document.getElementById('etaMinutes').textContent = cur - 1;
+  }, 60000);
+
+  function callDriver() { showToast('📞 جاري الاتصال بمحمد أحمد...'); }
+  function chatDriver() { showToast('💬 فتح المحادثة مع السائق'); }
+
+  function showToast(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = isErr ? '#EF4444' : '#10B981';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>

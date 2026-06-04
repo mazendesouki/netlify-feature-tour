@@ -342,10 +342,11 @@
       const from = document.getElementById('fromLocation').value;
       const to = document.getElementById('toLocation').value;
       if (!from || !to) { alert('⚠️ يرجى تحديد نقطة الانطلاق والوجهة'); return; }
-      if (confirm('✅ تأكيد الحجز؟\nمن: ' + from + '\nإلى: ' + to + '\nالسعر: ' + selectedPrice + ' جنيه')) {
-        alert('🎉 تم حجز مشوارك!\n🚗 السائق في الطريق إليك\nوقت الوصول: ~5 دقائق\nرقم الطلب: #' + Math.floor(Math.random() * 9000 + 1000));
-        window.location.href = '/orders';
-      }
+      const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+      const orderId = '#ORD-' + Math.floor(Math.random() * 9000 + 1000);
+      window.location.href = BASE + '/tracking?order=' + encodeURIComponent(orderId) +
+        '&dest=' + encodeURIComponent(to) +
+        '&fare=' + encodeURIComponent(selectedPrice + ' ج.م');
     }
   </script>
 </body>
