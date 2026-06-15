@@ -103,9 +103,9 @@
         <div class="field-error" id="phoneErr">يرجى إدخال رقم هاتف صحيح (01XXXXXXXXX)</div>
       </div>
       <div class="form-group">
-        <label class="form-label">📧 البريد الإلكتروني (اختياري)</label>
+        <label class="form-label">📧 البريد الإلكتروني</label>
         <input type="email" class="form-control" placeholder="example@gmail.com" id="email" autocomplete="email">
-        <div class="field-error" id="emailErr">صيغة البريد الإلكتروني غير صحيحة</div>
+        <div class="field-error" id="emailErr">يرجى إدخال بريد إلكتروني صحيح</div>
       </div>
       <div class="form-group">
         <label class="form-label">الجنس</label>
@@ -162,7 +162,7 @@
         <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp3">
         <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp4">
       </div>
-      <div class="otp-hint">💡 للتجربة: الرمز هو <strong>1234</strong></div>
+      <div class="otp-hint">💡 أدخل أي 4 أرقام للمتابعة — سيتم إنشاء حسابك بمجرد الإدخال</div>
       <div class="otp-resend">
         لم يصلك الرمز؟
         <a href="#" id="resendLink" onclick="resendOTP(event)">إعادة الإرسال</a>
@@ -175,10 +175,20 @@
 
   <div class="success-toast" id="toast"></div>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
     const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
     document.getElementById('backHomeBtn').href = BASE + '/';
     document.getElementById('loginLink').href = BASE + '/login';
+
+    // Redirect if already logged in
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) window.location.href = BASE + '/home';
 
     let currentStep = 1, gender = '', timerInterval;
 
@@ -210,7 +220,7 @@
           setFieldError('fullName','nameErr',!name); if(!name) ok=false;
           const phoneOk = /^01[0-9]{9}$/.test(phone);
           setFieldError('phone','phoneErr',!phoneOk); if(!phoneOk) ok=false;
-          const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          const emailOk = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
           setFieldError('email','emailErr',!emailOk); if(!emailOk) ok=false;
           showErr('genderErr',!gender); if(!gender) ok=false;
           if(!ok) return;
@@ -229,7 +239,6 @@
         }
       }
 
-      // Update step indicators
       const prev = currentStep;
       document.getElementById('step-' + prev).classList.remove('active');
 
@@ -248,7 +257,6 @@
       document.getElementById('step-' + step).classList.add('active');
       document.getElementById('ind-' + step).classList.add('active');
 
-      // Mark all previous as done
       for (let i = 1; i < step; i++) {
         const ind = document.getElementById('ind-' + i);
         if (ind) { ind.classList.remove('active'); ind.classList.add('done'); }
@@ -278,7 +286,7 @@
         this.value = this.value.replace(/\D/g,'');
         this.classList.toggle('filled', this.value.length === 1);
         if (this.value && idx < 3) document.getElementById(otpIds[idx+1]).focus();
-        if (otpIds.map(i=>document.getElementById(i).value).join('') === '1234') setTimeout(submitRegister,400);
+        if (otpIds.map(i=>document.getElementById(i).value).join('').length === 4) setTimeout(submitRegister, 400);
       });
       input.addEventListener('keydown', function(e) {
         if (e.key==='Backspace' && !this.value && idx>0) {
@@ -308,24 +316,20 @@
       startTimer();
     }
 
-    // Supabase client
-    import { createClient } from '@supabase/supabase-js';
-    const supabase = createClient(
-      'https://ifpopyplwpmrapaofimi.supabase.co',
-      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
-    );
-
     async function submitRegister() {
-      const otp = otpIds.map(id=>document.getElementById(id).value).join('');
-      if (otp.length < 4) { showToast('❌ أدخل رمز التحقق المكون من 4 أرقام', true); return; }
-
       const btn = document.getElementById('submitBtn');
       btn.disabled = true; btn.textContent = '⏳ جارٍ إنشاء الحساب...';
 
       const fullName = document.getElementById('fullName').value.trim();
       const email    = document.getElementById('email').value.trim();
-      const phone    = '+966' + document.getElementById('phone').value.trim();
-      const password = document.getElementById('password')?.value || 'Wslha@' + Math.random().toString(36).slice(-6);
+      const phone    = '+20' + document.getElementById('phone').value.trim().replace(/^0/, '');
+      const password = document.getElementById('password').value;
+
+      if (!email) {
+        showToast('❌ يرجى إدخال البريد الإلكتروني', true);
+        btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
+        return;
+      }
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -334,8 +338,12 @@
       });
 
       if (error) {
-        showToast('❌ ' + (error.message.includes('already') ? 'هذا البريد مسجّل مسبقاً' : error.message), true);
-        btn.disabled = false; btn.textContent = 'إنشاء الحساب';
+        const msg = error.message.includes('already') || error.message.includes('registered')
+          ? 'هذا البريد الإلكتروني مسجّل مسبقاً'
+          : error.message.includes('password') ? 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)'
+          : error.message;
+        showToast('❌ ' + msg, true);
+        btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
         return;
       }
 
@@ -345,11 +353,18 @@
 
     function showToast(msg, isError=false) {
       const t = document.getElementById('toast');
-      t.textContent=msg;
-      t.className='success-toast'+(isError?' error-toast':'');
+      t.textContent = msg;
+      t.className = 'success-toast' + (isError ? ' error-toast' : '');
       t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'),3200);
+      setTimeout(() => t.classList.remove('show'), 3200);
     }
+
+    // Expose to inline onclick handlers
+    window.selectGender = selectGender;
+    window.goStep = goStep;
+    window.checkStrength = checkStrength;
+    window.resendOTP = resendOTP;
+    window.submitRegister = submitRegister;
   </script>
 </body>
 </html>
