@@ -354,38 +354,159 @@
   </nav>
 
   <script>
-    function openStore(name) {
-      document.getElementById('storeName').textContent = name;
-      document.getElementById('storeModal').classList.add('show');
+    import { createClient } from '@supabase/supabase-js';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
+    let cart = {};
+    let currentStore = null;
+    let currentProducts = [];
+    let session = null;
+
+    // Auth check + load stores on boot
+    (async () => {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      session = s;
+      await loadStores();
+    })();
+
+    async function loadStores(category = null) {
+      const grid = document.getElementById('storesGrid');
+      if (!grid) return;
+      grid.innerHTML = '<p style="text-align:center;color:#888;padding:40px">⏳ جاري التحميل...</p>';
+
+      let query = supabase.from('stores').select('*').eq('is_active', true).order('rating', { ascending: false });
+      if (category) query = query.eq('category', category);
+
+      const { data: stores, error } = await query;
+      if (error || !stores?.length) {
+        grid.innerHTML = '<p style="text-align:center;color:#888;padding:40px">لا توجد متاجر متاحة</p>';
+        return;
+      }
+
+      grid.innerHTML = stores.map(s => `
+        <div class="store-card" onclick="openStore('${s.id}','${s.name_ar}')">
+          <div class="store-image">${s.image_emoji}</div>
+          <div class="store-info">
+            <h3 class="store-name">${s.name_ar}</h3>
+            <div class="store-meta">
+              <span>⭐ ${s.rating}</span>
+              <span>⏱ ${s.delivery_time} دقيقة</span>
+              <span>${s.delivery_fee == 0 ? '🚚 مجاني' : '🚚 ' + s.delivery_fee + ' ر.س'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
+
+    async function openStore(storeId, storeName) {
+      currentStore = { id: storeId, name: storeName };
+      document.getElementById('storeName').textContent = storeName;
+      document.getElementById('storeModal').classList.add('show');
+
+      const productsList = document.getElementById('productsList');
+      productsList.innerHTML = '<p style="text-align:center;padding:20px">⏳ جاري التحميل...</p>';
+
+      const { data: products } = await supabase
+        .from('products').select('*').eq('store_id', storeId).eq('is_available', true);
+
+      currentProducts = products || [];
+      productsList.innerHTML = currentProducts.map(p => `
+        <div class="product-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0f0f0">
+          <div>
+            <div style="font-weight:700;font-size:14px">${p.image_emoji} ${p.name_ar}</div>
+            <div style="color:#1D4ED8;font-weight:700;margin-top:4px">${p.price} ر.س</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button onclick="changeQty(this,-1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:16px;cursor:pointer">−</button>
+            <span class="counter-num" data-id="${p.id}" data-name="${p.name_ar}" data-price="${p.price}">0</span>
+            <button onclick="changeQty(this,1)"  style="width:28px;height:28px;border-radius:50%;border:none;background:#1D4ED8;color:white;font-size:16px;cursor:pointer">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function closeStore() {
       document.getElementById('storeModal').classList.remove('show');
     }
+
     function changeQty(btn, delta) {
       const numEl = btn.parentElement.querySelector('.counter-num');
-      let num = parseInt(numEl.textContent) + delta;
-      if (num < 0) num = 0;
+      let num = Math.max(0, parseInt(numEl.textContent) + delta);
       numEl.textContent = num;
+      const id = numEl.dataset.id;
+      if (num === 0) delete cart[id];
+      else cart[id] = { name: numEl.dataset.name, price: parseFloat(numEl.dataset.price), qty: num };
+      updateCartBadge();
     }
-    function addToCart() {
-      alert('✅ تمت الإضافة إلى السلة!');
+
+    function updateCartBadge() {
+      const total = Object.values(cart).reduce((s, i) => s + i.qty, 0);
+      const badge = document.getElementById('cartBadge');
+      if (badge) badge.textContent = total > 0 ? total : '';
     }
+
     function setAddress() {
-      const addresses = ['مدينة نصر، شارع عباس العقاد', 'المعادي، شارع 9', 'الزمالك، شارع 26 يوليو', 'المهندسين، شارع جامعة الدول'];
+      const addresses = ['الرياض، حي النزهة', 'جدة، حي الروضة', 'الدمام، حي الشاطئ', 'مكة، العزيزية'];
       const addr = addresses[Math.floor(Math.random() * addresses.length)];
       document.getElementById('addressText').textContent = '📍 ' + addr;
       document.getElementById('addressText').classList.add('filled');
     }
-    function confirmOrder() {
-      const addr = document.getElementById('addressText').textContent;
-      if (addr === 'حدّد موقع التوصيل') { alert('⚠️ يرجى تحديد موقع التوصيل أولاً'); return; }
-      if (confirm('تأكيد الطلب؟\nالموقع: ' + addr)) {
-        alert('✅ تم استلام طلبك!\n🚚 سيصل خلال 25-35 دقيقة\nرقم الطلب: #' + Math.floor(Math.random() * 9000 + 1000));
-        window.location.href = '/orders';
+
+    async function confirmOrder() {
+      if (!session) {
+        showToast('⚠️ سجّل دخولك أولاً', true);
+        setTimeout(() => window.location.href = '/login', 1500);
+        return;
       }
+      const cartItems = Object.values(cart);
+      if (!cartItems.length) { showToast('🛒 السلة فارغة!', true); return; }
+      const addr = document.getElementById('addressText').textContent;
+      if (addr === 'حدّد موقع التوصيل') { showToast('⚠️ يرجى تحديد موقع التوصيل', true); return; }
+
+      const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+      const deliveryFee = 5;
+
+      const { data: order, error: orderErr } = await supabase.from('orders').insert({
+        user_id: session.user.id,
+        store_id: currentStore.id,
+        total_amount: subtotal + deliveryFee,
+        delivery_fee: deliveryFee,
+        delivery_address: addr,
+        status: 'pending'
+      }).select().single();
+
+      if (orderErr) { showToast('❌ حدث خطأ، حاول مرة أخرى', true); return; }
+
+      await supabase.from('order_items').insert(
+        cartItems.map(i => ({
+          order_id: order.id,
+          product_id: Object.keys(cart).find(k => cart[k].name === i.name),
+          name_ar: i.name,
+          quantity: i.qty,
+          unit_price: i.price
+        }))
+      );
+
+      cart = {};
+      updateCartBadge();
+      showToast('✅ تم استلام طلبك! سيصل خلال 25-35 دقيقة');
+      setTimeout(() => window.location.href = '/orders', 2000);
     }
-    function filterCategory(cat) {
-      alert('🔍 عرض متاجر فئة: ' + cat);
+
+    async function filterCategory(cat) {
+      await loadStores(cat === 'الكل' ? null : cat);
+    }
+
+    function showToast(msg, isError=false) {
+      let t = document.getElementById('toast');
+      if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;color:white;font-weight:700;z-index:9999;transition:opacity .3s;opacity:0'; document.body.appendChild(t); }
+      t.textContent = msg;
+      t.style.background = isError ? '#EF4444' : '#10B981';
+      t.style.opacity = '1';
+      setTimeout(() => t.style.opacity = '0', 3000);
     }
   </script>
 </body>

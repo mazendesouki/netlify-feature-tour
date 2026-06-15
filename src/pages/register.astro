@@ -308,20 +308,39 @@
       startTimer();
     }
 
-    function submitRegister() {
+    // Supabase client
+    import { createClient } from '@supabase/supabase-js';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
+    async function submitRegister() {
       const otp = otpIds.map(id=>document.getElementById(id).value).join('');
-      if (otp !== '1234') { showToast('❌ رمز التحقق غير صحيح. جرّب: 1234', true); return; }
+      if (otp.length < 4) { showToast('❌ أدخل رمز التحقق المكون من 4 أرقام', true); return; }
+
       const btn = document.getElementById('submitBtn');
-      btn.disabled=true; btn.textContent='⏳ جارٍ إنشاء الحساب...';
-      localStorage.setItem('wslha_user', JSON.stringify({
-        name: document.getElementById('fullName').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: '+20' + document.getElementById('phone').value.trim(),
-        role: 'user', gender, balance: 0,
-        joinDate: new Date().toLocaleDateString('ar-EG')
-      }));
+      btn.disabled = true; btn.textContent = '⏳ جارٍ إنشاء الحساب...';
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const phone    = '+966' + document.getElementById('phone').value.trim();
+      const password = document.getElementById('password')?.value || 'Wslha@' + Math.random().toString(36).slice(-6);
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName, phone } }
+      });
+
+      if (error) {
+        showToast('❌ ' + (error.message.includes('already') ? 'هذا البريد مسجّل مسبقاً' : error.message), true);
+        btn.disabled = false; btn.textContent = 'إنشاء الحساب';
+        return;
+      }
+
       showToast('🎉 تم إنشاء حسابك بنجاح! مرحباً بك في وصله!');
-      setTimeout(()=>{ window.location.href = BASE+'/home'; }, 1800);
+      setTimeout(() => { window.location.href = BASE + '/home'; }, 1800);
     }
 
     function showToast(msg, isError=false) {

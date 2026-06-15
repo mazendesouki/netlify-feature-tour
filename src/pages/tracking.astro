@@ -342,18 +342,83 @@
 <!-- Google Maps API (loads if key exists) -->
 <div id="googleMapContainer" style="display:none;position:fixed;inset:0;z-index:1;"></div>
 
-<script>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+
   const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
   document.getElementById('backBtn').href = BASE + '/orders';
 
+  // Auth check
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) { window.location.href = BASE + '/login'; }
+
   // Read URL params
   const params = new URLSearchParams(location.search);
-  const orderId = params.get('order') || '#ORD-4523';
+  const orderIdParam = params.get('order');
   const dest = params.get('dest') || 'شارع مصر والسودان، مدينة نصر';
-  const fare = params.get('fare') || '85 ج.م';
-  document.getElementById('orderChip').textContent = orderId;
+  const fare = params.get('fare') || '';
   document.getElementById('destText').textContent = dest;
-  document.getElementById('fareValue').textContent = fare;
+
+  // Status -> step mapping
+  const statusSteps = { pending: 1, confirmed: 1, preparing: 2, on_the_way: 3, delivered: 4, cancelled: 1 };
+
+  async function loadOrderData() {
+    if (!orderIdParam) {
+      document.getElementById('orderChip').textContent = '#ORD-جديد';
+      if (fare) document.getElementById('fareValue').textContent = fare + ' ج.م';
+      return;
+    }
+
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('*, stores(name_ar)')
+      .eq('id', orderIdParam)
+      .single();
+
+    if (error || !order) {
+      document.getElementById('orderChip').textContent = '#ORD-' + orderIdParam.slice(-4);
+      if (fare) document.getElementById('fareValue').textContent = fare + ' ج.م';
+      return;
+    }
+
+    document.getElementById('orderChip').textContent = '#ORD-' + order.id.slice(-4).toUpperCase();
+    document.getElementById('fareValue').textContent = (order.total_price || fare || 0) + ' ج.م';
+    if (order.stores?.name_ar) {
+      document.getElementById('destText').textContent = order.stores.name_ar;
+    }
+
+    const step = statusSteps[order.status] || 1;
+    advanceStep(step);
+    if (order.status === 'delivered') {
+      document.getElementById('etaMinutes').textContent = '0';
+    }
+
+    // Real-time subscription for order status changes
+    supabase.channel('order-' + order.id)
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'orders',
+        filter: 'id=eq.' + order.id
+      }, (payload) => {
+        const newStatus = payload.new.status;
+        const newStep = statusSteps[newStatus] || 1;
+        advanceStep(newStep);
+        if (newStatus === 'delivered') {
+          document.getElementById('etaMinutes').textContent = '0';
+          showToast('🎉 تم تسليم طلبك بنجاح!');
+        } else if (newStatus === 'on_the_way') {
+          showToast('🚗 السائق في الطريق إليك');
+        } else if (newStatus === 'cancelled') {
+          showToast('❌ تم إلغاء الطلب', true);
+        }
+      })
+      .subscribe();
+  }
+
+  loadOrderData();
 
   // Check for saved API key
   const savedKey = localStorage.getItem('gmaps_api_key');
@@ -575,6 +640,12 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3500);
   }
+
+  // Expose to onclick handlers
+  window.callDriver = callDriver;
+  window.chatDriver = chatDriver;
+  window.saveApiKey = saveApiKey;
+  window.dismissBanner = dismissBanner;
 </script>
 </body>
 </html>

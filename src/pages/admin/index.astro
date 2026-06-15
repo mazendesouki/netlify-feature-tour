@@ -491,37 +491,197 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
+    const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+
+    // Fix nav links
+    document.querySelectorAll('a[href="/admin"]').forEach(el => el.href = BASE + '/admin');
+    document.querySelectorAll('a[href="/admin/orders"]').forEach(el => el.href = BASE + '/admin/orders');
+    document.querySelectorAll('a[href="/admin/users"]').forEach(el => el.href = BASE + '/admin/users');
+    document.querySelectorAll('a[href="/admin/drivers"]').forEach(el => el.href = BASE + '/admin/drivers');
+    document.querySelectorAll('a[href="/home"]').forEach(el => el.href = BASE + '/home');
+    document.querySelectorAll('a[href="/login"]').forEach(el => el.href = BASE + '/login');
+
+    // Auth check - admin only
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.href = BASE + '/login'; }
+    else {
+      const { data: profile } = await supabase.from('profiles').select('role, full_name').eq('id', session.user.id).single();
+      if (profile?.role !== 'admin') { window.location.href = BASE + '/home'; }
+      if (profile?.full_name) document.getElementById('adminName').textContent = profile.full_name;
+    }
+
     // Set date
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    // Load admin user
-    const user = JSON.parse(localStorage.getItem('wslha_user') || '{}');
-    if (user.name) document.getElementById('adminName').textContent = user.name;
+    // Load real stats
+    async function loadStats() {
+      const [ordersRes, usersRes, driversRes, revenueRes, pendingRes, completedRes, cancelledRes] = await Promise.all([
+        supabase.from('orders').select('id', { count: 'exact', head: true }),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('drivers').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        supabase.from('orders').select('total_price').eq('status', 'delivered'),
+        supabase.from('orders').select('id', { count: 'exact', head: true }).in('status', ['pending', 'confirmed', 'preparing', 'on_the_way']),
+        supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'delivered'),
+        supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', 'cancelled'),
+      ]);
 
-    function adminAlert(section) {
-      alert('📊 ' + section + '\nهذا القسم تحت التطوير في هذه النسخة التجريبية');
+      const totalOrders = ordersRes.count || 0;
+      const totalUsers = usersRes.count || 0;
+      const activeDrivers = driversRes.count || 0;
+      const revenue = (revenueRes.data || []).reduce((s, o) => s + (o.total_price || 0), 0);
+      const pending = pendingRes.count || 0;
+      const completed = completedRes.count || 0;
+      const cancelled = cancelledRes.count || 0;
+      const completionRate = totalOrders > 0 ? ((completed / totalOrders) * 100).toFixed(1) : 0;
+      const cancelRate = totalOrders > 0 ? ((cancelled / totalOrders) * 100).toFixed(1) : 0;
+
+      // Update stat cards
+      const vals = document.querySelectorAll('.stat-value');
+      if (vals[0]) vals[0].textContent = totalOrders.toLocaleString('ar-EG');
+      if (vals[1]) vals[1].textContent = totalUsers.toLocaleString('ar-EG');
+      if (vals[2]) vals[2].textContent = activeDrivers.toLocaleString('ar-EG');
+      if (vals[3]) vals[3].textContent = (revenue >= 1000 ? (revenue / 1000).toFixed(0) + 'K' : revenue.toFixed(0));
+      if (vals[4]) { vals[4].textContent = pending; vals[4].style.color = '#7C3AED'; }
+      if (vals[5]) vals[5].textContent = completed.toLocaleString('ar-EG');
+      if (vals[6]) vals[6].textContent = '4.8';
+      if (vals[7]) vals[7].textContent = cancelled.toLocaleString('ar-EG');
+
+      const trends = document.querySelectorAll('.stat-trend');
+      if (trends[4]) trends[4].textContent = pending > 0 ? '🔴 ' + pending + ' الآن' : '🟢 لا يوجد';
+      if (trends[5]) trends[5].textContent = completionRate + '% نسبة إكمال';
+      if (trends[7]) trends[7].textContent = cancelRate + '% نسبة الإلغاء';
     }
 
-    function adminLogout() {
-      if (confirm('هل تريد تسجيل الخروج من لوحة التحكم؟')) {
-        localStorage.removeItem('wslha_user');
-        window.location.href = '/login';
+    // Load recent orders
+    async function loadRecentOrders() {
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('id, status, total_price, stores(name_ar)')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (!orders?.length) return;
+
+      const statusMap = { pending: 'معلق ⏳', confirmed: 'مؤكد', preparing: 'قيد التحضير', on_the_way: 'قيد التنفيذ', delivered: 'مكتمل ✅', cancelled: 'ملغي ❌' };
+      const pillMap = { pending: 'pill-pending', confirmed: 'pill-pending', preparing: 'pill-pending', on_the_way: 'pill-active', delivered: 'pill-active', cancelled: 'pill-cancelled' };
+
+      const tbody = document.querySelector('.data-table tbody');
+      if (tbody) {
+        tbody.innerHTML = orders.map(o => `
+          <tr>
+            <td><strong>#${o.id.slice(-4).toUpperCase()}</strong></td>
+            <td>🏪 ${o.stores?.name_ar || 'توصيل'}</td>
+            <td>${o.total_price || 0} جنيه</td>
+            <td><span class="status-pill ${pillMap[o.status] || 'pill-pending'}">${statusMap[o.status] || o.status}</span></td>
+          </tr>`).join('');
       }
     }
 
-    function generateReport() {
-      alert('📊 تقرير اليوم:\n\n✅ الطلبات المكتملة: 48\n⏳ الطلبات النشطة: 12\n❌ الطلبات الملغاة: 3\n💰 الإيرادات: 4,820 جنيه\n👥 مستخدمون جدد: 23\n🚗 سائقون نشطون: 18');
+    // Load recent users
+    async function loadRecentUsers() {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('full_name, phone, created_at')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (!users?.length) return;
+
+      const tbodies = document.querySelectorAll('.data-table tbody');
+      if (tbodies[1]) {
+        tbodies[1].innerHTML = users.map(u => `
+          <tr>
+            <td><strong>${u.full_name || 'مستخدم'}</strong></td>
+            <td>${u.phone || '—'}</td>
+            <td>—</td>
+            <td><span class="status-pill pill-active">نشط</span></td>
+          </tr>`).join('');
+      }
     }
 
-    function sendNotification() {
+    // Real-time activity feed from orders
+    async function loadActivity() {
+      const { data: recent } = await supabase
+        .from('orders')
+        .select('id, status, total_price, created_at, stores(name_ar)')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (!recent?.length) return;
+
+      const iconMap = { delivered: { icon: '✅', bg: '#F0FDF4', label: 'مكتمل', labelBg: '#F0FDF4', labelColor: '#10B981' },
+        pending: { icon: '⏳', bg: '#FFFBEB', label: 'جديد', labelBg: '#FFFBEB', labelColor: '#D97706' },
+        on_the_way: { icon: '🚗', bg: '#EFF6FF', label: 'في الطريق', labelBg: '#EFF6FF', labelColor: '#1D4ED8' },
+        cancelled: { icon: '❌', bg: '#FFF5F5', label: 'ملغي', labelBg: '#FFF5F5', labelColor: '#EF4444' },
+        preparing: { icon: '🍳', bg: '#FFFBEB', label: 'تحضير', labelBg: '#FFFBEB', labelColor: '#D97706' } };
+
+      const feed = document.querySelector('.activity-card');
+      if (!feed) return;
+      const title = feed.querySelector('.chart-title');
+      feed.innerHTML = '';
+      if (title) feed.appendChild(title);
+      else feed.insertAdjacentHTML('afterbegin', '<div class="chart-title">📡 النشاط الحي</div>');
+
+      recent.forEach(o => {
+        const m = iconMap[o.status] || iconMap.pending;
+        const ago = Math.round((Date.now() - new Date(o.created_at)) / 60000);
+        const agoText = ago < 1 ? 'الآن' : ago < 60 ? 'منذ ' + ago + ' دقيقة' : 'منذ ' + Math.round(ago/60) + ' ساعة';
+        feed.insertAdjacentHTML('beforeend', `
+          <div class="activity-item">
+            <div class="activity-icon" style="background:${m.bg}">${m.icon}</div>
+            <div class="activity-content">
+              <div class="activity-text">طلب من ${o.stores?.name_ar || 'متجر'} #${o.id.slice(-4).toUpperCase()} - ${o.total_price || 0} جنيه</div>
+              <div class="activity-time">${agoText}</div>
+            </div>
+            <span class="activity-badge" style="background:${m.labelBg};color:${m.labelColor}">${m.label}</span>
+          </div>`);
+      });
+    }
+
+    await Promise.all([loadStats(), loadRecentOrders(), loadRecentUsers(), loadActivity()]);
+
+    // Real-time updates for new orders
+    supabase.channel('admin-orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        loadStats(); loadRecentOrders(); loadActivity();
+      })
+      .subscribe();
+
+    window.adminAlert = function(section) {
+      alert('📊 ' + section + '\nهذا القسم تحت التطوير في هذه النسخة التجريبية');
+    };
+
+    window.adminLogout = async function() {
+      if (confirm('هل تريد تسجيل الخروج من لوحة التحكم؟')) {
+        await supabase.auth.signOut();
+        window.location.href = BASE + '/login';
+      }
+    };
+
+    window.generateReport = async function() {
+      const { count: todayOrders } = await supabase.from('orders').select('id', { count: 'exact', head: true })
+        .gte('created_at', new Date().toISOString().split('T')[0]);
+      const { data: todayRev } = await supabase.from('orders').select('total_price')
+        .eq('status', 'delivered').gte('created_at', new Date().toISOString().split('T')[0]);
+      const rev = (todayRev || []).reduce((s, o) => s + (o.total_price || 0), 0);
+      alert('📊 تقرير اليوم:\n\n📋 الطلبات: ' + (todayOrders || 0) + '\n💰 الإيرادات: ' + rev + ' جنيه');
+    };
+
+    window.sendNotification = function() {
       const msg = prompt('📢 اكتب نص الإشعار:');
-      if (msg) alert('✅ تم إرسال الإشعار لـ 52,340 مستخدم:\n\n"' + msg + '"');
-    }
+      if (msg) alert('✅ تم إرسال الإشعار!\n\n"' + msg + '"');
+    };
 
-    function showAdminNotifs() {
-      alert('🔔 إشعارات الإدارة:\n\n1. ✅ سائق جديد يحتاج موافقة\n2. ⚠️ 3 شكاوى جديدة\n3. 💰 طلب سحب 5000 جنيه\n4. 📊 تقرير المبيعات الأسبوعي جاهز');
-    }
+    window.showAdminNotifs = function() {
+      alert('🔔 إشعارات الإدارة:\n\n1. ✅ سائق جديد يحتاج موافقة\n2. ⚠️ شكاوى جديدة\n3. 📊 تقرير المبيعات الأسبوعي جاهز');
+    };
   </script>
 </body>
 </html>

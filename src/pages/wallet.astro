@@ -336,11 +336,119 @@
     </a>
   </nav>
 
-  <script>
-    const user = JSON.parse(localStorage.getItem('wslha_user') || '{}');
-    let balance = user.balance || 250;
-    document.getElementById('walletBalance').textContent = balance.toLocaleString('ar-EG');
-    document.getElementById('walletUser').textContent = user.name || 'مستخدم';
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
+    const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+    document.querySelectorAll('a[href="/home"]').forEach(el => el.href = BASE + '/home');
+    document.querySelectorAll('a[href="/orders"]').forEach(el => el.href = BASE + '/orders');
+    document.querySelectorAll('a[href="/delivery"]').forEach(el => el.href = BASE + '/delivery');
+    document.querySelectorAll('a[href="/wallet"]').forEach(el => el.href = BASE + '/wallet');
+    document.querySelectorAll('a[href="/settings"]').forEach(el => el.href = BASE + '/settings');
+
+    let userId = null;
+    let balance = 0;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.href = BASE + '/login'; }
+    else {
+      userId = session.user.id;
+      const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).single();
+      if (profile?.full_name) document.getElementById('walletUser').textContent = profile.full_name;
+      await loadWallet();
+    }
+
+    async function loadWallet() {
+      const { data: txns } = await supabase
+        .from('wallet_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      const allTxns = txns || [];
+      balance = allTxns.reduce((s, t) => s + (t.type === 'credit' ? t.amount : -t.amount), 0);
+      const totalCredit = allTxns.filter(t => t.type === 'credit').reduce((s, t) => s + t.amount, 0);
+      const totalDebit = allTxns.filter(t => t.type === 'debit').reduce((s, t) => s + t.amount, 0);
+      const totalTransfer = allTxns.filter(t => t.description?.startsWith('تحويل')).reduce((s, t) => s + t.amount, 0);
+
+      document.getElementById('walletBalance').textContent = balance.toLocaleString('ar-EG');
+
+      const statNums = document.querySelectorAll('.stat-box-num');
+      if (statNums[0]) statNums[0].textContent = totalCredit.toLocaleString('ar-EG');
+      if (statNums[1]) statNums[1].textContent = totalDebit.toLocaleString('ar-EG');
+      if (statNums[2]) statNums[2].textContent = totalTransfer.toLocaleString('ar-EG');
+
+      // Render real transactions into the transactions section
+      const txSection = document.getElementById('transactionsSection');
+      if (txSection) {
+        const title = txSection.querySelector('.section-title');
+        txSection.innerHTML = '';
+        if (title) txSection.appendChild(title);
+        else txSection.insertAdjacentHTML('afterbegin', '<div class="section-title">📋 <span>سجل العمليات</span></div>');
+
+        if (!allTxns.length) {
+          txSection.insertAdjacentHTML('beforeend', '<div style="text-align:center;padding:40px;color:#94A3B8;font-weight:700">لا توجد معاملات بعد</div>');
+        } else {
+          allTxns.forEach(t => {
+            const isCredit = t.type === 'credit';
+            const date = new Date(t.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' });
+            const time = new Date(t.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            const icon = isCredit ? '⬆️' : (t.description?.startsWith('تحويل') ? '🔄' : '⬇️');
+            const iconClass = isCredit ? 'tx-icon-credit' : (t.description?.startsWith('تحويل') ? 'tx-icon-transfer' : 'tx-icon-debit');
+            txSection.insertAdjacentHTML('beforeend', `
+              <div class="tx-card">
+                <div class="tx-icon ${iconClass}">${icon}</div>
+                <div class="tx-info">
+                  <div class="tx-title">${t.description || (isCredit ? 'شحن رصيد' : 'خصم')}</div>
+                  <div class="tx-date">${date}، ${time}</div>
+                </div>
+                <div class="tx-amount ${isCredit ? 'credit' : 'debit'}">${isCredit ? '+' : '-'}${t.amount} جنيه</div>
+              </div>`);
+          });
+        }
+      }
+    }
+
+    async function chargeWallet() {
+      const amt = parseFloat(document.getElementById('chargeAmount').value);
+      if (!amt || amt < 20) { showToast('⚠️ الحد الأدنى للشحن 20 جنيه', true); return; }
+      const { error } = await supabase.from('wallet_transactions').insert({
+        user_id: userId, amount: amt, type: 'credit', description: 'شحن رصيد - بطاقة'
+      });
+      if (error) { showToast('❌ حدث خطأ: ' + error.message, true); return; }
+      showToast('✅ تم شحن ' + amt + ' جنيه بنجاح!');
+      await loadWallet();
+    }
+
+    async function withdrawWallet() {
+      const amt = parseFloat(document.getElementById('withdrawAmount').value);
+      if (!amt || amt < 50) { showToast('⚠️ الحد الأدنى للسحب 50 جنيه', true); return; }
+      if (amt > balance) { showToast('❌ رصيدك غير كافٍ', true); return; }
+      const { error } = await supabase.from('wallet_transactions').insert({
+        user_id: userId, amount: amt, type: 'debit', description: 'سحب رصيد'
+      });
+      if (error) { showToast('❌ حدث خطأ', true); return; }
+      showToast('✅ تم طلب سحب ' + amt + ' جنيه');
+      await loadWallet();
+    }
+
+    async function transferMoney() {
+      const phone = document.getElementById('transferPhone').value.trim();
+      const amt = parseFloat(document.getElementById('transferAmount').value);
+      if (!phone) { showToast('⚠️ أدخل رقم هاتف المستلم', true); return; }
+      if (!amt || amt < 10) { showToast('⚠️ الحد الأدنى للتحويل 10 جنيه', true); return; }
+      if (amt > balance) { showToast('❌ رصيدك غير كافٍ', true); return; }
+      const { error } = await supabase.from('wallet_transactions').insert({
+        user_id: userId, amount: amt, type: 'debit', description: 'تحويل لـ ' + phone
+      });
+      if (error) { showToast('❌ حدث خطأ', true); return; }
+      showToast('✅ تم التحويل بنجاح!');
+      await loadWallet();
+    }
 
     function showSection(section) {
       ['charge','withdraw','transfer','transactions'].forEach(s => {
@@ -366,45 +474,21 @@
       el.classList.add('selected');
     }
 
-    function chargeWallet() {
-      const amt = parseInt(document.getElementById('chargeAmount').value);
-      if (!amt || amt < 20) { alert('⚠️ الحد الأدنى للشحن 20 جنيه'); return; }
-      if (confirm('تأكيد شحن ' + amt + ' جنيه لمحفظتك؟')) {
-        balance += amt;
-        document.getElementById('walletBalance').textContent = balance.toLocaleString('ar-EG');
-        user.balance = balance;
-        localStorage.setItem('wslha_user', JSON.stringify(user));
-        alert('✅ تم شحن ' + amt + ' جنيه بنجاح!\nرصيدك الجديد: ' + balance + ' جنيه');
-      }
+    function showToast(msg, isError = false) {
+      let t = document.getElementById('toast');
+      if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;color:white;font-weight:700;z-index:9999;font-family:Cairo,sans-serif'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.background = isError ? '#EF4444' : '#10B981'; t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
-    function withdrawWallet() {
-      const amt = parseInt(document.getElementById('withdrawAmount').value);
-      if (!amt || amt < 50) { alert('⚠️ الحد الأدنى للسحب 50 جنيه'); return; }
-      if (amt > balance) { alert('❌ رصيدك غير كافٍ'); return; }
-      if (confirm('تأكيد سحب ' + amt + ' جنيه؟')) {
-        balance -= amt;
-        document.getElementById('walletBalance').textContent = balance.toLocaleString('ar-EG');
-        user.balance = balance;
-        localStorage.setItem('wslha_user', JSON.stringify(user));
-        alert('✅ تم طلب سحب ' + amt + ' جنيه بنجاح!\nسيتم التحويل خلال 1-2 يوم عمل');
-      }
-    }
-
-    function transferMoney() {
-      const phone = document.getElementById('transferPhone').value;
-      const amt = parseInt(document.getElementById('transferAmount').value);
-      if (!phone) { alert('⚠️ أدخل رقم هاتف المستلم'); return; }
-      if (!amt || amt < 10) { alert('⚠️ الحد الأدنى للتحويل 10 جنيه'); return; }
-      if (amt > balance) { alert('❌ رصيدك غير كافٍ'); return; }
-      if (confirm('تأكيد تحويل ' + amt + ' جنيه للرقم ' + phone + '؟')) {
-        balance -= amt;
-        document.getElementById('walletBalance').textContent = balance.toLocaleString('ar-EG');
-        user.balance = balance;
-        localStorage.setItem('wslha_user', JSON.stringify(user));
-        alert('✅ تم التحويل بنجاح!\nتم إرسال ' + amt + ' جنيه لـ ' + phone);
-      }
-    }
+    // Expose functions to inline onclick handlers
+    window.showSection = showSection;
+    window.setActiveTab = setActiveTab;
+    window.selectAmount = selectAmount;
+    window.selectMethod = selectMethod;
+    window.chargeWallet = chargeWallet;
+    window.withdrawWallet = withdrawWallet;
+    window.transferMoney = transferMoney;
   </script>
 </body>
 </html>

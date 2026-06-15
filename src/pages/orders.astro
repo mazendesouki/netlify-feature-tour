@@ -259,56 +259,117 @@
   </nav>
 
   <script>
+    import { createClient } from '@supabase/supabase-js';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
+
+    const statusLabel = {
+      pending:     { ar: 'قيد الانتظار', cls: 'in-progress' },
+      confirmed:   { ar: 'تم التأكيد',   cls: 'in-progress' },
+      preparing:   { ar: 'قيد التحضير', cls: 'in-progress' },
+      on_the_way:  { ar: 'في الطريق',   cls: 'in-progress' },
+      delivered:   { ar: 'تم التوصيل',  cls: 'delivered'   },
+      cancelled:   { ar: 'ملغي',         cls: 'cancelled'   },
+    };
+
+    let allOrders = [];
+
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.href = '/login'; return; }
+
+      const container = document.getElementById('ordersContainer');
+      if (container) container.innerHTML = '<p style="text-align:center;padding:40px;color:#888">⏳ جاري تحميل طلباتك...</p>';
+
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('*, stores(name_ar), order_items(name_ar, quantity, unit_price)')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      allOrders = orders || [];
+      renderOrders(allOrders);
+    })();
+
+    function renderOrders(orders) {
+      const container = document.getElementById('ordersContainer');
+      if (!container) return;
+
+      if (!orders.length) {
+        container.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:48px">📦</div><p style="color:#888;margin-top:12px">لا توجد طلبات بعد</p><a href="/delivery" style="display:inline-block;margin-top:16px;padding:12px 32px;background:#1D4ED8;color:white;border-radius:24px;text-decoration:none;font-weight:700">اطلب الآن</a></div>';
+        return;
+      }
+
+      container.innerHTML = orders.map(o => {
+        const s = statusLabel[o.status] || { ar: o.status, cls: '' };
+        const date = new Date(o.created_at).toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric' });
+        const items = (o.order_items || []).map(i => `${i.name_ar} × ${i.quantity}`).join(' • ');
+        const shortId = o.id.slice(-6).toUpperCase();
+        const isActive = ['pending','confirmed','preparing','on_the_way'].includes(o.status);
+
+        return `
+        <div class="order-card ${s.cls}" data-status="${o.status}" style="background:white;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-weight:800;font-size:14px">طلب #${shortId}</span>
+            <span style="font-size:11px;padding:4px 10px;border-radius:20px;font-weight:700;background:${isActive?'#EFF6FF':'#F0FDF4'};color:${isActive?'#1D4ED8':'#16A34A'}">${s.ar}</span>
+          </div>
+          <div style="font-size:13px;color:#555;margin-bottom:4px">🏪 ${o.stores?.name_ar || 'متجر'}</div>
+          <div style="font-size:12px;color:#888;margin-bottom:8px">${items || 'تفاصيل الطلب'}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:#aaa">${date}</span>
+            <span style="font-weight:800;color:#1D4ED8">${o.total_amount} ر.س</span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            ${isActive ? `<button onclick="trackOrder('${o.id}')" style="flex:1;padding:8px;background:#1D4ED8;color:white;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer">📍 تتبع</button>` : ''}
+            ${isActive ? `<button onclick="cancelOrder('${o.id}')" style="padding:8px 14px;background:#FEE2E2;color:#DC2626;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer">إلغاء</button>` : ''}
+            ${o.status==='delivered' ? `<button onclick="window.location.href='/ratings?order=${o.id}'" style="flex:1;padding:8px;background:#FEF9C3;color:#CA8A04;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer">⭐ قيّم الطلب</button>` : ''}
+            ${o.status==='delivered' ? `<button onclick="reorder('${o.stores?.name_ar}')" style="padding:8px 14px;background:#F0FDF4;color:#16A34A;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer">🔄 إعادة</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
     function filterOrders(status, btn) {
       document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
-
-      const allOrders = document.querySelectorAll('.order-card');
-      allOrders.forEach(card => {
-        if (status === 'all') {
-          card.style.display = 'block';
-        } else if (status === 'active') {
-          card.style.display = card.classList.contains('in-progress') ? 'block' : 'none';
-        } else if (status === 'delivered') {
-          card.style.display = card.classList.contains('delivered') ? 'block' : 'none';
-        } else if (status === 'cancelled') {
-          card.style.display = card.classList.contains('cancelled') ? 'block' : 'none';
-        }
-      });
+      if (status === 'all') renderOrders(allOrders);
+      else if (status === 'active') renderOrders(allOrders.filter(o => ['pending','confirmed','preparing','on_the_way'].includes(o.status)));
+      else renderOrders(allOrders.filter(o => o.status === status));
     }
 
     function trackOrder(orderId) {
-      const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
-      window.location.href = BASE + '/tracking?order=' + encodeURIComponent(orderId) + '&dest=' + encodeURIComponent('شارع مصر والسودان، مدينة نصر') + '&fare=85 ج.م';
-      return;
+      window.location.href = '/tracking?order=' + orderId;
     }
 
-    function cancelOrder(orderId) {
-      if (confirm('⚠️ هل تريد إلغاء الطلب ' + orderId + '؟\n\nقد تطبق رسوم إلغاء.')) {
-        alert('❌ تم إلغاء الطلب\nسيتم إرجاع المبلغ لمحفظتك خلال دقائق');
-        document.getElementById('order-active').style.display = 'none';
-      }
+    async function cancelOrder(orderId) {
+      if (!confirm('⚠️ هل تريد إلغاء الطلب؟')) return;
+      await supabase.from('orders').update({ status: 'cancelled' }).eq('id', orderId);
+      const idx = allOrders.findIndex(o => o.id === orderId);
+      if (idx > -1) allOrders[idx].status = 'cancelled';
+      renderOrders(allOrders);
+      showToast('❌ تم إلغاء الطلب');
     }
 
-    function rateOrder(orderId) {
-      window.location.href = '/ratings?order=' + orderId;
-    }
-
-    function reorder() {
-      alert('🔄 تم إنشاء طلب مماثل!\nيمكنك تعديله قبل التأكيد.');
+    function reorder(storeName) {
       window.location.href = '/delivery';
     }
 
-    function showOrderDetails(orderId) {
-      alert('📋 تفاصيل الطلب ' + orderId + '\n\n✅ تم التوصيل بنجاح\n⭐ تقييمك: 5 نجوم\n💰 المبلغ المدفوع: 45 جنيه\n💳 طريقة الدفع: محفظة وصله');
+    function searchOrders(query) {
+      const filtered = allOrders.filter(o =>
+        (o.stores?.name_ar || '').includes(query) ||
+        o.id.includes(query) ||
+        (o.order_items || []).some(i => i.name_ar.includes(query))
+      );
+      renderOrders(filtered);
     }
 
-    function searchOrders(query) {
-      const cards = document.querySelectorAll('.order-card');
-      cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        card.style.display = text.includes(query.toLowerCase()) ? 'block' : 'none';
-      });
+    function showToast(msg) {
+      let t = document.getElementById('toast');
+      if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;background:#10B981;color:white;font-weight:700;z-index:9999'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
     }
   </script>
 </body>
