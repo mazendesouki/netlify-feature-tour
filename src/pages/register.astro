@@ -254,19 +254,27 @@
       });
 
       if (error) {
-        // If already registered, try signing in with same credentials
-        if (error.message.toLowerCase().includes('already') ||
-            error.message.toLowerCase().includes('registered') ||
-            error.message.toLowerCase().includes('rate') ||
-            error.status === 422 || error.status === 429) {
+        const msg = error.message || '';
+        const isSignupsDisabled = msg.toLowerCase().includes('signups not allowed') || msg.toLowerCase().includes('signup');
+        const isDupe = msg.toLowerCase().includes('already') || msg.toLowerCase().includes('registered') || error.status === 422;
+        const isRateLimit = msg.toLowerCase().includes('rate') || error.status === 429;
+
+        if (isSignupsDisabled || isDupe || isRateLimit) {
+          // Try signing in — user may already exist
           const { data: s, error: sErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
           if (!sErr && s.session) {
             advanceIndicator(2, 3);
             setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
             return;
           }
+          if (isSignupsDisabled) {
+            showToast('❌ التسجيل مغلق مؤقتاً — يرجى التواصل مع الدعم', true);
+          } else {
+            showToast('❌ هذا الرقم مسجل بالفعل — جرّب تسجيل الدخول', true);
+          }
+        } else {
+          showToast('❌ ' + msg, true);
         }
-        showToast('❌ ' + error.message, true);
         btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
         return;
       }
