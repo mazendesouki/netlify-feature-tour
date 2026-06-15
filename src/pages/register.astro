@@ -63,6 +63,7 @@
     .phone-display { text-align: center; font-size: 14px; color: #475569; margin-bottom: 8px; font-weight: 600; }
     .login-link { text-align: center; margin-top: 20px; font-size: 14px; color: #64748B; }
     .login-link a { color: #1D4ED8; font-weight: 800; text-decoration: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .success-toast { position: fixed; top: 20px; right: 16px; left: 16px; background: #10B981; color: white; padding: 16px 20px; border-radius: 16px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 25px rgba(16,185,129,0.45); transform: translateY(-120px); transition: all 0.4s cubic-bezier(.4,0,.2,1); z-index: 999; text-align: center; }
     .success-toast.show { transform: translateY(0); }
     .error-toast { background: #EF4444 !important; }
@@ -95,17 +96,12 @@
         <div class="field-error" id="nameErr">يرجى إدخال الاسم الكامل</div>
       </div>
       <div class="form-group">
-        <label class="form-label">📱 رقم الهاتف</label>
+        <label class="form-label">📱 رقم الجوال</label>
         <div class="phone-prefix">
           <select class="prefix-select"><option>🇪🇬 +20</option></select>
           <input type="tel" class="form-control" placeholder="01XXXXXXXXX" id="phone" autocomplete="tel">
         </div>
-        <div class="field-error" id="phoneErr">يرجى إدخال رقم هاتف صحيح (01XXXXXXXXX)</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">📧 البريد الإلكتروني</label>
-        <input type="email" class="form-control" placeholder="example@gmail.com" id="email" autocomplete="email">
-        <div class="field-error" id="emailErr">يرجى إدخال بريد إلكتروني صحيح</div>
+        <div class="field-error" id="phoneErr">يرجى إدخال رقم جوال صحيح (01XXXXXXXXX)</div>
       </div>
       <div class="form-group">
         <label class="form-label">الجنس</label>
@@ -121,7 +117,7 @@
 
     <!-- Step 2 -->
     <div class="step-content" id="step-2">
-      <div class="step-title">🔒 كلمة المرور والمميزات</div>
+      <div class="step-title">🔒 كلمة المرور</div>
       <div class="form-group">
         <label class="form-label">🔑 كلمة المرور</label>
         <input type="password" class="form-control" placeholder="6 أحرف على الأقل" id="password" oninput="checkStrength(this.value)">
@@ -136,40 +132,23 @@
         <input type="password" class="form-control" placeholder="أعد إدخال كلمة المرور" id="confirmPassword">
         <div class="field-error" id="confirmErr">كلمتا المرور غير متطابقتين</div>
       </div>
-      <div class="benefits-list">
-        <div class="benefit-item"><span class="benefit-icon">🚚</span><div><div class="benefit-text">توصيل من المتاجر المحلية</div><div class="benefit-sub">آلاف المتاجر في مصر</div></div></div>
-        <div class="benefit-item"><span class="benefit-icon">🚗</span><div><div class="benefit-text">مشاوير داخل وبين المحافظات</div><div class="benefit-sub">27 محافظة في جميع أنحاء مصر</div></div></div>
-        <div class="benefit-item"><span class="benefit-icon">✈️</span><div><div class="benefit-text">خدمة توصيل المطار</div><div class="benefit-sub">جميع المطارات المصرية</div></div></div>
-        <div class="benefit-item"><span class="benefit-icon">👛</span><div><div class="benefit-text">محفظة إلكترونية متكاملة</div><div class="benefit-sub">شحن رصيد وسحب وتحويل</div></div></div>
-      </div>
       <div class="terms-check">
         <input type="checkbox" id="terms">
         <span class="terms-text">أوافق على <a href="#">شروط الاستخدام</a> و<a href="#">سياسة الخصوصية</a> لتطبيق وصله</span>
       </div>
       <div class="field-error" id="termsErr">يجب الموافقة على الشروط للمتابعة</div>
-      <button class="next-btn" onclick="goStep(3)" type="button">التالي ←</button>
+      <button class="submit-btn" onclick="submitRegister()" type="button" id="submitBtn">إنشاء الحساب ✅</button>
       <button class="back-step-btn" onclick="goStep(1)" type="button">← رجوع</button>
     </div>
 
-    <!-- Step 3 -->
+    <!-- Step 3: Success screen -->
     <div class="step-content" id="step-3">
-      <div class="step-title">📲 تأكيد رقم الهاتف</div>
-      <p class="phone-display">تم إرسال رمز التحقق على: <strong id="phoneDisplay"></strong></p>
-      <p style="font-size:13px;color:#64748B;text-align:center;margin-bottom:8px;">أدخل الرمز المكون من 4 أرقام</p>
-      <div class="otp-inputs">
-        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp1">
-        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp2">
-        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp3">
-        <input type="text" inputmode="numeric" class="otp-input" maxlength="1" id="otp4">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:72px;margin-bottom:16px">🎉</div>
+        <div class="step-title" style="color:#10B981">تم إنشاء حسابك!</div>
+        <p style="font-size:14px;color:#64748B;margin-bottom:24px">مرحباً بك في وصله<br>جارٍ تحويلك للتطبيق...</p>
+        <div style="width:48px;height:48px;border:4px solid #E2E8F0;border-top-color:#1D4ED8;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto"></div>
       </div>
-      <div class="otp-hint">💡 أدخل أي 4 أرقام للمتابعة — سيتم إنشاء حسابك بمجرد الإدخال</div>
-      <div class="otp-resend">
-        لم يصلك الرمز؟
-        <a href="#" id="resendLink" onclick="resendOTP(event)">إعادة الإرسال</a>
-        <span id="timer"></span>
-      </div>
-      <button class="submit-btn" onclick="submitRegister()" type="button" id="submitBtn">إنشاء الحساب ✅</button>
-      <button class="back-step-btn" onclick="goStep(2)" type="button">← رجوع</button>
     </div>
   </div>
 
@@ -206,57 +185,32 @@
       showErr(errId, hasError);
     }
 
+    function advanceIndicator(from, to) {
+      const prev = document.getElementById('step-' + from);
+      if (prev) prev.classList.remove('active');
+      const prevInd = document.getElementById('ind-' + from);
+      if (prevInd) { prevInd.classList.remove('active'); prevInd.classList.add('done'); }
+      currentStep = to;
+      const next = document.getElementById('step-' + to);
+      if (next) next.classList.add('active');
+      const nextInd = document.getElementById('ind-' + to);
+      if (nextInd) nextInd.classList.add('active');
+    }
+
     function goStep(step) {
       if (step > currentStep) {
         if (currentStep === 1) {
           const name = document.getElementById('fullName').value.trim();
           const phone = document.getElementById('phone').value.trim().replace(/\s/g,'');
-          const email = document.getElementById('email').value.trim();
           let ok = true;
           setFieldError('fullName','nameErr',!name); if(!name) ok=false;
           const phoneOk = /^01[0-9]{9}$/.test(phone);
           setFieldError('phone','phoneErr',!phoneOk); if(!phoneOk) ok=false;
-          const emailOk = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-          setFieldError('email','emailErr',!emailOk); if(!emailOk) ok=false;
           showErr('genderErr',!gender); if(!gender) ok=false;
           if(!ok) return;
-          document.getElementById('phoneDisplay').textContent = '+20' + phone;
-        }
-        if (currentStep === 2) {
-          const pwd = document.getElementById('password').value;
-          const conf = document.getElementById('confirmPassword').value;
-          const terms = document.getElementById('terms').checked;
-          let ok = true;
-          setFieldError('password','pwdErr',pwd.length<6); if(pwd.length<6) ok=false;
-          setFieldError('confirmPassword','confirmErr',pwd!==conf); if(pwd!==conf) ok=false;
-          showErr('termsErr',!terms); if(!terms) ok=false;
-          if(!ok) return;
-          startTimer();
         }
       }
-
-      const prev = currentStep;
-      document.getElementById('step-' + prev).classList.remove('active');
-
-      if (step < prev) {
-        for (let i = step; i <= prev; i++) {
-          const ind = document.getElementById('ind-' + i);
-          if (ind) ind.classList.remove('active','done');
-        }
-      } else {
-        const prevInd = document.getElementById('ind-' + prev);
-        prevInd.classList.remove('active');
-        prevInd.classList.add('done');
-      }
-
-      currentStep = step;
-      document.getElementById('step-' + step).classList.add('active');
-      document.getElementById('ind-' + step).classList.add('active');
-
-      for (let i = 1; i < step; i++) {
-        const ind = document.getElementById('ind-' + i);
-        if (ind) { ind.classList.remove('active'); ind.classList.add('done'); }
-      }
+      advanceIndicator(currentStep, step);
     }
 
     function checkStrength(value) {
@@ -275,81 +229,45 @@
       fill.style.background = color; label.textContent = text; label.style.color = color;
     }
 
-    const otpIds = ['otp1','otp2','otp3','otp4'];
-    otpIds.forEach((id, idx) => {
-      const input = document.getElementById(id);
-      input.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g,'');
-        this.classList.toggle('filled', this.value.length === 1);
-        if (this.value && idx < 3) document.getElementById(otpIds[idx+1]).focus();
-        if (otpIds.map(i=>document.getElementById(i).value).join('').length === 4) setTimeout(submitRegister, 400);
-      });
-      input.addEventListener('keydown', function(e) {
-        if (e.key==='Backspace' && !this.value && idx>0) {
-          const prev = document.getElementById(otpIds[idx-1]);
-          prev.value=''; prev.classList.remove('filled'); prev.focus();
-        }
-      });
-    });
-
-    function startTimer() {
-      const link = document.getElementById('resendLink');
-      const timerEl = document.getElementById('timer');
-      link.style.pointerEvents='none'; link.style.opacity='0.5';
-      let secs=60;
-      clearInterval(timerInterval);
-      timerEl.textContent = ' ('+secs+'ث)';
-      timerInterval = setInterval(()=>{
-        secs--;
-        timerEl.textContent = ' ('+secs+'ث)';
-        if(secs<=0){ clearInterval(timerInterval); timerEl.textContent=''; link.style.pointerEvents=''; link.style.opacity=''; }
-      },1000);
-    }
-
-    function resendOTP(e) {
-      e.preventDefault();
-      showToast('📱 تم إرسال رمز التحقق مرة أخرى');
-      startTimer();
-    }
-
     async function submitRegister() {
+      const pwd  = document.getElementById('password').value;
+      const conf = document.getElementById('confirmPassword').value;
+      const terms = document.getElementById('terms').checked;
+      let ok = true;
+      setFieldError('password','pwdErr',pwd.length<6); if(pwd.length<6) ok=false;
+      setFieldError('confirmPassword','confirmErr',pwd!==conf); if(pwd!==conf) ok=false;
+      showErr('termsErr',!terms); if(!terms) ok=false;
+      if(!ok) return;
+
       const btn = document.getElementById('submitBtn');
       btn.disabled = true; btn.textContent = '⏳ جارٍ إنشاء الحساب...';
 
       const fullName = document.getElementById('fullName').value.trim();
-      const email    = document.getElementById('email').value.trim();
-      const phone    = '+20' + document.getElementById('phone').value.trim().replace(/^0/, '');
-      const password = document.getElementById('password').value;
-
-      if (!email) {
-        showToast('❌ يرجى إدخال البريد الإلكتروني', true);
-        btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
-        return;
-      }
+      const phone    = document.getElementById('phone').value.trim().replace(/\s/g,'');
+      // Use phone number as the unique email identifier
+      const email    = phone + '@wslha.app';
+      const fullPhone = '+20' + phone.replace(/^0/, '');
 
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
-        options: { data: { full_name: fullName, phone } }
+        password: pwd,
+        options: { data: { full_name: fullName, phone: fullPhone } }
       });
 
       if (error) {
         const msg = error.message.includes('already') || error.message.includes('registered')
-          ? 'هذا البريد الإلكتروني مسجّل مسبقاً'
-          : error.message.includes('password') ? 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)'
+          ? 'رقم الجوال مسجّل مسبقاً — جرّب تسجيل الدخول'
+          : error.message.includes('password')
+          ? 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)'
           : error.message;
         showToast('❌ ' + msg, true);
         btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
         return;
       }
 
-      if (data.session) {
-        showToast('🎉 تم إنشاء حسابك بنجاح! مرحباً بك في وصله!');
-        setTimeout(() => { window.location.href = BASE + '/home'; }, 1500);
-      } else {
-        showToast('📧 تم إنشاء الحساب! افتح بريدك الإلكتروني وأكّد حسابك ثم سجّل الدخول');
-        btn.textContent = '📧 تحقق من بريدك';
-      }
+      // Show success step
+      advanceIndicator(2, 3);
+      setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
     }
 
     function showToast(msg, isError=false) {
@@ -364,7 +282,6 @@
     window.selectGender = selectGender;
     window.goStep = goStep;
     window.checkStrength = checkStrength;
-    window.resendOTP = resendOTP;
     window.submitRegister = submitRegister;
 
     // Non-blocking session check — redirect if already logged in

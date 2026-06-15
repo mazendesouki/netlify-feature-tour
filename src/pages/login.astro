@@ -79,9 +79,9 @@
       <!-- Login Form -->
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label class="form-label">📧 البريد الإلكتروني أو رقم الهاتف</label>
+          <label class="form-label">📱 رقم الجوال</label>
           <div class="input-group">
-            <input type="text" class="form-control form-control-icon" placeholder="example@email.com أو 01XXXXXXXXX" id="emailPhone" required>
+            <input type="tel" class="form-control form-control-icon" placeholder="01XXXXXXXXX" id="emailPhone" required>
             <span class="input-icon">📱</span>
           </div>
         </div>
@@ -173,12 +173,17 @@
       const pwd   = document.getElementById('password').value;
       const btn   = e.target.querySelector('button[type=submit]');
 
-      if (!email || !pwd) { showToast('❌ أدخل البريد وكلمة المرور', true); return; }
+      if (!email || !pwd) { showToast('❌ أدخل رقم الجوال وكلمة المرور', true); return; }
 
       btn.disabled = true;
       btn.textContent = '⏳ جارٍ تسجيل الدخول...';
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+      // Phone number login: convert 01XXXXXXXXX → 01XXXXXXXXX@wslha.app
+      const loginEmail = /^01[0-9]{9}$/.test(email.replace(/\s/g,''))
+        ? email.replace(/\s/g,'') + '@wslha.app'
+        : email;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: pwd });
 
       if (error) {
         showToast('❌ ' + (error.message.includes('Invalid') ? 'البريد أو كلمة المرور غير صحيحة' : error.message), true);
