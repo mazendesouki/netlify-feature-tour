@@ -284,70 +284,105 @@
     </a>
   </nav>
 
-  <script>
-    let currentRideType = 'local';
-    let selectedPrice = 70;
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
 
-    function switchRideType(btn, type) {
-      document.querySelectorAll('.ride-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      currentRideType = type;
-      document.getElementById('govSelector').style.display = type === 'inter' ? 'block' : 'none';
-      if (type === 'inter') {
-        document.getElementById('estimatedPrice').textContent = '300 - 600 جنيه';
-      } else if (type === 'charter') {
-        document.getElementById('estimatedPrice').textContent = '500 - 1200 جنيه / يوم';
-      } else {
-        updatePrice();
-      }
-    }
+  let currentRideType = 'local';
+  let selectedPrice = 70;
+  let session = null;
 
-    function selectRide(el, price) {
-      document.querySelectorAll('.ride-option').forEach(o => o.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedPrice = price;
-      updatePrice();
+  window.switchRideType = function(btn, type) {
+    document.querySelectorAll('.ride-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentRideType = type;
+    document.getElementById('govSelector').style.display = type === 'inter' ? 'block' : 'none';
+    if (type === 'inter') document.getElementById('estimatedPrice').textContent = '300 - 600 جنيه';
+    else if (type === 'charter') document.getElementById('estimatedPrice').textContent = '500 - 1200 جنيه / يوم';
+    else updatePrice();
+  };
+  window.selectRide = function(el, price) {
+    document.querySelectorAll('.ride-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPrice = price;
+    updatePrice();
+  };
+  window.swapLocations = function() {
+    const from = document.getElementById('fromLocation').value;
+    const to   = document.getElementById('toLocation').value;
+    document.getElementById('fromLocation').value = to;
+    document.getElementById('toLocation').value = from;
+  };
+  window.setLocation = function(field) {
+    const locs = ['مدينة نصر، شارع عباس العقاد', 'المعادي، شارع 9', 'الزمالك، شارع 26 يوليو', 'المهندسين، شارع جامعة الدول', 'العباسية', 'هليوبوليس'];
+    document.getElementById(field + 'Location').value = locs[Math.floor(Math.random() * locs.length)];
+  };
+  window.scheduleNow = function(btn) {
+    document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('scheduleTime').style.display = 'none';
+  };
+  window.scheduleLater = function(btn) {
+    document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('scheduleTime').style.display = 'block';
+  };
+  window.bookRide = async function() {
+    const from = document.getElementById('fromLocation').value;
+    const to   = document.getElementById('toLocation').value;
+    if (!from || !to) { showToast('⚠️ يرجى تحديد نقطة الانطلاق والوجهة', true); return; }
+    if (!session) {
+      showToast('⚠️ يرجى تسجيل الدخول أولاً', true);
+      setTimeout(() => { window.location.href = BASE + '/login'; }, 1500);
+      return;
     }
+    const btn = document.querySelector('.book-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري الحجز...'; }
 
-    function updatePrice() {
-      document.getElementById('estimatedPrice').textContent = selectedPrice + ' - ' + (selectedPrice + 30) + ' جنيه';
-    }
+    const { data: order, error } = await supabase.from('orders').insert({
+      user_id: session.user.id,
+      type: currentRideType === 'local' ? 'ride' : 'ride_inter',
+      total_amount: selectedPrice,
+      delivery_fee: 0,
+      delivery_address: to,
+      pickup_address: from,
+      status: 'pending',
+      notes: `من: ${from} | إلى: ${to} | نوع: ${currentRideType}`
+    }).select().single();
 
-    function swapLocations() {
-      const from = document.getElementById('fromLocation').value;
-      const to = document.getElementById('toLocation').value;
-      document.getElementById('fromLocation').value = to;
-      document.getElementById('toLocation').value = from;
+    if (error || !order) {
+      showToast('❌ حدث خطأ، حاول مرة أخرى', true);
+      if (btn) { btn.disabled = false; btn.textContent = '🚗 احجز الآن'; }
+      return;
     }
+    showToast('✅ تم إرسال طلب المشوار! جاري إيجاد سائق...');
+    setTimeout(() => { window.location.href = BASE + '/tracking?order=' + order.id; }, 2000);
+  };
 
-    function setLocation(field) {
-      const locations = ['مدينة نصر، شارع عباس العقاد', 'المعادي، شارع 9', 'الزمالك، شارع 26 يوليو', 'المهندسين، شارع جامعة الدول', 'العباسية', 'هليوبوليس'];
-      const loc = locations[Math.floor(Math.random() * locations.length)];
-      document.getElementById(field + 'Location').value = loc;
-    }
+  function updatePrice() {
+    document.getElementById('estimatedPrice').textContent = selectedPrice + ' - ' + (selectedPrice + 30) + ' جنيه';
+  }
 
-    function scheduleNow(btn) {
-      document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('scheduleTime').style.display = 'none';
-    }
+  function showToast(msg, isError=false) {
+    let t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;color:white;font-weight:700;z-index:9999;font-family:Cairo,sans-serif'; document.body.appendChild(t); }
+    t.textContent = msg;
+    t.style.background = isError ? '#EF4444' : '#10B981';
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
 
-    function scheduleLater(btn) {
-      document.querySelectorAll('.schedule-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('scheduleTime').style.display = 'block';
-    }
+  // Fix nav links
+  document.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h && h.startsWith('/') && !h.startsWith('//') && !h.startsWith('/netlify')) a.href = BASE + h;
+  });
 
-    function bookRide() {
-      const from = document.getElementById('fromLocation').value;
-      const to = document.getElementById('toLocation').value;
-      if (!from || !to) { alert('⚠️ يرجى تحديد نقطة الانطلاق والوجهة'); return; }
-      const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
-      const orderId = '#ORD-' + Math.floor(Math.random() * 9000 + 1000);
-      window.location.href = BASE + '/tracking?order=' + encodeURIComponent(orderId) +
-        '&dest=' + encodeURIComponent(to) +
-        '&fare=' + encodeURIComponent(selectedPrice + ' ج.م');
-    }
-  </script>
+  supabase.auth.getSession().then(({ data: { session: s } }) => { session = s; });
+</script>
 </body>
 </html>

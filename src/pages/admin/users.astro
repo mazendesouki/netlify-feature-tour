@@ -291,15 +291,113 @@
     </div>
   </div>
 
-  <script>
-    function viewUser(name) { alert('👁️ ملف المستخدم: ' + name + '\n\n📱 الطلبات: 24\n💰 إجمالي الإنفاق: 1,840 جنيه\n⭐ التقييم: 4.8\n📅 عضو منذ: يناير 2024'); }
-    function manageWallet(name) { alert('💰 محفظة ' + name + '\n\nالرصيد الحالي: 250 جنيه\nإجمالي الشحن: 1,500 جنيه\nإجمالي الإنفاق: 1,250 جنيه\n\nإجراءات:\n• إضافة رصيد\n• خصم رصيد\n• تجميد المحفظة'); }
-    function sendMsg(name) { const msg = prompt('💬 رسالة لـ ' + name + ':'); if (msg) alert('✅ تم إرسال الرسالة لـ ' + name); }
-    function blockUser(name) { if (confirm('🚫 هل تريد حظر ' + name + '؟')) alert('✅ تم حظر المستخدم ' + name); }
-    function unblockUser(name) { if (confirm('✅ هل تريد رفع الحظر عن ' + name + '؟')) alert('✅ تم رفع الحظر'); }
-    function addUser() { alert('➕ إضافة مستخدم جديد'); }
-    function exportUsers() { alert('📥 جاري تصدير بيانات المستخدمين...'); }
-    function selectAll() { document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true); }
-  </script>
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+
+  window.viewUser    = name => showToast('👁️ ملف المستخدم: ' + name);
+  window.manageWallet= name => showToast('💰 محفظة ' + name);
+  window.sendMsg     = name => { const msg = prompt('💬 رسالة لـ ' + name + ':'); if (msg) showToast('✅ تم إرسال الرسالة'); };
+  window.blockUser   = async function(userId, name) {
+    if (!confirm('🚫 هل تريد حظر ' + name + '؟')) return;
+    await supabase.from('profiles').update({ status: 'banned' }).eq('id', userId);
+    showToast('✅ تم حظر ' + name);
+    loadUsers();
+  };
+  window.unblockUser = async function(userId, name) {
+    if (!confirm('✅ رفع الحظر عن ' + name + '؟')) return;
+    await supabase.from('profiles').update({ status: 'active' }).eq('id', userId);
+    showToast('✅ تم رفع الحظر');
+    loadUsers();
+  };
+  window.addUser    = () => showToast('➕ إضافة مستخدم قريباً');
+  window.exportUsers= () => showToast('📥 جاري التصدير...');
+  window.selectAll  = () => document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+
+  function showToast(msg) {
+    let t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;background:#10B981;color:white;font-weight:700;z-index:9999;font-family:Cairo,sans-serif'; document.body.appendChild(t); }
+    t.textContent = msg; t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+
+  async function loadUsers() {
+    const { data: users, count } = await supabase
+      .from('profiles')
+      .select('id, full_name, phone, role, status, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    const total = count || 0;
+    const active = (users || []).filter(u => u.status !== 'banned').length;
+    const banned = (users || []).filter(u => u.status === 'banned').length;
+
+    const nums = document.querySelectorAll('.mini-num');
+    if (nums[0]) nums[0].textContent = total;
+    if (nums[1]) nums[1].textContent = active;
+    if (nums[3]) nums[3].textContent = banned;
+
+    const tbody = document.querySelector('.data-table tbody');
+    if (!tbody || !users?.length) return;
+    const colors = ['linear-gradient(135deg,#1D4ED8,#3B82F6)', 'linear-gradient(135deg,#059669,#34D399)', 'linear-gradient(135deg,#7C3AED,#A855F7)', 'linear-gradient(135deg,#D97706,#FCD34D)', 'linear-gradient(135deg,#EF4444,#F87171)'];
+    tbody.innerHTML = users.map((u, i) => {
+      const name = u.full_name || 'مستخدم';
+      const phone = u.phone || '—';
+      const isBanned = u.status === 'banned';
+      const date = new Date(u.created_at).toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric' });
+      const pill = isBanned ? 'pill-red' : 'pill-green';
+      const pillText = isBanned ? 'محظور 🚫' : 'نشط ✅';
+      return `
+      <tr>
+        <td><input type="checkbox"></td>
+        <td>
+          <div class="user-cell">
+            <div class="user-av" style="background:${colors[i % colors.length]}">${name.charAt(0)}</div>
+            <div><div class="user-name">${name}</div><div class="user-email">${u.role || 'customer'}</div></div>
+          </div>
+        </td>
+        <td>${phone}</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="balance-amount">—</td>
+        <td>—</td>
+        <td>${date}</td>
+        <td><span class="pill ${pill}">${pillText}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="act-btn act-view" onclick="viewUser('${name}')" title="عرض">👁️</button>
+            <button class="act-btn act-wallet" onclick="manageWallet('${name}')" title="المحفظة">💰</button>
+            <button class="act-btn act-msg" onclick="sendMsg('${name}')" title="رسالة">💬</button>
+            ${isBanned
+              ? `<button class="act-btn act-wallet" onclick="unblockUser('${u.id}','${name}')" title="رفع الحظر">✅</button>`
+              : `<button class="act-btn act-block" onclick="blockUser('${u.id}','${name}')" title="حظر">🚫</button>`}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+    const titleEl = document.querySelector('.table-h-title');
+    if (titleEl) titleEl.textContent = `👥 قائمة المستخدمين (${total})`;
+    const paginationInfo = document.querySelector('.pagination-info');
+    if (paginationInfo) paginationInfo.textContent = `عرض 1-${users.length} من ${total} مستخدم`;
+  }
+
+  // Fix nav links
+  document.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h && h.startsWith('/') && !h.startsWith('//') && !h.startsWith('/netlify')) a.href = BASE + h;
+  });
+
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session) { window.location.href = BASE + '/login'; return; }
+    const { data: prof } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+    if (prof?.role !== 'admin') { window.location.href = BASE + '/home'; return; }
+    loadUsers();
+  });
+</script>
 </body>
 </html>

@@ -418,71 +418,101 @@
     </a>
   </nav>
 
-  <script>
-    const user = JSON.parse(localStorage.getItem('wslha_user') || '{}');
-    if (user.name) {
-      document.getElementById('profileName').textContent = user.name;
-      document.getElementById('avatarLetter').textContent = user.name.charAt(0);
-      if (user.phone) {
-        document.getElementById('profilePhone').textContent = '📱 ' + user.phone;
-        document.getElementById('currentPhone').textContent = user.phone;
-      }
-    }
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
 
-    function editProfile() {
-      const newName = prompt('✏️ أدخل اسمك الجديد:', user.name || '');
-      if (newName) {
-        user.name = newName;
-        localStorage.setItem('wslha_user', JSON.stringify(user));
-        document.getElementById('profileName').textContent = newName;
-        document.getElementById('avatarLetter').textContent = newName.charAt(0);
-        alert('✅ تم تحديث بياناتك بنجاح!');
-      }
+  window.editProfile = async function() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const currentName = document.getElementById('profileName').textContent;
+    const newName = prompt('✏️ أدخل اسمك الجديد:', currentName);
+    if (!newName || newName.trim() === currentName) return;
+    await supabase.from('profiles').update({ full_name: newName.trim() }).eq('id', session.user.id);
+    document.getElementById('profileName').textContent = newName.trim();
+    document.getElementById('avatarLetter').textContent = newName.trim().charAt(0);
+    showToast('✅ تم تحديث الاسم بنجاح');
+  };
+  window.changePhone = () => showToast('📱 تغيير رقم الهاتف قريباً');
+  window.changePassword = async function() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const newPwd = prompt('🔒 أدخل كلمة المرور الجديدة (6 أحرف على الأقل):');
+    if (!newPwd || newPwd.length < 6) { showToast('❌ كلمة المرور قصيرة جداً', true); return; }
+    const { error } = await supabase.auth.updateUser({ password: newPwd });
+    if (error) showToast('❌ ' + error.message, true);
+    else showToast('✅ تم تغيير كلمة المرور');
+  };
+  window.manageAddresses = () => showToast('📍 العناوين المحفوظة قريباً');
+  window.managePayments  = () => showToast('💳 طرق الدفع قريباً');
+  window.toggleSetting   = (key, val) => {
+    const s = JSON.parse(localStorage.getItem('wslha_settings') || '{}');
+    s[key] = val; localStorage.setItem('wslha_settings', JSON.stringify(s));
+  };
+  window.switchLanguage  = () => showToast('🌐 English version coming soon!');
+  window.toggleDarkMode  = () => showToast('🌙 الوضع الليلي قريباً');
+  window.setDefaultLocation = () => showToast('📍 تحديد الموقع الافتراضي قريباً');
+  window.showReferral = () => showToast('🎁 كود الإحالة: WSLHA123 — شاركه مع أصدقائك');
+  window.showPoints   = () => showToast('⭐ نقاطك: 1,240 — كل 100 نقطة = 5 جنيه');
+  window.enable2FA    = () => showToast('🛡️ التحقق بخطوتين قريباً');
+  window.showPrivacy  = () => showToast('📄 سياسة الخصوصية — نحترم بياناتك');
+  window.showTerms    = () => showToast('📋 شروط الاستخدام متاحة على موقعنا');
+  window.chatSupport  = () => showToast('💬 الدعم متاح على 19123');
+  window.callSupport  = () => showToast('📞 اتصل بنا: 19123 (مجاني)');
+  window.reportProblem= () => showToast('⚠️ سيتم التواصل معك خلال 24 ساعة');
+  window.logout = async function() {
+    if (!confirm('هل تريد تسجيل الخروج؟')) return;
+    await supabase.auth.signOut();
+    window.location.href = BASE + '/login';
+  };
+  window.deleteAccount = async function() {
+    if (!confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع بياناتك!')) return;
+    if (!confirm('⚠️ تأكيد نهائي: لا يمكن التراجع!')) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase.from('profiles').delete().eq('id', session.user.id);
+      await supabase.auth.signOut();
     }
+    window.location.href = BASE + '/';
+  };
 
-    function changePhone() { alert('📱 ستصل رسالة تحقق على رقمك الجديد'); }
-    function changePassword() { alert('🔒 تغيير كلمة المرور\nسيتم إرسال رمز تحقق على هاتفك'); }
-    function manageAddresses() {
-      alert('📍 عناوينك المحفوظة:\n1. 🏠 مدينة نصر، شارع 90\n2. 💼 مصر الجديدة، شارع المشير\n3. ⭐ الزمالك، شارع 26 يوليو');
+  function showToast(msg, isError=false) {
+    let t = document.getElementById('settingsToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'settingsToast';
+      t.style.cssText = 'position:fixed;bottom:100px;left:16px;right:16px;padding:14px 20px;border-radius:14px;color:white;font-weight:700;font-size:14px;text-align:center;z-index:9999;transition:opacity .3s;opacity:0;font-family:Cairo,sans-serif';
+      document.body.appendChild(t);
     }
-    function managePayments() {
-      alert('💳 طرق دفعك:\n✅ فيزا ****4521\n✅ فودافون كاش 01XXXXXXXXX\n➕ إضافة طريقة جديدة');
+    t.textContent = msg;
+    t.style.background = isError ? '#EF4444' : '#10B981';
+    t.style.opacity = '1';
+    setTimeout(() => { t.style.opacity = '0'; }, 3000);
+  }
+
+  document.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h && h.startsWith('/') && !h.startsWith('//') && !h.startsWith('/netlify')) a.href = BASE + h;
+  });
+
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session) { window.location.href = BASE + '/login'; return; }
+    const uid = session.user.id;
+    const { data: prof } = await supabase.from('profiles').select('full_name, phone').eq('id', uid).single();
+    const name = prof?.full_name || session.user.user_metadata?.full_name || 'مستخدم';
+    const phone = prof?.phone || session.user.email?.replace('@wslha.app', '') || '';
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('avatarLetter').textContent = name.charAt(0);
+    if (phone) {
+      document.getElementById('profilePhone').textContent = '📱 ' + phone;
+      const ph = document.getElementById('currentPhone');
+      if (ph) ph.textContent = phone;
     }
-    function toggleSetting(key, value) {
-      const settings = JSON.parse(localStorage.getItem('wslha_settings') || '{}');
-      settings[key] = value;
-      localStorage.setItem('wslha_settings', JSON.stringify(settings));
-    }
-    function switchLanguage() {
-      alert('🌐 English version coming soon!\nستتوفر النسخة الإنجليزية قريباً');
-    }
-    function toggleDarkMode() { alert('🌙 الوضع الليلي قريباً!'); }
-    function setDefaultLocation() { alert('📍 حدّد موقعك الافتراضي على الخريطة'); }
-    function showReferral() {
-      alert('🎁 كود الإحالة الخاص بك:\n\nWSLHA123\n\nشاركه مع أصدقائك\nستحصل على 20 جنيه لكل صديق يسجل');
-    }
-    function showPoints() { alert('⭐ رصيد نقاطك: 1,240 نقطة\n🎁 يمكن استبدال كل 100 نقطة بـ 5 جنيه'); }
-    function enable2FA() { alert('🛡️ التحقق بخطوتين\nسيتم إرسال رمز لهاتفك في كل تسجيل دخول'); }
-    function showPrivacy() { alert('📄 سياسة الخصوصية\nنحن نحترم خصوصيتك ونحمي بياناتك'); }
-    function showTerms() { alert('📋 شروط الاستخدام\nيرجى قراءة الشروط على موقعنا'); }
-    function chatSupport() { alert('💬 مرحباً! أنا مساعد وصله\nكيف يمكنني مساعدتك اليوم؟\n\n📞 أو اتصل: 19123'); }
-    function callSupport() { alert('📞 الاتصال بالدعم\nالرقم: 19123 (مجاني)'); }
-    function reportProblem() { alert('⚠️ الإبلاغ عن مشكلة\nسيتم التواصل معك خلال 24 ساعة'); }
-    function logout() {
-      if (confirm('هل تريد تسجيل الخروج؟')) {
-        localStorage.removeItem('wslha_user');
-        window.location.href = '/';
-      }
-    }
-    function deleteAccount() {
-      if (confirm('⚠️ هل أنت متأكد من حذف حسابك؟\nهذا الإجراء لا يمكن التراجع عنه!')) {
-        if (confirm('⚠️ تأكيد نهائي: سيتم حذف جميع بياناتك')) {
-          localStorage.clear();
-          alert('تم حذف حسابك. نأسف لرؤيتك تغادر!');
-          window.location.href = '/';
-        }
-      }
-    }
-  </script>
+  });
+</script>
 </body>
 </html>

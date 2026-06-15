@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <a href="/wallet" class="balance-chip">
+    <a href="/wallet" class="balance-chip" id="walletLink">
       👛 رصيد محفظتك: <strong id="userBalance">0</strong> جنيه
     </a>
 
@@ -182,6 +182,7 @@
       <a href="/orders" class="see-all-link">عرض الكل</a>
     </div>
 
+    <div id="recentOrders">
     <a href="/orders" class="order-mini-card success">
       <div class="order-mini-icon">🏪</div>
       <div class="order-mini-info">
@@ -208,6 +209,7 @@
       </div>
       <div class="order-mini-price">150 جنيه</div>
     </a>
+    </div>
 
     <!-- Ratings Summary -->
     <div class="section-row" style="margin-top: 20px;">
@@ -280,22 +282,68 @@
     </div>
   </div>
 
-  <script>
-    // Load user data
-    const user = JSON.parse(localStorage.getItem('wslha_user') || '{}');
-    if (!user.name) {
-      window.location.href = '/login';
-    } else {
-      document.getElementById('userName').textContent = user.name;
-      document.getElementById('userBalance').textContent = (user.balance || 250).toLocaleString('ar-EG');
-    }
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
 
-    function showNotifications() {
-      document.getElementById('notifModal').classList.remove('hidden');
+  window.showNotifications = () => document.getElementById('notifModal').classList.remove('hidden');
+  window.hideNotifications = () => document.getElementById('notifModal').classList.add('hidden');
+
+  document.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h && h.startsWith('/') && !h.startsWith('//') && !h.startsWith('/netlify')) {
+      a.href = BASE + h;
     }
-    function hideNotifications() {
-      document.getElementById('notifModal').classList.add('hidden');
+  });
+
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session) { window.location.href = BASE + '/login'; return; }
+    const uid = session.user.id;
+
+    const { data: prof } = await supabase.from('profiles').select('full_name').eq('id', uid).single();
+    const name = prof?.full_name || session.user.user_metadata?.full_name || 'مستخدم';
+    document.getElementById('userName').textContent = name;
+
+    const { data: txns } = await supabase.from('wallet_transactions').select('amount, type').eq('user_id', uid);
+    const balance = (txns || []).reduce((s, t) => t.type === 'credit' ? s + Number(t.amount) : s - Number(t.amount), 0);
+    document.getElementById('userBalance').textContent = Math.max(0, balance).toLocaleString('ar-EG');
+
+    const { data: orders } = await supabase.from('orders')
+      .select('id, status, total_amount, created_at, type, stores(name_ar)')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    const container = document.getElementById('recentOrders');
+    if (container && orders?.length) {
+      const statusMap = {
+        delivered: { cls: 'success', icon: '✅', text: 'تم التوصيل' },
+        pending:   { cls: 'pending', icon: '⏳', text: 'قيد التنفيذ' },
+        confirmed: { cls: 'pending', icon: '⏳', text: 'جاري التنفيذ' },
+        on_the_way:{ cls: 'pending', icon: '🚗', text: 'في الطريق' },
+        cancelled: { cls: '',        icon: '❌', text: 'ملغي' },
+      };
+      container.innerHTML = orders.map(o => {
+        const s = statusMap[o.status] || statusMap.pending;
+        const icon = o.type === 'ride' ? '🚗' : o.type === 'airport' ? '✈️' : '🏪';
+        const dateStr = new Date(o.created_at).toLocaleDateString('ar-SA', { month:'short', day:'numeric' });
+        return `<a href="${BASE}/orders" class="order-mini-card ${s.cls}">
+          <div class="order-mini-icon">${icon}</div>
+          <div class="order-mini-info">
+            <div class="order-mini-title">${o.stores?.name_ar || 'طلب'}</div>
+            <div class="order-mini-sub">${s.icon} ${s.text} • ${dateStr}</div>
+          </div>
+          <div class="order-mini-price">${o.total_amount} جنيه</div>
+        </a>`;
+      }).join('');
+    } else if (container) {
+      container.innerHTML = '<p style="text-align:center;color:#94A3B8;padding:20px">لا توجد طلبات بعد</p>';
     }
-  </script>
+  });
+</script>
 </body>
 </html>

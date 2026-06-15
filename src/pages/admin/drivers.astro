@@ -326,16 +326,146 @@
     </div>
   </div>
 
-  <script>
-    function viewDriver(name) { alert('👁️ ملف السائق: ' + name + '\n\n🚗 الرحلات: 342\n💰 الأرباح الشهرية: 8,400 جنيه\n⭐ التقييم: 4.9/5\n📄 المستندات: سارية\n📅 تاريخ الانضمام: يناير 2024'); }
-    function callDriver(name) { alert('📞 الاتصال بالسائق: ' + name + '\n\nرقم الهاتف: 01XXXXXXXXX'); }
-    function trackDriver(name) { alert('📍 تتبع السائق: ' + name + '\n\n🚗 الموقع: شارع الهرم، الجيزة\nالرحلة: مشوار وسط البلد\nوقت الوصول: 12 دقيقة'); }
-    function suspendDriver(name) { if (confirm('هل تريد إيقاف السائق ' + name + '؟')) alert('✅ تم إيقاف السائق ' + name); }
-    function approveDriver(name) { if (confirm('✅ قبول طلب السائق ' + name + '؟')) { alert('🎉 تم قبول السائق ' + name + '!\nسيتم إرسال إشعار له'); } }
-    function rejectDriver(name) { const reason = prompt('❌ سبب الرفض:'); if (reason) alert('تم رفض طلب ' + name + ' بسبب: ' + reason); }
-    function viewDocs(name) { alert('📄 مستندات السائق: ' + name + '\n\n✅ بطاقة الهوية: تم التحقق\n✅ رخصة القيادة: سارية\n⏳ استمارة السيارة: قيد المراجعة\n✅ صورة شخصية: مقبولة'); }
-    function addDriver() { window.location.href = '/driver-register'; }
-    function exportDrivers() { alert('📥 جاري تصدير بيانات السائقين...'); }
-  </script>
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://ifpopyplwpmrapaofimi.supabase.co',
+    'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+  );
+  const BASE = location.pathname.startsWith('/netlify-feature-tour') ? '/netlify-feature-tour' : '';
+
+  window.viewDriver   = name => showToast('👁️ ملف السائق: ' + name);
+  window.callDriver   = name => showToast('📞 الاتصال بـ: ' + name);
+  window.trackDriver  = name => showToast('📍 تتبع السائق: ' + name);
+  window.suspendDriver= async function(driverId, name) {
+    if (!confirm('هل تريد إيقاف السائق ' + name + '؟')) return;
+    await supabase.from('drivers').update({ status: 'suspended' }).eq('id', driverId);
+    showToast('✅ تم إيقاف السائق ' + name);
+    loadDrivers();
+  };
+  window.approveDriver= async function(driverId, name) {
+    if (!confirm('✅ قبول طلب السائق ' + name + '؟')) return;
+    await supabase.from('drivers').update({ status: 'active', is_verified: true }).eq('id', driverId);
+    showToast('🎉 تم قبول السائق ' + name);
+    loadDrivers();
+  };
+  window.rejectDriver = async function(driverId, name) {
+    const reason = prompt('❌ سبب الرفض:');
+    if (!reason) return;
+    await supabase.from('drivers').update({ status: 'rejected' }).eq('id', driverId);
+    showToast('تم رفض طلب ' + name);
+    loadDrivers();
+  };
+  window.viewDocs  = name => showToast('📄 مستندات ' + name + ' — قيد المراجعة');
+  window.addDriver = () => { window.location.href = BASE + '/driver-register'; };
+  window.exportDrivers = () => showToast('📥 جاري التصدير...');
+
+  function showToast(msg) {
+    let t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;background:#10B981;color:white;font-weight:700;z-index:9999;font-family:Cairo,sans-serif'; document.body.appendChild(t); }
+    t.textContent = msg; t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+
+  async function loadDrivers() {
+    const { data: drivers } = await supabase.from('drivers')
+      .select('*, profiles(full_name, phone)')
+      .order('created_at', { ascending: false });
+
+    const pending = (drivers || []).filter(d => d.status === 'pending');
+    const active  = (drivers || []).filter(d => d.status !== 'pending');
+    const total   = drivers?.length || 0;
+    const online  = active.filter(d => d.is_online).length;
+    const busy    = active.filter(d => d.status === 'busy').length;
+    const offline = active.filter(d => !d.is_online && d.status !== 'busy').length;
+
+    // Update stats
+    const nums = document.querySelectorAll('.mini-num');
+    if (nums[0]) nums[0].textContent = total;
+    if (nums[1]) nums[1].textContent = online;
+    if (nums[2]) nums[2].textContent = busy;
+    if (nums[3]) nums[3].textContent = offline;
+    if (nums[4]) nums[4].textContent = pending.length;
+
+    // Update pending section
+    const pendingSection = document.querySelector('.pending-section');
+    if (pendingSection) {
+      const pendingTitle = pendingSection.querySelector('.pending-title');
+      if (pendingTitle) {
+        const span = pendingTitle.querySelector('span');
+        if (span) span.textContent = pending.length + ' طلبات';
+      }
+      const existingRows = pendingSection.querySelectorAll('.pending-driver-row');
+      existingRows.forEach(r => r.remove());
+      pending.forEach(d => {
+        const name = d.profiles?.full_name || 'سائق';
+        const initial = name.charAt(0);
+        const row = document.createElement('div');
+        row.className = 'pending-driver-row';
+        row.innerHTML = `
+          <div class="pending-av">${initial}</div>
+          <div class="pending-info">
+            <div class="pending-name">${name}</div>
+            <div class="pending-sub">🚗 ${d.vehicle_type || 'مركبة'} • ${d.city || ''} • بانتظار الموافقة</div>
+          </div>
+          <div class="pending-actions">
+            <button class="approve-btn" onclick="approveDriver('${d.id}','${name}')">✅ قبول</button>
+            <button class="reject-btn" onclick="rejectDriver('${d.id}','${name}')">❌ رفض</button>
+            <button style="padding:8px 14px;background:#EFF6FF;color:#1D4ED8;border:none;border-radius:10px;font-family:Cairo,sans-serif;font-size:12px;font-weight:700;cursor:pointer" onclick="viewDocs('${name}')">📄 مستندات</button>
+          </div>`;
+        pendingSection.appendChild(row);
+      });
+    }
+
+    // Update driver cards grid
+    const grid = document.querySelector('.driver-cards');
+    if (!grid || !active.length) return;
+    const colors = ['linear-gradient(135deg,#1D4ED8,#3B82F6)', 'linear-gradient(135deg,#059669,#34D399)', 'linear-gradient(135deg,#7C3AED,#A855F7)', 'linear-gradient(135deg,#D97706,#FCD34D)'];
+    grid.innerHTML = active.map((d, i) => {
+      const name = d.profiles?.full_name || 'سائق';
+      const statusDot = d.is_online ? 'dot-online' : 'dot-offline';
+      const statusBadge = d.is_online ? 'badge-online' : 'badge-offline';
+      const statusText = d.is_online ? '🟢 متاح' : '⚫ غير متصل';
+      return `
+      <div class="driver-card">
+        <div class="driver-card-top">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="driver-av" style="background:${colors[i % colors.length]}">${name.charAt(0)}</div>
+            <div><div class="driver-name">${name}</div><div class="driver-id">📱 ${d.profiles?.phone || ''}</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <div class="driver-status-dot ${statusDot}"></div>
+            <span class="status-badge ${statusBadge}">${statusText}</span>
+          </div>
+        </div>
+        <div class="driver-vehicle"><span>🚗</span><span>${d.vehicle_model || ''} ${d.vehicle_year || ''}</span></div>
+        <div class="driver-info-grid">
+          <div class="info-item"><div class="info-label">الرحلات</div><div class="info-value">✅ ${d.total_rides || 0}</div></div>
+          <div class="info-item"><div class="info-label">التقييم</div><div class="info-value">⭐ ${d.rating || '—'}</div></div>
+          <div class="info-item"><div class="info-label">المدينة</div><div class="info-value">${d.city || '—'}</div></div>
+          <div class="info-item"><div class="info-label">الحالة</div><div class="info-value" style="color:${d.is_verified ? '#10B981' : '#F59E0B'}">${d.is_verified ? '✅ موثق' : '⏳ قيد المراجعة'}</div></div>
+        </div>
+        <div class="driver-actions">
+          <button class="drv-btn drv-btn-blue" onclick="viewDriver('${name}')">👁️ عرض</button>
+          <button class="drv-btn drv-btn-amber" onclick="callDriver('${name}')">📞 اتصال</button>
+          <button class="drv-btn drv-btn-red" onclick="suspendDriver('${d.id}','${name}')">⏸️ إيقاف</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Fix nav links
+  document.querySelectorAll('a[href]').forEach(a => {
+    const h = a.getAttribute('href');
+    if (h && h.startsWith('/') && !h.startsWith('//') && !h.startsWith('/netlify')) a.href = BASE + h;
+  });
+
+  supabase.auth.getSession().then(async ({ data: { session } }) => {
+    if (!session) { window.location.href = BASE + '/login'; return; }
+    const { data: prof } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+    if (prof?.role !== 'admin') { window.location.href = BASE + '/home'; return; }
+    loadDrivers();
+  });
+</script>
 </body>
 </html>
