@@ -244,7 +244,6 @@
 
       const fullName = document.getElementById('fullName').value.trim();
       const phone    = document.getElementById('phone').value.trim().replace(/\s/g,'');
-      // Use phone number as the unique email identifier
       const email    = phone + '@wslha.app';
       const fullPhone = '+20' + phone.replace(/^0/, '');
 
@@ -255,19 +254,37 @@
       });
 
       if (error) {
-        const msg = error.message.includes('already') || error.message.includes('registered')
-          ? 'رقم الجوال مسجّل مسبقاً — جرّب تسجيل الدخول'
-          : error.message.includes('password')
-          ? 'كلمة المرور ضعيفة جداً (6 أحرف على الأقل)'
-          : error.message;
-        showToast('❌ ' + msg, true);
+        // If already registered, try signing in with same credentials
+        if (error.message.toLowerCase().includes('already') ||
+            error.message.toLowerCase().includes('registered') ||
+            error.message.toLowerCase().includes('rate') ||
+            error.status === 422 || error.status === 429) {
+          const { data: s, error: sErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
+          if (!sErr && s.session) {
+            advanceIndicator(2, 3);
+            setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
+            return;
+          }
+        }
+        showToast('❌ ' + error.message, true);
         btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
         return;
       }
 
-      // Show success step
-      advanceIndicator(2, 3);
-      setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
+      if (data?.session) {
+        advanceIndicator(2, 3);
+        setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
+      } else if (data?.user) {
+        // Auto-confirm disabled but no session yet — try signing in
+        const { data: s, error: sErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
+        if (!sErr && s.session) {
+          advanceIndicator(2, 3);
+          setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
+        } else {
+          showToast('📧 تم إنشاء الحساب — يرجى تأكيد البريد الإلكتروني أولاً', false);
+          btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
+        }
+      }
     }
 
     function showToast(msg, isError=false) {
