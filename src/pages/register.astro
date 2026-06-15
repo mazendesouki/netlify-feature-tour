@@ -245,36 +245,62 @@
       const fullName = document.getElementById('fullName').value.trim();
       const phone    = document.getElementById('phone').value.trim().replace(/\s/g,'');
       const email    = phone + '@wslha.app';
-      const fullPhone = '+20' + phone.replace(/^0/, '');
 
+      // Try server-side registration via multiple endpoints (bypasses GoTrue signup restriction)
+      const serverEndpoints = [
+        '/.netlify/functions/register-user',
+        'https://ifpopyplwpmrapaofimi.supabase.co/functions/v1/register'
+      ];
+      for (const endpoint of serverEndpoints) {
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, password: pwd, fullName })
+          });
+          if (!res.ok && res.status >= 500) continue;
+          const result = await res.json();
+          if (result.session) {
+            await supabase.auth.setSession(result.session);
+            advanceIndicator(2, 3);
+            setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
+            return;
+          }
+          // Skip this endpoint if it's a config error (missing key / not deployed)
+          const skip = !result.error || result.error.includes('SERVICE_ROLE_KEY') || result.error.includes('not found') || result.error.includes('relay');
+          if (!skip) {
+            showToast('❌ ' + result.error, true);
+            btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
+            return;
+          }
+        } catch (_) {}
+      }
+
+      // Fallback: direct supabase signup
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password: pwd,
-        options: { data: { full_name: fullName, phone: fullPhone } }
+        email, password: pwd,
+        options: { data: { full_name: fullName, phone: '+20' + phone.replace(/^0/, '') } }
       });
 
       if (error) {
         const msg = error.message || '';
-        const isSignupsDisabled = msg.toLowerCase().includes('signups not allowed') || msg.toLowerCase().includes('signup');
-        const isDupe = msg.toLowerCase().includes('already') || msg.toLowerCase().includes('registered') || error.status === 422;
+        const isExisting = msg.toLowerCase().includes('already') || msg.toLowerCase().includes('registered') || error.status === 422;
         const isRateLimit = msg.toLowerCase().includes('rate') || error.status === 429;
-
-        if (isSignupsDisabled || isDupe || isRateLimit) {
-          // Try signing in — user may already exist
+        const isDisabled  = msg.toLowerCase().includes('signups not allowed') || msg.toLowerCase().includes('signup') && msg.toLowerCase().includes('disabled');
+        if (isExisting || isRateLimit || isDisabled) {
           const { data: s, error: sErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
           if (!sErr && s.session) {
             advanceIndicator(2, 3);
             setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
             return;
           }
-          if (isSignupsDisabled) {
-            showToast('❌ التسجيل مغلق مؤقتاً — يرجى التواصل مع الدعم', true);
-          } else {
-            showToast('❌ هذا الرقم مسجل بالفعل — جرّب تسجيل الدخول', true);
+          if (isDisabled) {
+            showToast('⚠️ التسجيل متوقف مؤقتاً — تواصل مع الدعم', true);
+            btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
+            return;
           }
-        } else {
-          showToast('❌ ' + msg, true);
         }
+        showToast('❌ ' + msg, true);
         btn.disabled = false; btn.textContent = 'إنشاء الحساب ✅';
         return;
       }
@@ -283,7 +309,6 @@
         advanceIndicator(2, 3);
         setTimeout(() => { window.location.href = BASE + '/home'; }, 2000);
       } else if (data?.user) {
-        // Auto-confirm disabled but no session yet — try signing in
         const { data: s, error: sErr } = await supabase.auth.signInWithPassword({ email, password: pwd });
         if (!sErr && s.session) {
           advanceIndicator(2, 3);
