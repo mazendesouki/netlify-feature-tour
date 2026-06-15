@@ -149,37 +149,62 @@
       }
     }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('emailPhone').value;
-      const pwd = document.getElementById('password').value;
+    import { createClient } from '@supabase/supabase-js';
+    const supabase = createClient(
+      'https://ifpopyplwpmrapaofimi.supabase.co',
+      'sb_publishable_kazC7uOBFXz8-AuIfXD7mA_cBb4_EtH'
+    );
 
-      // Demo: admin login
-      if (email === 'admin' || email === 'admin@wslha.com') {
-        localStorage.setItem('wslha_user', JSON.stringify({ name: 'المدير', role: 'admin', email: email }));
-        showToast('✅ مرحباً بك في لوحة التحكم!');
-        setTimeout(() => window.location.href = BASE + '/admin', 1500);
+    // Redirect if already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) redirectAfterLogin(session.user);
+    });
+
+    async function redirectAfterLogin(user) {
+      const { data: profile } = await supabase
+        .from('profiles').select('role').eq('id', user.id).single();
+      const role = profile?.role || 'customer';
+      window.location.href = role === 'admin' ? BASE + '/admin' : BASE + '/home';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailPhone').value.trim();
+      const pwd   = document.getElementById('password').value;
+      const btn   = e.target.querySelector('button[type=submit]');
+
+      if (!email || !pwd) { showToast('❌ أدخل البريد وكلمة المرور', true); return; }
+
+      btn.disabled = true;
+      btn.textContent = '⏳ جارٍ تسجيل الدخول...';
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+
+      if (error) {
+        showToast('❌ ' + (error.message.includes('Invalid') ? 'البريد أو كلمة المرور غير صحيحة' : error.message), true);
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الدخول';
         return;
       }
 
-      if (email && pwd.length >= 4) {
-        const userName = email.includes('@') ? email.split('@')[0] : email;
-        localStorage.setItem('wslha_user', JSON.stringify({ name: userName, role: 'user', email: email, balance: 250 }));
-        showToast('✅ تم تسجيل الدخول بنجاح! جاري التحويل...');
-        setTimeout(() => window.location.href = BASE + '/home', 1500);
-      } else {
-        showToast('❌ يرجى إدخال بيانات صحيحة', true);
-      }
+      showToast('✅ تم تسجيل الدخول! جاري التحويل...');
+      await redirectAfterLogin(data.user);
     }
 
-    function socialLogin(provider) {
-      localStorage.setItem('wslha_user', JSON.stringify({ name: 'مستخدم ' + provider, role: 'user', email: 'user@' + provider + '.com', balance: 250 }));
-      showToast('✅ تم تسجيل الدخول بـ ' + (provider === 'google' ? 'Google' : 'Facebook'));
-      setTimeout(() => window.location.href = BASE + '/home', 1500);
+    async function socialLogin(provider) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin + BASE + '/home' }
+      });
+      if (error) showToast('❌ فشل تسجيل الدخول', true);
     }
 
-    function forgotPassword() {
-      showToast('📱 سيتم إرسال رمز التحقق على هاتفك — ميزة تجريبية');
+    async function forgotPassword() {
+      const email = document.getElementById('emailPhone').value.trim();
+      if (!email) { showToast('❌ أدخل بريدك الإلكتروني أولاً', true); return; }
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) { showToast('❌ ' + error.message, true); return; }
+      showToast('📧 تم إرسال رابط إعادة تعيين كلمة المرور لبريدك');
     }
 
     function showToast(msg, isError=false) {
@@ -188,17 +213,6 @@
       toast.style.background = isError ? '#EF4444' : '#10B981';
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3200);
-    }
-
-    // Check if already logged in
-    const user = localStorage.getItem('wslha_user');
-    if (user) {
-      const userData = JSON.parse(user);
-      if (userData.role === 'admin') {
-        window.location.href = BASE + '/admin';
-      } else {
-        window.location.href = BASE + '/home';
-      }
     }
   </script>
 </body>
